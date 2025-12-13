@@ -1,29 +1,80 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Tramonto Sereno - Design System Colors
+ * Brand colors based on the aussie-funeral palette
  */
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Base colors
+export const BaseColors = {
+  // Black shades
+  blackMedium: '#292F36',
+  black: '#050505',
+
+  // Brand colors
+  blue: '#0091ff',
+  greenDark: '#005742',
+  greenLight: '#e5f4f0',
+  greenLightest: '#f7fbfa',
+  green: '#b2ded3',
+
+  // Grey shades
+  greyDark: '#b7bcc3',
+  greyLight: '#e0e3e8',
+  greyLightest: '#f5f5f5',
+  greyMedium: '#585858',
+  grey: '#999999',
+
+  // Accent colors
+  orange: '#FF6A00',
+  red: '#CC0000',
+  white: '#FFFFFF',
+  yellow: '#ffc107',
+
+  // Main brand palette (aussie-funeral)
+  main: '#bf9574',
+  mainDark: '#ab8668',
+  mainLight: '#d6b89c',
+  mainLightest: '#f6f0eb',
+  mainLightestest: '#fbf9f7',
+
+  // Status colors
+  success: '#28a745',
+  danger: '#dc3545',
+  warning: '#ffc107',
+
+  // Border colors
+  border: '#585858',
+  borderLight: 'rgba(29, 51, 74, 0.1)',
+};
+
+const tintColorLight = BaseColors.main;
+const tintColorDark = BaseColors.mainLight;
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: BaseColors.black,
+    background: BaseColors.white,
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: BaseColors.greyMedium,
+    tabIconDefault: BaseColors.greyMedium,
     tabIconSelected: tintColorLight,
+    border: BaseColors.borderLight,
+    success: BaseColors.success,
+    danger: BaseColors.danger,
+    warning: BaseColors.warning,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: BaseColors.white,
+    background: BaseColors.blackMedium,
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: BaseColors.greyDark,
+    tabIconDefault: BaseColors.greyDark,
     tabIconSelected: tintColorDark,
+    border: BaseColors.borderLight,
+    success: BaseColors.success,
+    danger: BaseColors.danger,
+    warning: BaseColors.warning,
   },
 };
 

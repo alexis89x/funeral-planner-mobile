@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
+import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { getSecurityHeaders } from '@/utils/security';
+import { TramontoSerenoLogo } from '@/components/TramontoSerenoLogo';
 
 interface Partner {
   id: number;
@@ -133,6 +134,10 @@ export default function SearchScreen() {
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
         <ThemedView style={styles.header}>
+          <TramontoSerenoLogo
+            width={120}
+            color={BaseColors.main}
+          />
           <ThemedText type="title" style={styles.title}>
             Ricerca Onoranze Funebri
           </ThemedText>
@@ -267,6 +272,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
+    marginTop: 16,
   },
   searchForm: {
     paddingHorizontal: 20,
@@ -305,7 +311,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   errorText: {
-    color: '#ff4444',
+    color: '#dc3545',
     marginTop: 12,
     textAlign: 'center',
   },
