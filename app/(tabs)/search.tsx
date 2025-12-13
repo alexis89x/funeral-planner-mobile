@@ -12,6 +12,8 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth } from '@/contexts/AuthContext';
+import { getSecurityHeaders } from '@/utils/security';
 
 interface Partner {
   id: number;
@@ -34,16 +36,9 @@ interface Partner {
   can_manage_plans: number;
 }
 
-interface SearchParams {
-  q: string;
-  distance: number;
-  city: string;
-  province: string;
-  category: string;
-}
-
 export default function SearchScreen() {
   const colorScheme = useColorScheme();
+  const { token } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
@@ -76,8 +71,17 @@ export default function SearchScreen() {
     });
 
     try {
+      const securityHeaders = getSecurityHeaders(token);
+
       const response = await fetch(
-        `https://api.tramontosereno.it/api-gateway.php?${params.toString()}`
+        `https://api.tramontosereno.it/api-gateway.php?${params.toString()}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            ...securityHeaders,
+          },
+        }
       );
       const data = await response.json();
 
