@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors } from '@/constants/theme';
@@ -100,34 +101,40 @@ export default function SearchScreen() {
     }
   };
 
+  const handlePartnerPress = (partnerId: number) => {
+    router.push(`/search/${partnerId}`);
+  };
+
   const renderPartner = ({ item }: { item: Partner }) => (
-    <ThemedView style={styles.partnerCard}>
-      <ThemedText type="defaultSemiBold" style={styles.partnerName}>
-        {item.shop_name}
-      </ThemedText>
-
-      <ThemedText style={styles.partnerDetail}>
-        {item.full_address}
-      </ThemedText>
-
-      {item.distance_km !== undefined && (
-        <ThemedText style={styles.distance}>
-          {item.distance_km.toFixed(1)} km di distanza
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => handlePartnerPress(item.id)}>
+      <ThemedView style={styles.partnerCard}>
+        <ThemedText type="defaultSemiBold" style={styles.partnerName}>
+          {item.shop_name}
         </ThemedText>
-      )}
 
-      {item.phone && (
         <ThemedText style={styles.partnerDetail}>
-          Tel: {item.phone}
+          {item.full_address}
         </ThemedText>
-      )}
 
-      {item.url && (
-        <ThemedText style={[styles.partnerDetail, styles.link]}>
-          {item.url}
+        {item.distance_km !== undefined && (
+          <ThemedText style={styles.distance}>
+            {item.distance_km.toFixed(1)} km di distanza
+          </ThemedText>
+        )}
+
+        {item.phone && (
+          <ThemedText style={styles.partnerDetail}>
+            Tel: {item.phone}
+          </ThemedText>
+        )}
+
+        <ThemedText style={styles.tapHint}>
+          Tocca per maggiori dettagli →
         </ThemedText>
-      )}
-    </ThemedView>
+      </ThemedView>
+    </TouchableOpacity>
   );
 
   return (
@@ -349,5 +356,11 @@ const styles = StyleSheet.create({
   },
   link: {
     color: '#0066cc',
+  },
+  tapHint: {
+    fontSize: 12,
+    marginTop: 12,
+    color: BaseColors.main,
+    fontWeight: '600',
   },
 });
