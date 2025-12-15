@@ -7,13 +7,13 @@ import {
   Linking,
   View,
 } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { getSecurityHeaders } from '@/utils/security';
+import { TramontoSerenoLogo } from '@/components/TramontoSerenoLogo';
 
 interface PartnerDetail {
   id: number;
@@ -40,7 +40,6 @@ interface PartnerDetail {
 
 export default function PartnerDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const colorScheme = useColorScheme();
   const { token } = useAuth();
   const [partner, setPartner] = useState<PartnerDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -131,7 +130,7 @@ export default function PartnerDetailScreen() {
   };
 
   const stripHtml = (html: string) => {
-    return html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, '');
+    return html.replace(/<br\s*\/?>/gi, '\n\n').replace(/<\/?[^>]+(>|$)/g, '');
   };
 
   if (loading) {
@@ -154,165 +153,163 @@ export default function PartnerDetailScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.content}>
-          {/* Header */}
-          <ThemedView style={styles.header}>
-            <ThemedText type="title" style={styles.title}>
-              {partner.shop_name}
-            </ThemedText>
-            {partner.can_manage_plans === 1 && (
-              <View
-                style={[styles.badge, { backgroundColor: BaseColors.mainLight }]}>
-                <ThemedText style={styles.badgeText}>
-                  Partner Certificato
-                </ThemedText>
-              </View>
-            )}
-          </ThemedView>
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+        {/* Logo Header */}
+        <View style={styles.logoContainer}>
+          <TramontoSerenoLogo width={140} color={BaseColors.main} />
+        </View>
 
-          {/* Description */}
-          {partner.description && (
-            <ThemedView style={styles.section}>
-              <ThemedText type="subtitle" style={styles.sectionTitle}>
-                Descrizione
-              </ThemedText>
-              <ThemedText style={styles.description}>
-                {stripHtml(partner.description)}
-              </ThemedText>
-            </ThemedView>
+        {/* Title */}
+        <ThemedText style={styles.title}>{partner.shop_name}</ThemedText>
+
+        {/* Badges */}
+        <View style={styles.badgesContainer}>
+          <View style={styles.badgeGrey}>
+            <ThemedText style={styles.badgeGreyText}>Onoranza funebre</ThemedText>
+          </View>
+          {partner.can_manage_plans === 1 && (
+            <View style={styles.badgeBlue}>
+              <ThemedText style={styles.badgeBlueText}>Partner affiliato</ThemedText>
+            </View>
           )}
+        </View>
 
-          {/* Contact Info */}
-          <ThemedView style={styles.section}>
-            <ThemedText type="subtitle" style={styles.sectionTitle}>
-              Contatti
+        {/* CTA Button */}
+        <TouchableOpacity style={styles.ctaButton} activeOpacity={0.8}>
+          <ThemedText style={styles.ctaButtonText}>
+            Acquista una pianificazione
+          </ThemedText>
+        </TouchableOpacity>
+
+        {/* Description */}
+        {partner.description && (
+          <View style={styles.descriptionContainer}>
+            <ThemedText style={styles.descriptionText}>
+              {stripHtml(partner.description)}
             </ThemedText>
+          </View>
+        )}
 
-            {/* Address */}
-            <TouchableOpacity
-              style={styles.contactItem}
-              onPress={handleMaps}
-              activeOpacity={0.7}>
-              <ThemedText style={styles.contactLabel}>Indirizzo</ThemedText>
-              <ThemedText style={styles.contactValue}>
-                {partner.full_address}
-              </ThemedText>
-            </TouchableOpacity>
+        {/* Contatti Section */}
+        <View style={styles.sectionContainer}>
+          <ThemedText style={styles.sectionTitle}>Contatti</ThemedText>
 
-            {/* Phone */}
-            {partner.phone && (
-              <TouchableOpacity
-                style={styles.contactItem}
-                onPress={handleCall}
-                activeOpacity={0.7}>
-                <ThemedText style={styles.contactLabel}>Telefono</ThemedText>
-                <ThemedText style={[styles.contactValue, styles.link]}>
-                  {partner.phone}
-                </ThemedText>
-              </TouchableOpacity>
-            )}
-
+          <View style={styles.contactsGrid}>
             {/* Email */}
             {partner.email && (
               <TouchableOpacity
-                style={styles.contactItem}
+                style={styles.contactCard}
                 onPress={handleEmail}
                 activeOpacity={0.7}>
-                <ThemedText style={styles.contactLabel}>Email</ThemedText>
-                <ThemedText style={[styles.contactValue, styles.link]}>
+                <View style={styles.iconContainer}>
+                  <ThemedText style={styles.iconText}>✉️</ThemedText>
+                </View>
+                <ThemedText style={styles.contactLabel}>E-mail</ThemedText>
+                <ThemedText style={styles.contactLink} numberOfLines={1}>
                   {partner.email}
                 </ThemedText>
               </TouchableOpacity>
             )}
 
-            {/* PEC */}
-            {partner.pec && (
-              <View style={styles.contactItem}>
-                <ThemedText style={styles.contactLabel}>PEC</ThemedText>
-                <ThemedText style={styles.contactValue}>{partner.pec}</ThemedText>
-              </View>
+            {/* Phone */}
+            {partner.phone && (
+              <TouchableOpacity
+                style={styles.contactCard}
+                onPress={handleCall}
+                activeOpacity={0.7}>
+                <View style={styles.iconContainer}>
+                  <ThemedText style={styles.iconText}>📞</ThemedText>
+                </View>
+                <ThemedText style={styles.contactLabel}>Telefono</ThemedText>
+                <ThemedText style={styles.contactLink}>
+                  {partner.phone}
+                </ThemedText>
+              </TouchableOpacity>
             )}
 
             {/* Website */}
             {partner.url && (
               <TouchableOpacity
-                style={styles.contactItem}
+                style={styles.contactCard}
                 onPress={handleWebsite}
                 activeOpacity={0.7}>
-                <ThemedText style={styles.contactLabel}>Sito Web</ThemedText>
-                <ThemedText style={[styles.contactValue, styles.link]}>
-                  {partner.url}
+                <View style={styles.iconContainer}>
+                  <ThemedText style={styles.iconText}>🌐</ThemedText>
+                </View>
+                <ThemedText style={styles.contactLabel}>Sito web</ThemedText>
+                <ThemedText style={styles.contactLink} numberOfLines={1}>
+                  Vai al sito
                 </ThemedText>
               </TouchableOpacity>
             )}
-          </ThemedView>
+          </View>
+        </View>
 
-          {/* Social Media */}
-          {(partner.facebook || partner.instagram) && (
-            <ThemedView style={styles.section}>
-              <ThemedText type="subtitle" style={styles.sectionTitle}>
-                Social Media
-              </ThemedText>
-              <View style={styles.socialContainer}>
-                {partner.facebook && (
-                  <TouchableOpacity
-                    style={[
-                      styles.socialButton,
-                      { backgroundColor: '#1877F2' },
-                    ]}
-                    onPress={handleFacebook}
-                    activeOpacity={0.8}>
-                    <ThemedText style={styles.socialButtonText}>
-                      Facebook
-                    </ThemedText>
-                  </TouchableOpacity>
-                )}
-                {partner.instagram && (
-                  <TouchableOpacity
-                    style={[
-                      styles.socialButton,
-                      { backgroundColor: '#E4405F' },
-                    ]}
-                    onPress={handleInstagram}
-                    activeOpacity={0.8}>
-                    <ThemedText style={styles.socialButtonText}>
-                      Instagram
-                    </ThemedText>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </ThemedView>
-          )}
-
-          {/* Action Buttons */}
-          <ThemedView style={styles.actionsContainer}>
-            <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: BaseColors.main }]}
-              onPress={handleCall}
-              activeOpacity={0.8}>
-              <ThemedText style={styles.actionButtonText}>
-                Chiama Ora
-              </ThemedText>
-            </TouchableOpacity>
-
-            {partner.url && (
+        {/* Social Media */}
+        {(partner.facebook || partner.instagram) && (
+          <View style={styles.socialGrid}>
+            {partner.facebook && (
               <TouchableOpacity
-                style={[
-                  styles.actionButton,
-                  styles.actionButtonSecondary,
-                  { borderColor: BaseColors.main },
-                ]}
-                onPress={handleWebsite}
-                activeOpacity={0.8}>
-                <ThemedText
-                  style={[styles.actionButtonText, { color: BaseColors.main }]}>
-                  Visita Sito
-                </ThemedText>
+                style={styles.socialCard}
+                onPress={handleFacebook}
+                activeOpacity={0.7}>
+                <View style={styles.iconContainer}>
+                  <ThemedText style={styles.iconText}>📘</ThemedText>
+                </View>
+                <ThemedText style={styles.contactLabel}>Facebook</ThemedText>
+                <ThemedText style={styles.contactLink}>Profilo</ThemedText>
               </TouchableOpacity>
             )}
-          </ThemedView>
-        </ThemedView>
+
+            {partner.instagram && (
+              <TouchableOpacity
+                style={styles.socialCard}
+                onPress={handleInstagram}
+                activeOpacity={0.7}>
+                <View style={styles.iconContainer}>
+                  <ThemedText style={styles.iconText}>📷</ThemedText>
+                </View>
+                <ThemedText style={styles.contactLabel}>Instagram</ThemedText>
+                <ThemedText style={styles.contactLink}>Profilo</ThemedText>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
+        {/* Indirizzo Section */}
+        <View style={styles.sectionContainer}>
+          <ThemedText style={styles.sectionTitle}>Indirizzo</ThemedText>
+          <TouchableOpacity onPress={handleMaps} activeOpacity={0.8}>
+            <ThemedText style={styles.addressText}>
+              {partner.full_address}
+            </ThemedText>
+          </TouchableOpacity>
+
+          {/* Map Placeholder */}
+          <TouchableOpacity
+            style={styles.mapPlaceholder}
+            onPress={handleMaps}
+            activeOpacity={0.8}>
+            <ThemedText style={styles.mapText}>
+              📍 Apri in Mappe
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        {/* Bottom CTA */}
+        <TouchableOpacity style={styles.ctaButton} activeOpacity={0.8}>
+          <ThemedText style={styles.ctaButtonText}>
+            Acquista una pianificazione
+          </ThemedText>
+        </TouchableOpacity>
+
+        {/* Back Button */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.8}>
+          <ThemedText style={styles.backButtonText}>← Indietro</ThemedText>
+        </TouchableOpacity>
       </ScrollView>
     </ThemedView>
   );
@@ -321,6 +318,7 @@ export default function PartnerDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   centerContainer: {
     flex: 1,
@@ -331,90 +329,161 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
   },
-  content: {
+  scrollContent: {
     padding: 20,
   },
-  header: {
+  logoContainer: {
+    alignItems: 'center',
     marginBottom: 24,
+    marginTop: 8,
   },
   title: {
-    fontSize: 28,
-    marginBottom: 8,
-  },
-  badge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginTop: 8,
-  },
-  badgeText: {
-    fontSize: 12,
+    fontSize: 24,
     fontWeight: '600',
-    color: BaseColors.mainDark,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    opacity: 0.8,
-  },
-  contactItem: {
+    textAlign: 'center',
+    color: BaseColors.main,
     marginBottom: 16,
   },
-  contactLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    opacity: 0.6,
-    marginBottom: 4,
-  },
-  contactValue: {
-    fontSize: 16,
-  },
-  link: {
-    color: BaseColors.main,
-  },
-  socialContainer: {
+  badgesContainer: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 20,
+    flexWrap: 'wrap',
   },
-  socialButton: {
-    flex: 1,
-    padding: 12,
+  badgeGrey: {
+    backgroundColor: '#e0e3e8',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  badgeGreyText: {
+    fontSize: 12,
+    color: '#333',
+  },
+  badgeBlue: {
+    backgroundColor: '#4B61D1',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  badgeBlueText: {
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  ctaButton: {
+    backgroundColor: BaseColors.main,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
     borderRadius: 8,
     alignItems: 'center',
+    marginBottom: 24,
   },
-  socialButtonText: {
+  ctaButtonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
   },
-  actionsContainer: {
-    gap: 12,
-    marginTop: 8,
+  descriptionContainer: {
+    marginBottom: 32,
   },
-  actionButton: {
+  descriptionText: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#333',
+  },
+  sectionContainer: {
+    marginBottom: 32,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  contactsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  contactCard: {
+    width: '48%',
+    backgroundColor: '#f5f5f5',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    minHeight: 100,
+    justifyContent: 'center',
+  },
+  socialGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 32,
+  },
+  socialCard: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
-  actionButtonSecondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
+  iconContainer: {
+    marginBottom: 8,
   },
-  actionButtonText: {
-    color: '#fff',
+  iconText: {
+    fontSize: 32,
+  },
+  contactLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  contactLink: {
+    fontSize: 12,
+    color: BaseColors.main,
+    textAlign: 'center',
+  },
+  addressText: {
+    fontSize: 15,
+    color: BaseColors.main,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  mapPlaceholder: {
+    height: 200,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  mapText: {
     fontSize: 16,
-    fontWeight: '700',
+    color: BaseColors.main,
+    fontWeight: '600',
+  },
+  backButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: BaseColors.main,
+    alignItems: 'center',
+    marginTop: 16,
+    marginBottom: 40,
+  },
+  backButtonText: {
+    fontSize: 15,
+    color: BaseColors.main,
+    fontWeight: '600',
   },
   errorText: {
-    color: BaseColors.danger,
+    color: '#dc3545',
     fontSize: 16,
     textAlign: 'center',
   },
