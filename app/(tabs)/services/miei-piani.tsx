@@ -3,15 +3,19 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function MieiPianiScreen() {
   const webViewRef = useRef<WebView>(null);
+  const { token } = useAuth();
+
+  const url = `https://www.tramontosereno.it?forceToken=${token}`;
 
   return (
     <ThemedView style={styles.container}>
       <WebView
         ref={webViewRef}
-        source={{ uri: 'https://www.tramontosereno.it' }}
+        source={{ uri: url }}
         style={styles.webview}
         startInLoadingState={true}
         renderLoading={() => (

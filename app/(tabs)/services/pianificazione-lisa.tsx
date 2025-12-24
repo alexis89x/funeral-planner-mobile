@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, TextInput, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, TextInput, View, TouchableOpacity, Alert } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { api } from '@/utils/api';
 
 export default function PianificazioneLisaScreen() {
   const colorScheme = useColorScheme();
@@ -16,9 +17,24 @@ export default function PianificazioneLisaScreen() {
     notes: '',
   });
 
-  const handleSubmit = () => {
-    // TODO: Implementare invio form
-    console.log('Form submitted:', formData);
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.phone) {
+      Alert.alert('Errore', 'Compila tutti i campi obbligatori');
+      return;
+    }
+
+    try {
+      // API automatically adds token and security headers
+      const response = await api.post('pianificazione', formData);
+
+      if (response.result === 'ok') {
+        Alert.alert('Successo', 'La tua richiesta è stata inviata con successo');
+        setFormData({ name: '', email: '', phone: '', preferredDate: '', serviceType: '', notes: '' });
+      }
+    } catch (error: any) {
+      // Error is already logged by api utility
+      Alert.alert('Errore', error.message || 'Si è verificato un errore durante l\'invio');
+    }
   };
 
   return (

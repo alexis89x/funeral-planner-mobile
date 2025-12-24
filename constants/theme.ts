@@ -55,6 +55,7 @@ export const Colors = {
   light: {
     text: BaseColors.black,
     background: BaseColors.white,
+    cardBackground: BaseColors.greyLightest,
     tint: tintColorLight,
     icon: BaseColors.greyMedium,
     tabIconDefault: BaseColors.greyMedium,
@@ -67,6 +68,7 @@ export const Colors = {
   dark: {
     text: BaseColors.white,
     background: BaseColors.blackMedium,
+    cardBackground: BaseColors.black,
     tint: tintColorDark,
     icon: BaseColors.greyDark,
     tabIconDefault: BaseColors.greyDark,

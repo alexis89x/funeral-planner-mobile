@@ -16,6 +16,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { getSecurityHeaders } from '@/utils/security';
 import { TramontoSerenoLogo } from '@/components/TramontoSerenoLogo';
+import { API_BASE_URL } from "@/utils/api";
 
 interface Partner {
   id: number;
@@ -76,7 +77,7 @@ export default function SearchScreen() {
       const securityHeaders = getSecurityHeaders(token);
 
       const response = await fetch(
-        `https://api.tramontosereno.it/api-gateway.php?${params.toString()}`,
+        `${API_BASE_URL}/api-gateway.php?${params.toString()}`,
         {
           method: 'GET',
           headers: {
