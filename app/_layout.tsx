@@ -19,13 +19,12 @@ function RootLayoutNav() {
   useEffect(() => {
     if (isLoading) return;
 
-    // TEMPORARILY DISABLED - Allow access to tabs without login for testing
-    // const inAuthGroup = segments[0] === '(tabs)';
-    // if (!currentUser && inAuthGroup) {
-    //   router.replace('/login');
-    // } else if (currentUser && !inAuthGroup) {
-    //   router.replace('/(tabs)');
-    // }
+    const inAuthGroup = segments[0] === '(tabs)';
+    if (!currentUser && inAuthGroup) {
+      router.replace('/login');
+    } else if (currentUser && !inAuthGroup) {
+      router.replace('/(tabs)');
+    }
   }, [currentUser, segments, isLoading]);
 
   const colorScheme = useColorScheme();

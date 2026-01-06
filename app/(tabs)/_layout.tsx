@@ -75,6 +75,14 @@ export default function TabLayout() {
           href: null, // Hide from tab bar
         }}
       />
+      {/* Test Login - hidden, for debugging */}
+      <Tabs.Screen
+        name="test-login"
+        options={{
+          title: 'Test Login',
+          href: null, // Hide from tab bar
+        }}
+      />
     </Tabs>
   );
 }

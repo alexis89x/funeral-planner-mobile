@@ -7,9 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSecurityHeaders } from './security';
 import { Alert } from "react-native";
 
+const LOCAL_IP = '192.168.1.104';
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
-// export const API_BASE_URL = 'https://api.tramontosereno.it';
-export const API_BASE_URL = 'http://192.168.1.104/projects/funeral-planner-api';
+export const API_BASE_URL = 'https://api.tramontosereno.it';
+// export const API_BASE_URL = `http://${LOCAL_IP}/projects/funeral-planner-api`;
+// export const APP_BASE_URL = `http://${LOCAL_IP}:4200`;
+export const APP_BASE_URL = 'https://app.tramontosereno.it';
 export interface APIResponse<T = any> {
   result: 'ok' | 'error';
   count?: number;

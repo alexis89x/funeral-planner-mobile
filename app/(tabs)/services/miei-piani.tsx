@@ -4,13 +4,14 @@ import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
+import { APP_BASE_URL } from "@/utils/api";
 
 export default function MieiPianiScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
 
-  const url = `https://www.tramontosereno.it?forceToken=${token}`;
-
+  const url = `${APP_BASE_URL}/auth/set-token?token=${btoa(token || '')}&path=${encodeURIComponent('/user/plans')}&forceMode=mobile`;
+  console.log(url);
   return (
     <ThemedView style={styles.container}>
       <WebView

@@ -46,6 +46,7 @@ export const getSecurityHeaders = (token?: string): Record<string, string> => {
   const csm = getCsm();
 
   return {
+    'X-apmb': 'version', // Tell that we're on our mobile app
     'X-ipac': token || '',
     'X-iptc': csm.cs,
     'X-ipts': csm.ts,
