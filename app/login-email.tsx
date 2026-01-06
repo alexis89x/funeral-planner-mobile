@@ -9,16 +9,15 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 
-export default function LoginScreen() {
-  const [username, setUsername] = useState('');
+export default function LoginEmailScreen() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -26,45 +25,53 @@ export default function LoginScreen() {
   const colors = Colors[colorScheme ?? 'light'];
 
   const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert('Errore', 'Inserisci nome utente e password');
+    if (!email || !password) {
+      Alert.alert('Errore', 'Inserisci email e password');
       return;
     }
 
     setIsLoading(true);
     try {
-      await login(username, password);
+      await login(email, password);
       router.replace('/(tabs)/my-plan');
     } catch (error) {
-      Alert.alert('errore', JSON.stringify(error));
-      //Alert.alert('Errore di Login', 'Nome utente o password non validi');
+      Alert.alert('Errore', 'Email o password non validi');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoogleLogin = () => {
-    Alert.alert('Google Login', 'Funzionalità in arrivo');
+  const handleForgotPassword = () => {
+    router.push({
+      pathname: '/webview',
+      params: {
+        url: 'https://app.tramontosereno.it/auth/forgot-psw?r=user',
+        title: 'Recupero Password',
+      },
+    });
   };
 
   return (
     <ThemedView style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: 'Accedi con Email',
+          headerShown: true,
+        }}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}>
         <View style={styles.content}>
-          <ThemedText type="title" style={styles.title}>
-            Tramonto Sereno
-          </ThemedText>
-
           <View style={styles.form}>
             <TextInput
               style={[styles.input, { color: colors.text, borderColor: colors.border }]}
-              placeholder="Nome utente"
+              placeholder="Email"
               placeholderTextColor={colors.tabIconDefault}
-              value={username}
-              onChangeText={setUsername}
+              value={email}
+              onChangeText={setEmail}
               autoCapitalize="none"
+              keyboardType="email-address"
               editable={!isLoading}
             />
 
@@ -81,6 +88,15 @@ export default function LoginScreen() {
             />
 
             <TouchableOpacity
+              onPress={handleForgotPassword}
+              style={styles.forgotPasswordButton}
+              disabled={isLoading}>
+              <ThemedText style={[styles.forgotPasswordText, { color: colors.tint }]}>
+                Password dimenticata?
+              </ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
               style={[styles.loginButton, { backgroundColor: colors.tint }]}
               onPress={handleLogin}
               disabled={isLoading}>
@@ -89,20 +105,6 @@ export default function LoginScreen() {
               ) : (
                 <ThemedText style={styles.loginButtonText}>Accedi</ThemedText>
               )}
-            </TouchableOpacity>
-
-            <View style={styles.divider}>
-              <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
-              <ThemedText style={styles.dividerText}>oppure</ThemedText>
-              <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
-            </View>
-
-            <TouchableOpacity
-              style={[styles.googleButton, { borderColor: colors.border }]}
-              onPress={handleGoogleLogin}
-              disabled={isLoading}>
-              <IconSymbol name="globe" size={20} color={colors.text} />
-              <ThemedText style={styles.googleButtonText}>Accedi con Google</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -123,10 +125,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 32,
   },
-  title: {
-    textAlign: 'center',
-    marginBottom: 48,
-  },
   form: {
     width: '100%',
   },
@@ -138,41 +136,21 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
   },
+  forgotPasswordButton: {
+    alignItems: 'flex-end',
+    marginBottom: 24,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+  },
   loginButton: {
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
   },
   loginButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-  },
-  googleButton: {
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-  },
-  googleButtonText: {
     fontSize: 16,
     fontWeight: '600',
   },

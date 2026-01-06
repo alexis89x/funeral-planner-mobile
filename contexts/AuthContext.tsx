@@ -11,16 +11,88 @@ export interface LoggedUser {
   status: number;
 }
 
+export interface Plan {
+  id: number;
+  id_user: number;
+  id_funeralplanner: number;
+  id_partner_referral: number;
+  type: string;
+  package_name: string;
+  plan_for: string;
+  emergency_contact_name: string;
+  emergency_contact_email: string;
+  emergency_contact_phone: string;
+  status: number;
+  payment_status: string;
+  permission: string;
+  managed_by: string;
+  creator: string;
+  deceased: string;
+  discount_code: string;
+  created: string;
+  modified: string;
+}
+
+export interface Partner {
+  id: number;
+  id_parent: number;
+  email: string;
+  referral_code: string;
+  pec: string;
+  shop_name: string;
+  logo: string;
+  description: string;
+  category: string;
+  subcategory: string;
+  categories: string;
+  street: string;
+  street_number: string;
+  zip_code: string;
+  city: string;
+  province: string;
+  region: string;
+  country: string;
+  lat: number;
+  lng: number;
+  web_only: number;
+  pet: number;
+  phone: string;
+  facebook: string;
+  url: string;
+  instagram: string;
+  extra_info: string;
+  status: number;
+  level: number;
+  full_address: string;
+}
+
 export interface UserProfile {
   user: {
     id: number;
+    first_name: string;
+    last_name: string;
     email: string;
-    name?: string;
-    role: number;
+    lang: string;
+    phone: string;
+    id_current_plan: number;
+    id_partner_referral: number;
+    social_login: string;
     status: number;
-    id_current_plan?: number;
+    role: number;
   };
-  // Add other profile fields as needed
+  owned_plans: Plan[];
+  current_plan: Plan | null;
+  favourites: Partner[];
+  referralPartner: Partner | null;
+  consents: {
+    geolocalizationAndProfiling: number;
+    ownAndThirdServices: number;
+    thirdServicesEnrichment: number;
+    thirdServicesTransfer: number;
+  };
+  cfg: {
+    language: string;
+  };
 }
 
 interface AuthContextType {
@@ -190,17 +262,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setLoadingProfile(true);
-      const response = await api.get<UserProfile>('profile');
+      const response = await api.get<any>('profile');
 
       if (response.data) {
         const profile: UserProfile = {
-          ...response.data,
           user: {
-            ...response.data.user,
+            id: parseInt(String(response.data.user.id), 10),
+            first_name: response.data.user.first_name || '',
+            last_name: response.data.user.last_name || '',
+            email: response.data.user.email || '',
+            lang: response.data.user.lang || 'it',
+            phone: response.data.user.phone || '',
+            id_current_plan: parseInt(String(response.data.user.id_current_plan || 0), 10),
+            id_partner_referral: parseInt(String(response.data.user.id_partner_referral || 0), 10),
+            social_login: response.data.user.social_login || '',
             status: parseInt(String(response.data.user.status || 0), 10),
             role: parseInt(String(response.data.user.role), 10),
-            id_current_plan: parseInt(String(response.data.user.id_current_plan || 0), 10),
           },
+          owned_plans: response.data.owned_plans || [],
+          current_plan: response.data.current_plan || null,
+          favourites: response.data.favourites || [],
+          referralPartner: response.data.referralPartner || null,
+          consents: response.data.consents || {
+            geolocalizationAndProfiling: 0,
+            ownAndThirdServices: 0,
+            thirdServicesEnrichment: 0,
+            thirdServicesTransfer: 0,
+          },
+          cfg: response.data.cfg || { language: 'it' },
         };
 
         setUserProfile(profile);

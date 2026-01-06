@@ -5,9 +5,16 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { userProfile } = useAuth();
+
+  // Determina il titolo del tab funeral-home basandosi sul profilo
+  const funeralHomeTitle = userProfile?.user?.id_partner_referral
+    ? 'La mia onoranza'
+    : 'Cerca onoranza';
 
   return (
     <Tabs
@@ -26,7 +33,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="funeral-home"
         options={{
-          title: 'Onoranza Funebre',
+          title: funeralHomeTitle,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="building.2.fill" color={color} />,
         }}
       />
@@ -40,18 +47,19 @@ export default function TabLayout() {
       <Tabs.Screen
         name="account"
         options={{
-          title: 'Account',
+          title: 'Profilo',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
+      {/* Hidden tabs - kept for future use */}
       <Tabs.Screen
         name="products"
         options={{
           title: 'Prodotti',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag.fill" color={color} />,
+          href: null, // Hide from tab bar
         }}
       />
-      {/* Hidden tabs - kept for future use */}
       <Tabs.Screen
         name="search"
         options={{

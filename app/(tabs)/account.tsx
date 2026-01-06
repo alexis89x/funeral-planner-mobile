@@ -24,7 +24,7 @@ export default function AccountScreen() {
         style: 'destructive',
         onPress: async () => {
           await logout();
-          router.replace('/login');
+          router.replace('/welcome');
         },
       },
     ]);
@@ -41,7 +41,7 @@ export default function AccountScreen() {
           <IconSymbol name="person.fill" size={48} color="#fff" />
         </View>
         <ThemedText type="title" style={styles.userName}>
-          {userProfile?.user?.name || userProfile?.user?.email || 'Utente'}
+          {userProfile?.user ? `${userProfile.user.first_name} ${userProfile.user.last_name}` : 'Utente'}
         </ThemedText>
         {userProfile?.user?.email && (
           <ThemedText style={styles.userEmail}>
@@ -52,35 +52,73 @@ export default function AccountScreen() {
 
       <View style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
-          Informazioni Account
+          Informazioni Personali
         </ThemedText>
 
         <View style={[styles.infoCard, { backgroundColor: colors.cardBackground }]}>
           <View style={styles.infoRow}>
-            <ThemedText style={styles.infoLabel}>ID Utente</ThemedText>
-            <ThemedText style={styles.infoValue}>{userProfile?.user?.id || 'N/A'}</ThemedText>
+            <ThemedText style={styles.infoLabel}>Nome</ThemedText>
+            <ThemedText style={styles.infoValue}>{userProfile?.user?.first_name || 'N/A'}</ThemedText>
           </View>
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <View style={styles.infoRow}>
-            <ThemedText style={styles.infoLabel}>Ruolo</ThemedText>
-            <ThemedText style={styles.infoValue}>{currentUser?.role || 'N/A'}</ThemedText>
+            <ThemedText style={styles.infoLabel}>Cognome</ThemedText>
+            <ThemedText style={styles.infoValue}>{userProfile?.user?.last_name || 'N/A'}</ThemedText>
           </View>
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <View style={styles.infoRow}>
-            <ThemedText style={styles.infoLabel}>Status</ThemedText>
-            <ThemedText style={styles.infoValue}>{currentUser?.status || 'N/A'}</ThemedText>
+            <ThemedText style={styles.infoLabel}>Email</ThemedText>
+            <ThemedText style={styles.infoValue}>{userProfile?.user?.email || 'N/A'}</ThemedText>
           </View>
-          {userProfile?.user?.id_current_plan && (
+          {userProfile?.user?.phone && (
             <>
               <View style={[styles.divider, { backgroundColor: colors.border }]} />
               <View style={styles.infoRow}>
-                <ThemedText style={styles.infoLabel}>Piano Corrente</ThemedText>
-                <ThemedText style={styles.infoValue}>{userProfile.user.id_current_plan}</ThemedText>
+                <ThemedText style={styles.infoLabel}>Telefono</ThemedText>
+                <ThemedText style={styles.infoValue}>{userProfile.user.phone}</ThemedText>
               </View>
             </>
           )}
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+          <View style={styles.infoRow}>
+            <ThemedText style={styles.infoLabel}>Lingua</ThemedText>
+            <ThemedText style={styles.infoValue}>{userProfile?.user?.lang?.toUpperCase() || 'N/A'}</ThemedText>
+          </View>
         </View>
       </View>
+
+      {userProfile?.current_plan && (
+        <View style={styles.section}>
+          <ThemedText type="subtitle" style={styles.sectionTitle}>
+            Piano Corrente
+          </ThemedText>
+
+          <View style={[styles.infoCard, { backgroundColor: colors.cardBackground }]}>
+            <View style={styles.infoRow}>
+              <ThemedText style={styles.infoLabel}>Piano</ThemedText>
+              <ThemedText style={styles.infoValue}>{userProfile.current_plan.plan_for}</ThemedText>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.border }]} />
+            <View style={styles.infoRow}>
+              <ThemedText style={styles.infoLabel}>Tipo</ThemedText>
+              <ThemedText style={styles.infoValue}>{userProfile.current_plan.type.toUpperCase()}</ThemedText>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.border }]} />
+            <View style={styles.infoRow}>
+              <ThemedText style={styles.infoLabel}>Stato Pagamento</ThemedText>
+              <ThemedText style={styles.infoValue}>{userProfile.current_plan.payment_status}</ThemedText>
+            </View>
+          </View>
+        </View>
+      )}
+
+      {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
+        <View style={styles.section}>
+          <ThemedText type="subtitle" style={styles.sectionTitle}>
+            Piani Posseduti: {userProfile.owned_plans.length}
+          </ThemedText>
+        </View>
+      )}
 
       <View style={styles.section}>
         <TouchableOpacity
