@@ -1,149 +1,44 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, TextInput, View, TouchableOpacity, Alert } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
+import { StyleSheet } from 'react-native';
+import { WebView } from 'react-native-webview';
+import { useFocusEffect } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { api } from '@/utils/api';
+import { useAuth } from '@/contexts/AuthContext';
+import { APP_BASE_URL } from "@/utils/api";
 
 export default function ConsultoPsicologicoScreen() {
-  const colorScheme = useColorScheme();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-  });
+  const { token } = useAuth();
+  const [webViewKey, setWebViewKey] = useState(0);
 
-  const handleSubmit = async () => {
-    if (!formData.name || !formData.email || !formData.phone) {
-      Alert.alert('Errore', 'Compila tutti i campi obbligatori');
-      return;
-    }
+  useFocusEffect(
+    React.useCallback(() => {
+      setWebViewKey(prev => prev + 1);
+    }, [])
+  );
 
-    try {
-      // API automatically adds token and security headers
-      const response = await api.post('consulto', formData);
+  const injectedJavaScript = `
+    (function() {
+      const user = {
+        token: "${token}",
+        role: 150,
+        status: 310
+      };
+      localStorage.setItem('uinfo', JSON.stringify(user));
+      true; // Required for iOS
+    })();
+  `;
 
-      if (response.result === 'ok') {
-        Alert.alert('Successo', 'La tua richiesta è stata inviata con successo');
-        setFormData({ name: '', email: '', phone: '', message: '' });
-      }
-    } catch (error: any) {
-      // Error is already logged by api utility
-      Alert.alert('Errore', error.message || 'Si è verificato un errore durante l\'invio');
-    }
-  };
+  const url = `${APP_BASE_URL}/user/grief?forceMode=mobile`;
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.content}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Richiedi un Consulto
-          </ThemedText>
-          <ThemedText style={styles.description}>
-            Un professionista qualificato ti contatterà per fissare un appuntamento
-            e offrirti il supporto di cui hai bisogno.
-          </ThemedText>
-
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <ThemedText style={styles.label}>Nome e Cognome *</ThemedText>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: Colors[colorScheme ?? 'light'].background,
-                    color: Colors[colorScheme ?? 'light'].text,
-                    borderColor: Colors[colorScheme ?? 'light'].icon,
-                  },
-                ]}
-                placeholder="Inserisci il tuo nome"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].icon}
-                value={formData.name}
-                onChangeText={(text) => setFormData({ ...formData, name: text })}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <ThemedText style={styles.label}>Email *</ThemedText>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: Colors[colorScheme ?? 'light'].background,
-                    color: Colors[colorScheme ?? 'light'].text,
-                    borderColor: Colors[colorScheme ?? 'light'].icon,
-                  },
-                ]}
-                placeholder="tua@email.com"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].icon}
-                value={formData.email}
-                onChangeText={(text) => setFormData({ ...formData, email: text })}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <ThemedText style={styles.label}>Telefono *</ThemedText>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: Colors[colorScheme ?? 'light'].background,
-                    color: Colors[colorScheme ?? 'light'].text,
-                    borderColor: Colors[colorScheme ?? 'light'].icon,
-                  },
-                ]}
-                placeholder="+39 333 123 4567"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].icon}
-                value={formData.phone}
-                onChangeText={(text) => setFormData({ ...formData, phone: text })}
-                keyboardType="phone-pad"
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <ThemedText style={styles.label}>Messaggio</ThemedText>
-              <TextInput
-                style={[
-                  styles.input,
-                  styles.textArea,
-                  {
-                    backgroundColor: Colors[colorScheme ?? 'light'].background,
-                    color: Colors[colorScheme ?? 'light'].text,
-                    borderColor: Colors[colorScheme ?? 'light'].icon,
-                  },
-                ]}
-                placeholder="Descrivi brevemente il tuo bisogno..."
-                placeholderTextColor={Colors[colorScheme ?? 'light'].icon}
-                value={formData.message}
-                onChangeText={(text) => setFormData({ ...formData, message: text })}
-                multiline
-                numberOfLines={4}
-              />
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.submitButton,
-                { backgroundColor: BaseColors.main },
-              ]}
-              onPress={handleSubmit}
-              activeOpacity={0.8}>
-              <ThemedText style={styles.submitButtonText}>
-                Invia Richiesta
-              </ThemedText>
-            </TouchableOpacity>
-
-            <ThemedText style={styles.note}>
-              * Campi obbligatori
-            </ThemedText>
-          </View>
-        </ThemedView>
-      </ScrollView>
+      <WebView
+        key={webViewKey}
+        source={{ uri: url }}
+        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+        style={styles.webview}
+        startInLoadingState={true}
+      />
     </ThemedView>
   );
 }
@@ -152,57 +47,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContainer: {
+  webview: {
     flex: 1,
-  },
-  content: {
-    padding: 20,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 16,
-    opacity: 0.7,
-    marginBottom: 24,
-    lineHeight: 24,
-  },
-  form: {
-    gap: 16,
-  },
-  inputContainer: {
-    marginBottom: 16,
-  },
-  label: {
-    marginBottom: 8,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  submitButton: {
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  note: {
-    fontSize: 12,
-    opacity: 0.6,
-    fontStyle: 'italic',
   },
 });
