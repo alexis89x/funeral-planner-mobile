@@ -7,23 +7,34 @@ import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
 
 export default function FuneralHomeScreen() {
-  const { token } = useAuth();
+  const { token, userProfile } = useAuth();
   const [webViewKey, setWebViewKey] = useState(0);
 
-  // Reinizializza la WebView ogni volta che torni su questo schermo
   useFocusEffect(
     React.useCallback(() => {
       setWebViewKey(prev => prev + 1);
     }, [])
   );
+  const injectedJavaScript = `
+    (function() {
+      const user = {
+        token: "${token}",
+        role: 150,
+        status: 310
+      };
+      localStorage.setItem('uinfo', JSON.stringify(user));
+      true; // Required for iOS
+    })();
+  `;
 
-  const url = `${APP_BASE_URL}/auth/set-token?token=${btoa(token || '')}&path=${encodeURIComponent('/user/main-partner')}&forceMode=mobile`;
+  const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile`;
 
   return (
     <ThemedView style={styles.container}>
       <WebView
         key={webViewKey}
         source={{ uri: url }}
+        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
         style={styles.webview}
         startInLoadingState={true}
       />

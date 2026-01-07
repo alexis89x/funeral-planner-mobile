@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Alert, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -36,6 +36,7 @@ export default function AccountScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <View style={[styles.avatar, { backgroundColor: colors.tint }]}>
           <IconSymbol name="person.fill" size={48} color="#fff" />
@@ -86,8 +87,7 @@ export default function AccountScreen() {
           </View>
         </View>
       </View>
-
-      {userProfile?.current_plan && (
+      {false && userProfile?.current_plan && (
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Piano Corrente
@@ -111,7 +111,6 @@ export default function AccountScreen() {
           </View>
         </View>
       )}
-
       {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
@@ -128,6 +127,7 @@ export default function AccountScreen() {
           <ThemedText style={styles.logoutButtonText}>Esci</ThemedText>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </ThemedView>
   );
 }
@@ -135,6 +135,9 @@ export default function AccountScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 32,
   },
   header: {
     alignItems: 'center',

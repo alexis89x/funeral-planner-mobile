@@ -25,11 +25,16 @@ const MAPPING = {
   'bag.fill': 'shopping-bag',
   'list.bullet': 'list',
   'ellipsis.circle.fill': 'more-horiz',
+  'building.2.fill': 'business',
+  'person.fill': 'person',
 
   // Service icons
   'heart.fill': 'favorite',
   'calendar': 'calendar-today',
   'doc.text.fill': 'description',
+
+  // Action icons
+  'rectangle.portrait.and.arrow.right': 'logout',
 } as IconMapping;
 
 /**
