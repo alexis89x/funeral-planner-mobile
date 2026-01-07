@@ -134,6 +134,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const isValid = await validateToken();
         if (!isValid) {
           await logout();
+        } else {
+          await reloadProfile();
         }
       }
     } catch (error) {

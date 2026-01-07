@@ -11,6 +11,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { userProfile } = useAuth();
 
+  console.log("USER PROFILE", userProfile);
   // Determina il titolo del tab funeral-home basandosi sul profilo
   const funeralHomeTitle = userProfile?.user?.id_partner_referral
     ? 'La mia onoranza'
