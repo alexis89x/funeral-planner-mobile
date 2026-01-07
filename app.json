@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "funeral-planner-mobile",
+    "name": "Tramonto Sereno",
     "slug": "funeral-planner-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,14 +14,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FF8A65",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
-      "package": "com.alexis89x.funeralplannermobile"
+      "package": "com.alexis89x.funeralplannermobile",
+      "statusBar": {
+        "backgroundColor": "#ffffff",
+        "barStyle": "dark-content"
+      }
     },
     "web": {
       "output": "static",

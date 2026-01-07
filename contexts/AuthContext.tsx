@@ -164,6 +164,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       formData.append('os', deviceInfo.os);
       formData.append('browser', deviceInfo.browser);
       formData.append('user_agent', deviceInfo.userAgent);
+      formData.append('remind', '1');
 
       // Log FormData contents
       console.log('\n📦 FormData Contents:');
