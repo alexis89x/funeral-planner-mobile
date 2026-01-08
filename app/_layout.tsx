@@ -29,9 +29,11 @@ function RootLayoutNav() {
     } else if (currentUser && (inWelcome || inLoginFlow)) {
       // User logged in but on auth screens
       router.replace('/(tabs)/my-plan');
-    } else if (!currentUser && segments.length === 0) {
-      // Initial load without user
-      router.replace('/welcome');
+    } else { // @ts-ignore
+      if (!currentUser && segments.length === 0) {
+            // Initial load without user - only redirect if no route is specified
+            router.replace('/welcome');
+          }
     }
   }, [currentUser, segments, isLoading]);
 

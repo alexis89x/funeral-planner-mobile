@@ -24,7 +24,10 @@ export default function LoginEmailScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
+  console.log("LOADING LOGIN SCREEN");
+
   const handleLogin = async () => {
+    console.log("HANDLING LOGIN");
     if (!email || !password) {
       Alert.alert('Errore', 'Inserisci email e password');
       return;

@@ -14,6 +14,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 export default function WelcomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  console.log("SHOWING WELCOME SCREEN");
 
   return (
     <ThemedView style={styles.container}>

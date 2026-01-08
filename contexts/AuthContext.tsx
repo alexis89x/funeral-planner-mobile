@@ -232,12 +232,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setLastActivity(data.lastActivity);
         }
 
+        console.log("USER AFTER LOGIN...", user);
         // Store user and token
         setCurrentUser(user);
         await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
 
         // Load user profile after successful login
-        await getUserProfile();
+        console.log("GETTING USER PROFILE AFTER LOGIN");
+        await getUserProfile(user);
       } else {
         console.error('\n❌ Login Failed - API returned error');
         console.error('Full error response:', JSON.stringify(data, null, 2));
@@ -254,12 +256,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getUserProfile = async (): Promise<UserProfile | null> => {
+  const getUserProfile = async (providedUser?: LoggedUser): Promise<UserProfile | null> => {
+    console.log("LOADING USER_PROFILE...");
+
     if (userProfile || loadingProfile) {
+      console.log("RETURNING EARLY", userProfile, loadingProfile);
       return userProfile;
     }
 
-    if (!currentUser) {
+    const userToUse = providedUser || currentUser;
+    if (!userToUse) {
+      console.log("NOTUSER");
       return null;
     }
 
@@ -296,6 +303,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         setUserProfile(profile);
+        console.log("GOT USER_PROFILE...");
         return profile;
       }
 
@@ -309,6 +317,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const reloadProfile = async (): Promise<void> => {
+    console.log("RELOADING USER PROFILE");
     setUserProfile(null);
     await getUserProfile();
   };
@@ -319,7 +328,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!storedAuth) {
         return false;
       }
-
       const user = JSON.parse(storedAuth);
       if (!user.token) {
         return false;
@@ -330,7 +338,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }, {
         manualErrorManagement: true,
       });
-
       return response.result === 'ok';
     } catch (error) {
       console.error('Token validation error:', error);
