@@ -42,6 +42,8 @@ export default function TabLayout() {
         options={{
           title: funeralHomeTitle,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="building.2.fill" color={color} />,
+          headerShown: true,
+          headerLeft: () => null,
         }}
       />
       <Tabs.Screen

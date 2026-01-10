@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
@@ -9,12 +9,14 @@ import { APP_BASE_URL } from "@/utils/api";
 export default function FuneralHomeScreen() {
   const { token, userProfile } = useAuth();
   const [webViewKey, setWebViewKey] = useState(0);
+  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
       setWebViewKey(prev => prev + 1);
     }, [])
   );
+
   const injectedJavaScript = `
     (function() {
       const user = {
@@ -27,6 +29,17 @@ export default function FuneralHomeScreen() {
     })();
   `;
 
+  const handleMessage = (event: any) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.action === 'goBack') {
+        router.back();
+      }
+    } catch (error) {
+      console.error('Error parsing message from webview:', error);
+    }
+  };
+
   const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile`;
 
   return (
@@ -37,6 +50,7 @@ export default function FuneralHomeScreen() {
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
         style={styles.webview}
         startInLoadingState={true}
+        onMessage={handleMessage}
       />
     </ThemedView>
   );
