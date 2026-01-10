@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { PLAN_STATUS } from "@/models/data.models";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -17,6 +18,9 @@ export default function TabLayout() {
     ? 'La mia onoranza'
     : 'Cerca onoranza';
 
+  const myPlanTitle = (userProfile?.owned_plans.filter(r => r.status === PLAN_STATUS.ACTIVE) || []).length > 1 ?
+    'I miei piani' : 'Il mio piano';
+
   return (
     <Tabs
       screenOptions={{
@@ -27,8 +31,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-plan"
         options={{
-          title: 'Il mio piano',
+          title: myPlanTitle,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
+          headerShown: true,
+          headerLeft: () => null,
         }}
       />
       <Tabs.Screen

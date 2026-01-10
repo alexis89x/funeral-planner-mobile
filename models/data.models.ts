@@ -1,0 +1,5 @@
+export enum PLAN_STATUS {
+  ACTIVE = 100,
+  ARCHIVED = 450,
+  DELETED = 500
+}
