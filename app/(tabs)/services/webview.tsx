@@ -1,15 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import { Stack, useLocalSearchParams, router, useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 
-export default function WebViewScreen() {
+export default function ServiceWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
-  const params = useLocalSearchParams<{ url: string; title?: string; injectToken?: string }>();
+  const params = useLocalSearchParams<{ url: string; title?: string }>();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { token } = useAuth();
@@ -22,30 +22,25 @@ export default function WebViewScreen() {
   );
 
   const url = params.url || '';
-  const title = params.title || 'WebView';
-  const shouldInjectToken = params.injectToken === 'true';
+  const title = params.title || 'Servizio';
 
   const handleMessage = (event: any) => {
     try {
       const message = JSON.parse(event.nativeEvent.data);
       console.log('Messaggio ricevuto dalla webview:', message);
 
-      // Gestisci diversi tipi di messaggi
       switch (message.type) {
         case 'navigation':
-          // Naviga ad un'altra schermata dell'app
           if (message.route) {
             router.push(message.route);
           }
           break;
 
         case 'close':
-          // Chiudi la webview e torna indietro
           router.back();
           break;
 
         case 'data':
-          // Gestisci dati ricevuti dalla webview
           console.log('Dati ricevuti:', message.data);
           break;
 
@@ -57,12 +52,7 @@ export default function WebViewScreen() {
     }
   };
 
-  const sendMessageToWebView = (message: any) => {
-    webViewRef.current?.postMessage(JSON.stringify(message));
-  };
-
-  const injectedJavaScript = shouldInjectToken
-    ? `
+  const injectedJavaScript = `
     (function() {
       const user = {
         token: "${token}",
@@ -72,15 +62,14 @@ export default function WebViewScreen() {
       localStorage.setItem('uinfo', JSON.stringify(user));
       true; // Required for iOS
     })();
-  `
-    : undefined;
+  `;
 
   return (
     <ThemedView style={styles.container}>
       <Stack.Screen
         options={{
-          title,
-          headerShown: true,
+          title: title,
+          headerBackTitle: 'Indietro',
         }}
       />
       {url ? (

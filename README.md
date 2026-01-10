@@ -1,6 +1,12 @@
-# Welcome to your Expo app 👋
+# Tramonto Sereno - Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Applicazione mobile React Native per la piattaforma Tramonto Sereno, costruita con [Expo](https://expo.dev).
+
+## Documentazione
+
+- **[BUILD_DEPLOY.md](./BUILD_DEPLOY.md)** - Guida completa per build e distribuzione negli store
+- **[AGENTS.md](./AGENTS.md)** - Documentazione tecnica e linee guida per sviluppatori
+- **[CLAUDE.md](./CLAUDE.md)** - Istruzioni per Claude Code AI
 
 ## Get started
 
@@ -19,6 +25,27 @@ In the output, you'll find options to open the app in:
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Build e Deploy
+
+Per informazioni dettagliate su come compilare e distribuire l'app negli store, consulta **[BUILD_DEPLOY.md](./BUILD_DEPLOY.md)**.
+
+### Comandi rapidi
+
+```bash
+# Build di sviluppo
+eas build --profile development --platform all
+
+# Build di produzione
+eas build --profile production --platform all
+
+# Submit agli store
+eas submit --platform ios
+eas submit --platform android
+
+# Aggiornamento OTA
+eas update --branch production --message "Descrizione"
+```
+
 ## Workflows
 
 This project is configured to use [EAS Workflows](https://docs.expo.dev/eas/workflows/get-started/) to automate some development and release processes. These commands are set up in [`package.json`](./package.json) and can be run using NPM scripts in your terminal.
@@ -33,7 +60,9 @@ Run `npm run development-builds` to [create a development build](https://docs.ex
 
 ### Production Deployments
 
-Run `npm run deploy` to [deploy to production](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/). Note - you'll need to follow the [Prerequisites](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/#prerequisites) to ensure you're set up to submit to the Apple and Google stores.
+Run `npm run deploy` to [deploy to production](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/).
+
+Per una guida completa passo-passo sulla distribuzione negli store, consulta **[BUILD_DEPLOY.md](./BUILD_DEPLOY.md)**.
 
 ## Hosting
 

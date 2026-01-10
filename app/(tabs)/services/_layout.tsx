@@ -17,7 +17,9 @@ export default function ServicesLayout() {
       <Stack.Screen
         name="index"
         options={{
-          headerShown: false,
+          title: 'I Nostri Servizi',
+          headerShown: true,
+          headerBackTitle: 'Indietro',
         }}
       />
       <Stack.Screen
@@ -39,6 +41,12 @@ export default function ServicesLayout() {
         options={{
           title: 'I Miei Piani',
           headerBackTitle: 'Indietro',
+        }}
+      />
+      <Stack.Screen
+        name="webview"
+        options={{
+          headerShown: true,
         }}
       />
     </Stack>
