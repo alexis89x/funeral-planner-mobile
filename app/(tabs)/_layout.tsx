@@ -56,6 +56,8 @@ export default function TabLayout() {
         options={{
           title: 'Profilo',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+          headerShown: true,
+          headerLeft: () => null,
         }}
       />
       {/* Hidden tabs - kept for future use */}

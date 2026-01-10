@@ -1,25 +1,14 @@
 import { Stack } from 'expo-router';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function ServicesLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: Colors[colorScheme ?? 'light'].background,
-        },
-        headerTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShadowVisible: false,
-      }}>
+    <Stack>
       <Stack.Screen
         name="index"
         options={{
-          title: 'I Nostri Servizi',
+          title: 'Servizi',
           headerShown: true,
-          headerBackTitle: 'Indietro',
+          headerLeft: () => null,
         }}
       />
       <Stack.Screen

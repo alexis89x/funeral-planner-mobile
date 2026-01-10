@@ -34,13 +34,16 @@ export default function AccountScreen() {
     await reloadProfile();
   };
 
+  /*
+    <View style={[styles.avatar, { backgroundColor: colors.tint }]}>
+    <IconSymbol name="person.fill" size={48} color="#fff" />
+    </View>
+
+   */
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
-        <View style={[styles.avatar, { backgroundColor: colors.tint }]}>
-          <IconSymbol name="person.fill" size={48} color="#fff" />
-        </View>
         <ThemedText type="title" style={styles.userName}>
           {userProfile?.user ? `${userProfile.user.first_name} ${userProfile.user.last_name}` : 'Utente'}
         </ThemedText>

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState, AppStateStatus } from 'react-native';
 import { getDeviceInfo } from '@/utils/device';
 import { api, API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from "@/utils/security";
@@ -119,10 +120,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [lastActivity, setLastActivity] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProfile, setLoadingProfile] = useState(false);
+  const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     loadStoredAuth();
   }, []);
+
+  // Listen to app state changes (background/foreground)
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [currentUser]);
+
+  const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+    // App has come to the foreground from background
+    if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground - validating token and reloading profile');
+
+      if (currentUser) {
+        // Validate token
+        const isValid = await validateToken();
+
+        if (!isValid) {
+          console.log('Token is invalid - logging out');
+          await logout();
+        } else {
+          // Token is valid, check if we need to reload profile
+          if (!userProfile) {
+            console.log('User profile is missing - reloading');
+            await reloadProfile();
+          }
+        }
+      }
+    }
+
+    appState.current = nextAppState;
+  };
 
   const loadStoredAuth = async () => {
     try {
