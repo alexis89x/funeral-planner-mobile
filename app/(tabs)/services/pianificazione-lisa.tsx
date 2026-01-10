@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
@@ -9,6 +9,7 @@ import { APP_BASE_URL } from "@/utils/api";
 export default function PianificazioneLisaScreen() {
   const { token } = useAuth();
   const [webViewKey, setWebViewKey] = useState(0);
+  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -28,6 +29,17 @@ export default function PianificazioneLisaScreen() {
     })();
   `;
 
+  const handleMessage = (event: any) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.action === 'goBack') {
+        router.back();
+      }
+    } catch (error) {
+      console.error('Error parsing message from webview:', error);
+    }
+  };
+
   const url = `${APP_BASE_URL}/user/lisa?forceMode=mobile`;
 
   return (
@@ -38,6 +50,7 @@ export default function PianificazioneLisaScreen() {
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
         style={styles.webview}
         startInLoadingState={true}
+        onMessage={handleMessage}
       />
     </ThemedView>
   );

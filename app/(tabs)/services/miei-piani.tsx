@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,6 +10,18 @@ import { APP_BASE_URL } from "@/utils/api";
 export default function MieiPianiScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
+  const router = useRouter();
+
+  const handleMessage = (event: any) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.action === 'goBack') {
+        router.back();
+      }
+    } catch (error) {
+      console.error('Error parsing message from webview:', error);
+    }
+  };
 
   const url = `${APP_BASE_URL}/auth/set-token?token=${btoa(token || '')}&path=${encodeURIComponent('/user/plans')}&forceMode=mobile`;
   console.log(url);
@@ -26,13 +39,10 @@ export default function MieiPianiScreen() {
             style={styles.loading}
           />
         )}
-        // Abilita JavaScript
+        onMessage={handleMessage}
         javaScriptEnabled={true}
-        // Abilita DOM storage per login
         domStorageEnabled={true}
-        // Abilita third party cookies
         thirdPartyCookiesEnabled={true}
-        // Abilita mixed content (http + https)
         mixedContentMode="always"
       />
     </ThemedView>
