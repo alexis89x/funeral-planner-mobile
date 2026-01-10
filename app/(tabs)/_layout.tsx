@@ -51,6 +51,8 @@ export default function TabLayout() {
         options={{
           title: 'Servizi',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+          headerShown: true,
+          headerLeft: () => null,
         }}
       />
       <Tabs.Screen
