@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,15 +6,35 @@ import {
   Image,
 } from 'react-native';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth, UserProfile } from '@/contexts/AuthContext';
+
+const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 
 export default function WelcomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { getLastSavedProfile } = useAuth();
+  const [lastProfile, setLastProfile] = useState<UserProfile | null>(null);
   console.log("SHOWING WELCOME SCREEN");
+
+  useEffect(() => {
+    loadLastProfile();
+  }, []);
+
+  const loadLastProfile = async () => {
+    const profile = await getLastSavedProfile();
+    setLastProfile(profile);
+  };
+
+  const handleChangeUser = async () => {
+    await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
+    setLastProfile(null);
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -31,26 +51,65 @@ export default function WelcomeScreen() {
           </ThemedText>
         </View>
 
+        {/* Welcome message if user exists */}
+        {lastProfile && (
+          <View style={styles.welcomeSection}>
+            <ThemedText style={styles.welcomeText}>
+              Bentornato, {lastProfile.user.first_name}!
+            </ThemedText>
+          </View>
+        )}
+
         {/* Buttons */}
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={[styles.primaryButton, { backgroundColor: colors.tint }]}
-            onPress={() => router.push('/login-email')}>
-            <ThemedText style={styles.primaryButtonText}>Accedi con Email</ThemedText>
-          </TouchableOpacity>
+          {lastProfile ? (
+            <>
+              <TouchableOpacity
+                style={[styles.primaryButton, { backgroundColor: colors.tint }]}
+                onPress={() => router.push('/login')}>
+                <ThemedText style={styles.primaryButtonText}>ACCEDI</ThemedText>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.secondaryButton, { borderColor: colors.border }]}
-            onPress={() => router.push('/login-google')}>
-            <ThemedText style={styles.secondaryButtonText}>Accedi con Google</ThemedText>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.secondaryButton, { borderColor: colors.border }]}
+                onPress={handleChangeUser}>
+                <ThemedText style={styles.secondaryButtonText}>Cambia utente</ThemedText>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={[styles.primaryButton, { backgroundColor: colors.tint }]}
+                onPress={() => router.push('/login-email')}>
+                <ThemedText style={styles.primaryButtonText}>Accedi con Email</ThemedText>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.secondaryButton, { borderColor: colors.border }]}
-            onPress={() => router.push('/register')}>
-            <ThemedText style={styles.secondaryButtonText}>Registrati</ThemedText>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.secondaryButton, { borderColor: colors.border }]}
+                onPress={() => router.push('/login-google')}>
+                <ThemedText style={styles.secondaryButtonText}>Accedi con Google</ThemedText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.secondaryButton, { borderColor: colors.border }]}
+                onPress={() => router.push('/register')}>
+                <ThemedText style={styles.secondaryButtonText}>Registrati</ThemedText>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
+
+        {/* Partner section at bottom */}
+        {lastProfile?.referralPartner && (
+          <View style={styles.partnerSectionBottom}>
+            <ThemedText style={styles.partnerText}>
+              in collaborazione con
+            </ThemedText>
+            <ThemedText style={styles.partnerName}>
+              {lastProfile.referralPartner.shop_name}
+            </ThemedText>
+          </View>
+        )}
       </View>
     </ThemedView>
   );
@@ -67,7 +126,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 80,
+    marginBottom: 60,
   },
   logo: {
     width: 120,
@@ -78,9 +137,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
   },
+  welcomeSection: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
   buttonsContainer: {
     width: '100%',
     gap: 16,
+  },
+  partnerSectionBottom: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  partnerText: {
+    fontSize: 14,
+    opacity: 0.7,
+    marginBottom: 4,
+  },
+  partnerName: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   primaryButton: {
     height: 50,

@@ -106,6 +106,7 @@ interface AuthContextType {
   validateToken: () => Promise<boolean>;
   getUserProfile: () => Promise<UserProfile | null>;
   reloadProfile: () => Promise<void>;
+  getLastSavedProfile: () => Promise<UserProfile | null>;
   isLoading: boolean;
   lastActivity: number | null;
 }
@@ -113,6 +114,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
+const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<LoggedUser | null>(null);
@@ -351,7 +353,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         setUserProfile(profile);
-        console.log("PROFILE LOADED SUCCESSFULLY");
+        // Save profile to storage for "welcome back" feature
+        await AsyncStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+        console.log("PROFILE LOADED SUCCESSFULLY AND SAVED TO STORAGE");
         return profile;
       }
 
@@ -362,6 +366,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return null;
     } finally {
       setLoadingProfile(false);
+    }
+  };
+
+  const getLastSavedProfile = async (): Promise<UserProfile | null> => {
+    try {
+      const savedProfile = await AsyncStorage.getItem(PROFILE_STORAGE_KEY);
+      if (savedProfile) {
+        return JSON.parse(savedProfile);
+      }
+      return null;
+    } catch (error) {
+      console.error('Error loading saved profile:', error);
+      return null;
     }
   };
 
@@ -418,6 +435,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       // Always clear local data
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+      await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
       setCurrentUser(null);
       setUserProfile(null);
       setLastActivity(null);
@@ -436,6 +454,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         validateToken,
         getUserProfile,
         reloadProfile,
+        getLastSavedProfile,
         isLoading,
         lastActivity,
       }}>
