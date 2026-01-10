@@ -39,6 +39,7 @@ const iconMap: Record<string, string> = {
   'envelope': 'envelope.fill',
   'star': 'star.fill',
   'bookmark': 'bookmark.fill',
+  'building': 'building.2.fill'
 };
 
 export default function ServicesScreen() {
@@ -57,9 +58,9 @@ export default function ServicesScreen() {
       setLoading(true);
       setError(null);
       const response = await api.get<ServicesResponse>('services-available');
-
-      if (response.result === 'ok' && response.data) {
-        setServices(response.data);
+      console.log(response);
+      if (response.data) {
+        setServices(response.data as unknown as ServiceItem[]);
       } else {
         setError('Errore nel caricamento dei servizi');
       }
