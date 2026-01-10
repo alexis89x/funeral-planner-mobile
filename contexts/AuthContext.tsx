@@ -170,13 +170,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const isValid = await validateToken();
         if (!isValid) {
           await logout();
+          setIsLoading(false);
         } else {
-          await reloadProfile();
+          // Wait for profile to load before setting isLoading to false
+          await getUserProfile(user);
+          setIsLoading(false);
         }
+      } else {
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Error loading auth:', error);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -292,22 +296,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getUserProfile = async (providedUser?: LoggedUser): Promise<UserProfile | null> => {
-    console.log("LOADING USER_PROFILE...");
+  const getUserProfile = async (providedUser?: LoggedUser, forceReload: boolean = false): Promise<UserProfile | null> => {
+    console.log("LOADING USER_PROFILE...", { hasProfile: !!userProfile, loadingProfile, forceReload });
 
-    if (userProfile || loadingProfile) {
-      console.log("RETURNING EARLY", userProfile, loadingProfile);
+    // If we already have a profile and not forcing reload, return it
+    if (userProfile && !forceReload) {
+      console.log("RETURNING CACHED PROFILE");
+      return userProfile;
+    }
+
+    // If already loading and not forcing reload, wait and return current profile
+    if (loadingProfile && !forceReload) {
+      console.log("ALREADY LOADING PROFILE");
       return userProfile;
     }
 
     const userToUse = providedUser || currentUser;
     if (!userToUse) {
-      console.log("NOTUSER");
+      console.log("NO USER AVAILABLE");
       return null;
     }
 
     try {
       setLoadingProfile(true);
+      console.log("FETCHING PROFILE FROM API");
       const response = await api.get<any>('profile');
 
       if (response.data) {
@@ -339,10 +351,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         setUserProfile(profile);
-        console.log("GOT USER_PROFILE...");
+        console.log("PROFILE LOADED SUCCESSFULLY");
         return profile;
       }
 
+      console.log("NO PROFILE DATA IN RESPONSE");
       return null;
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -354,8 +367,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const reloadProfile = async (): Promise<void> => {
     console.log("RELOADING USER PROFILE");
-    setUserProfile(null);
-    await getUserProfile();
+    await getUserProfile(currentUser || undefined, true);
   };
 
   const validateToken = async (): Promise<boolean> => {
