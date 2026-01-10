@@ -21,11 +21,7 @@
       },
       "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
-      "package": "com.alexis89x.funeralplannermobile",
-      "statusBar": {
-        "backgroundColor": "#ffffff",
-        "barStyle": "dark-content"
-      }
+      "package": "com.alexis89x.funeralplannermobile"
     },
     "web": {
       "output": "static",
