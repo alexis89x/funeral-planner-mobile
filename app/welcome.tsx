@@ -18,8 +18,10 @@ const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 export default function WelcomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { getLastSavedProfile } = useAuth();
+  const { getLastSavedProfile, validateToken } = useAuth();
   const [lastProfile, setLastProfile] = useState<UserProfile | null>(null);
+  const [isTokenValid, setIsTokenValid] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
   console.log("SHOWING WELCOME SCREEN");
 
   useEffect(() => {
@@ -27,13 +29,34 @@ export default function WelcomeScreen() {
   }, []);
 
   const loadLastProfile = async () => {
+    setIsValidating(true);
     const profile = await getLastSavedProfile();
     setLastProfile(profile);
+
+    // Se c'è un profilo salvato, valida il token
+    if (profile) {
+      console.log('🔍 Validating saved token...');
+      const isValid = await validateToken();
+      setIsTokenValid(isValid);
+      console.log('✅ Token valid:', isValid);
+    }
+    setIsValidating(false);
+  };
+
+  const handleAccediPress = () => {
+    if (isTokenValid) {
+      // Token valido, vai direttamente a my-plan
+      router.replace('/(tabs)/my-plan');
+    } else {
+      // Token non valido, vai a login
+      router.push('/login');
+    }
   };
 
   const handleChangeUser = async () => {
     await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
     setLastProfile(null);
+    setIsTokenValid(false);
   };
 
   return (
@@ -66,8 +89,11 @@ export default function WelcomeScreen() {
             <>
               <TouchableOpacity
                 style={[styles.primaryButton, { backgroundColor: colors.tint }]}
-                onPress={() => router.push('/login')}>
-                <ThemedText style={styles.primaryButtonText}>ACCEDI</ThemedText>
+                onPress={handleAccediPress}
+                disabled={isValidating}>
+                <ThemedText style={styles.primaryButtonText}>
+                  {isValidating ? 'Validazione...' : 'ACCEDI'}
+                </ThemedText>
               </TouchableOpacity>
 
               <TouchableOpacity

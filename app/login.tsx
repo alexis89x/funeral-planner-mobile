@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -10,12 +10,15 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
+const LAST_EMAIL_STORAGE_KEY = '@tramonto_sereno_last_email';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -24,6 +27,22 @@ export default function LoginScreen() {
   const { login } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+
+  useEffect(() => {
+    loadLastEmail();
+  }, []);
+
+  const loadLastEmail = async () => {
+    try {
+      const lastEmail = await AsyncStorage.getItem(LAST_EMAIL_STORAGE_KEY);
+      if (lastEmail) {
+        console.log('📧 Caricata ultima email:', lastEmail);
+        setUsername(lastEmail);
+      }
+    } catch (error) {
+      console.error('Errore nel caricamento ultima email:', error);
+    }
+  };
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -34,6 +53,9 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       await login(username, password);
+      // Salva l'email per la prossima volta
+      await AsyncStorage.setItem(LAST_EMAIL_STORAGE_KEY, username);
+      console.log('💾 Email salvata:', username);
       router.replace('/(tabs)/my-plan');
     } catch (error) {
       Alert.alert('errore', JSON.stringify(error));
@@ -91,6 +113,7 @@ export default function LoginScreen() {
               )}
             </TouchableOpacity>
 
+            {/* Google login - commented out for now
             <View style={styles.divider}>
               <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
               <ThemedText style={styles.dividerText}>oppure</ThemedText>
@@ -104,6 +127,7 @@ export default function LoginScreen() {
               <IconSymbol name="globe" size={20} color={colors.text} />
               <ThemedText style={styles.googleButtonText}>Accedi con Google</ThemedText>
             </TouchableOpacity>
+            */}
           </View>
         </View>
       </KeyboardAvoidingView>
