@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { downloadPDF, downloadPDFFromURL } from '@/utils/pdf-downloader';
 
 export default function ServiceWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -21,14 +22,37 @@ export default function ServiceWebViewScreen() {
     }, [])
   );
 
-  const url = params.url || '';
+  // Add cache-busting timestamp in dev mode
+  const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
+  const baseUrl = params.url || '';
+  const url = baseUrl ? (baseUrl.includes('?') ? `${baseUrl}${timestamp}` : `${baseUrl}?_t=${timestamp.slice(1)}`) : '';
   const title = params.title || 'Servizio';
 
-  const handleMessage = (event: any) => {
+  const handleMessage = async (event: any) => {
     try {
       const message = JSON.parse(event.nativeEvent.data);
       console.log('Messaggio ricevuto dalla webview:', message);
 
+      // Handle action-based messages (new format)
+      if (message.action) {
+        switch (message.action) {
+          case 'goBack':
+            router.back();
+            break;
+
+          case 'downloadPDF':
+          alert(JSON.stringify(message));
+            await downloadPDFFromURL(message.filename, message.filename);
+            // await downloadPDF(message.data, message.filename);
+            break;
+
+          default:
+            console.log('Action non gestita:', message.action);
+        }
+        return;
+      }
+
+      // Handle type-based messages (legacy format)
       switch (message.type) {
         case 'navigation':
           if (message.route) {
@@ -76,12 +100,23 @@ export default function ServiceWebViewScreen() {
         <WebView
           key={webViewKey}
           ref={webViewRef}
-          source={{ uri: url }}
+          source={{
+            uri: url,
+            ...__DEV__ && {
+              headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+              }
+            }
+          }}
           style={styles.webview}
-          startInLoadingState={true}
           onMessage={handleMessage}
           javaScriptEnabled={true}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          cacheEnabled={!__DEV__}
+          incognito={__DEV__}
+          {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
           renderLoading={() => (
             <View style={styles.loading}>
               <ActivityIndicator size="large" color={colors.tint} />

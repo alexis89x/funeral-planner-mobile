@@ -6,30 +6,35 @@ import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
+import { handleWebViewMessage } from '@/utils/pdf-downloader';
 
 export default function MieiPianiScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
   const router = useRouter();
 
-  const handleMessage = (event: any) => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data);
-      if (data.action === 'goBack') {
-        router.back();
-      }
-    } catch (error) {
-      console.error('Error parsing message from webview:', error);
-    }
+  const handleMessage = async (event: any) => {
+    await handleWebViewMessage(event, () => router.back());
   };
 
-  const url = `${APP_BASE_URL}/auth/set-token?token=${btoa(token || '')}&path=${encodeURIComponent('/user/plans')}&forceMode=mobile`;
+  // Add cache-busting timestamp in dev mode
+  const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
+  const url = `${APP_BASE_URL}/auth/set-token?token=${btoa(token || '')}&path=${encodeURIComponent('/user/plans')}&forceMode=mobile${timestamp}`;
   console.log(url);
   return (
     <ThemedView style={styles.container}>
       <WebView
         ref={webViewRef}
-        source={{ uri: url }}
+        source={{
+          uri: url,
+          ...__DEV__ && {
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
+            }
+          }
+        }}
         style={styles.webview}
         startInLoadingState={true}
         renderLoading={() => (
@@ -44,6 +49,9 @@ export default function MieiPianiScreen() {
         domStorageEnabled={true}
         thirdPartyCookiesEnabled={true}
         mixedContentMode="always"
+        cacheEnabled={!__DEV__}
+        incognito={__DEV__}
+        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
       />
     </ThemedView>
   );

@@ -1,8 +1,15 @@
 import { Stack } from 'expo-router';
+import { Platform } from 'react-native';
 
 export default function ServicesLayout() {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerTransparent: false,
+        headerBlurEffect: 'regular',
+        presentation: 'card',
+        animation: 'default',
+      }}>
       <Stack.Screen
         name="index"
         options={{
@@ -12,28 +19,25 @@ export default function ServicesLayout() {
       <Stack.Screen
         name="consulto-psicologico"
         options={{
-          title: 'Consulto Psicologico',
-          headerBackTitle: 'Indietro',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="pianificazione-lisa"
         options={{
-          title: 'Pianificazione con Lisa',
-          headerBackTitle: 'Indietro',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="miei-piani"
         options={{
-          title: 'I Miei Piani',
-          headerBackTitle: 'Indietro',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="webview"
         options={{
-          headerShown: true,
+          headerShown: false,
         }}
       />
     </Stack>

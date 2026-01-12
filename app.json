@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.alexis89x.funeralplannermobile"
+      "bundleIdentifier": "it.nanuktechnology.tramontosereno"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,8 @@
       },
       "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
-      "package": "com.alexis89x.funeralplannermobile"
+      "package": "it.nanuktechnology.tramontosereno",
+      "versionCode": 1,
     },
     "web": {
       "output": "static",

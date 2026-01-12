@@ -5,6 +5,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
+import { handleWebViewMessage } from '@/utils/pdf-downloader';
 
 export default function FuneralHomeScreen() {
   const { token, userProfile } = useAuth();
@@ -29,28 +30,35 @@ export default function FuneralHomeScreen() {
     })();
   `;
 
-  const handleMessage = (event: any) => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data);
-      if (data.action === 'goBack') {
-        router.back();
-      }
-    } catch (error) {
-      console.error('Error parsing message from webview:', error);
-    }
+  const handleMessage = async (event: any) => {
+    await handleWebViewMessage(event, () => router.back());
   };
 
-  const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile`;
+  // Add cache-busting timestamp in dev mode
+  const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
+  const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile${timestamp}`;
 
   return (
     <ThemedView style={styles.container}>
       <WebView
         key={webViewKey}
-        source={{ uri: url }}
+        source={{
+          uri: url,
+          ...__DEV__ && {
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
+            }
+          }
+        }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
         style={styles.webview}
         startInLoadingState={true}
         onMessage={handleMessage}
+        cacheEnabled={!__DEV__}
+        incognito={__DEV__}
+        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
       />
     </ThemedView>
   );
