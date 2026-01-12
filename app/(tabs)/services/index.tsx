@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors } from '@/constants/theme';
@@ -8,6 +9,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { api, APP_BASE_URL } from '@/utils/api';
+
+export const SERVICES_STORAGE_KEY = '@funeral_planner_services';
 
 interface ServiceItem {
   id: string;
@@ -57,10 +60,26 @@ export default function ServicesScreen() {
     try {
       setLoading(true);
       setError(null);
+
+      // Controlla prima se ci sono servizi in cache
+      const cachedServices = await AsyncStorage.getItem(SERVICES_STORAGE_KEY);
+      if (cachedServices) {
+        console.log('📦 Caricamento servizi dalla cache');
+        setServices(JSON.parse(cachedServices));
+        setLoading(false);
+        return;
+      }
+
+      // Se non ci sono servizi in cache, fai la chiamata API
+      console.log('🌐 Caricamento servizi da API');
       const response = await api.get<ServicesResponse>('services-available');
       console.log(response);
       if (response.data) {
-        setServices(response.data as unknown as ServiceItem[]);
+        const servicesData = response.data as unknown as ServiceItem[];
+        setServices(servicesData);
+        // Salva i servizi in cache
+        await AsyncStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(servicesData));
+        console.log('💾 Servizi salvati in cache');
       } else {
         setError('Errore nel caricamento dei servizi');
       }

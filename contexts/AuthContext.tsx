@@ -436,6 +436,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Always clear local data
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
       await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
+      // Clear cached services
+      await AsyncStorage.removeItem('@funeral_planner_services');
       setCurrentUser(null);
       setUserProfile(null);
       setLastActivity(null);
