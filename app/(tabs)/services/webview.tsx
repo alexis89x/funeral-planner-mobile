@@ -41,7 +41,7 @@ export default function ServiceWebViewScreen() {
             break;
 
           case 'downloadPDF':
-          alert(JSON.stringify(message));
+          // alert(JSON.stringify(message));
             await downloadPDFFromURL(message.filename, message.filename);
             // await downloadPDF(message.data, message.filename);
             break;
