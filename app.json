@@ -22,7 +22,7 @@
       "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
       "package": "it.nanuktechnology.tramontosereno",
-      "versionCode": 1,
+      "versionCode": 1
     },
     "web": {
       "output": "static",
