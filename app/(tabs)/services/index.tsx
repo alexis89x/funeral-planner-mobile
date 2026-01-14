@@ -7,7 +7,6 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useAuth } from '@/contexts/AuthContext';
 import { api, APP_BASE_URL } from '@/utils/api';
 
 export const SERVICES_STORAGE_KEY = '@funeral_planner_services';
@@ -47,7 +46,6 @@ const iconMap: Record<string, string> = {
 
 export default function ServicesScreen() {
   const colorScheme = useColorScheme();
-  const { token } = useAuth();
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -234,8 +232,8 @@ const styles = StyleSheet.create({
   serviceCardContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
-    gap: 16,
+    padding: 10,
+    gap: 10,
   },
   iconContainer: {
     width: 60,
