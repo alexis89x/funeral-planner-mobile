@@ -115,6 +115,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
+const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<LoggedUser | null>(null);
@@ -278,6 +279,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Store user and token
         setCurrentUser(user);
         await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+
+        // Save last used email (don't clear on logout)
+        await AsyncStorage.setItem(LAST_EMAIL_KEY, username.trim());
 
         // Load user profile after successful login
         console.log("GETTING USER PROFILE AFTER LOGIN");

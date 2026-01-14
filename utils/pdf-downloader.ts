@@ -335,14 +335,21 @@ export const downloadPDF = async (
   }
 };
 
+export interface WebViewMessageHandlers {
+  onGoBack?: () => void;
+  onNavigate?: (route: string) => void;
+  onData?: (data: any) => void;
+  [key: string]: ((arg?: any) => void) | undefined;
+}
+
 /**
  * Handles messages from the WebView, including PDF downloads
  * @param event - The WebView message event
- * @param onGoBack - Optional callback for goBack action
+ * @param handlers - Optional callbacks for different actions (onGoBack, onNavigate, onData, custom actions)
  */
 export const handleWebViewMessage = async (
   event: any,
-  onGoBack?: () => void
+  handlers?: WebViewMessageHandlers | (() => void)
 ): Promise<void> => {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('📨 WEBVIEW MESSAGE RECEIVED');
@@ -369,16 +376,53 @@ export const handleWebViewMessage = async (
       return value;
     }, 2));
 
-    console.log('🎯 Action:', data.action);
+    // Support legacy callback format (just a function for onGoBack)
+    const messageHandlers: WebViewMessageHandlers = typeof handlers === 'function'
+      ? { onGoBack: handlers }
+      : handlers || {};
 
-    switch (data.action) {
+    // Support legacy type-based messages by converting to action-based
+    const action = data.action || data.type;
+
+    // Map legacy type values to action values
+    const actionMap: Record<string, string> = {
+      'close': 'goBack',
+      'navigation': 'navigate',
+    };
+    const normalizedAction = actionMap[action] || action;
+
+    console.log('🎯 Action:', normalizedAction, data.action !== normalizedAction ? `(mapped from: ${action})` : '');
+
+    switch (normalizedAction) {
       case 'goBack':
         console.log('⬅️ Handling goBack action');
-        if (onGoBack) {
+        if (messageHandlers.onGoBack) {
           console.log('✅ Executing onGoBack callback');
-          onGoBack();
+          messageHandlers.onGoBack();
         } else {
           console.warn('⚠️ No onGoBack callback provided');
+        }
+        break;
+
+      case 'navigate':
+        console.log('🧭 Handling navigate action');
+        if (data.route && messageHandlers.onNavigate) {
+          console.log('✅ Executing onNavigate callback with route:', data.route);
+          messageHandlers.onNavigate(data.route);
+        } else if (!data.route) {
+          console.error('❌ Missing route in navigate message');
+        } else {
+          console.warn('⚠️ No onNavigate callback provided');
+        }
+        break;
+
+      case 'data':
+        console.log('📊 Handling data action');
+        if (messageHandlers.onData) {
+          console.log('✅ Executing onData callback');
+          messageHandlers.onData(data.data);
+        } else {
+          console.log('ℹ️ No onData callback provided, data:', data.data);
         }
         break;
 
@@ -410,8 +454,15 @@ export const handleWebViewMessage = async (
         break;
 
       default:
-        console.warn('⚠️ Unknown action received:', data.action);
-        console.warn('📋 Full message data:', JSON.stringify(data, null, 2));
+        // Check for custom action handlers
+        const customHandler = messageHandlers[data.action];
+        if (customHandler && typeof customHandler === 'function') {
+          console.log('🔧 Handling custom action:', data.action);
+          customHandler(data);
+        } else {
+          console.warn('⚠️ Unknown action received:', data.action);
+          console.warn('📋 Full message data:', JSON.stringify(data, null, 2));
+        }
     }
 
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

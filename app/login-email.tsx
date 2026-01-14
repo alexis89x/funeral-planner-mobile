@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -10,11 +10,14 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+
+const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 
 export default function LoginEmailScreen() {
   const [email, setEmail] = useState('');
@@ -25,6 +28,23 @@ export default function LoginEmailScreen() {
   const colors = Colors[colorScheme ?? 'light'];
 
   console.log("LOADING LOGIN SCREEN");
+
+  // Load last saved email on mount
+  useEffect(() => {
+    const loadLastEmail = async () => {
+      try {
+        const lastEmail = await AsyncStorage.getItem(LAST_EMAIL_KEY);
+        if (lastEmail) {
+          setEmail(lastEmail);
+          console.log('Loaded last saved email:', lastEmail);
+        }
+      } catch (error) {
+        console.error('Error loading last saved email:', error);
+      }
+    };
+
+    loadLastEmail();
+  }, []);
 
   const handleLogin = async () => {
     console.log("HANDLING LOGIN");
@@ -48,7 +68,7 @@ export default function LoginEmailScreen() {
     router.push({
       pathname: '/webview',
       params: {
-        url: 'https://app.tramontosereno.it/auth/forgot-psw?r=user',
+        url: 'https://app.tramontosereno.it/auth/forgot-psw?r=user&forceMode=mobile',
         title: 'Recupero Password',
       },
     });

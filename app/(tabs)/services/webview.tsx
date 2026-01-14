@@ -29,51 +29,13 @@ export default function ServiceWebViewScreen() {
   const title = params.title || 'Servizio';
 
   const handleMessage = async (event: any) => {
-    try {
-      const message = JSON.parse(event.nativeEvent.data);
-      console.log('Messaggio ricevuto dalla webview:', message);
-
-      // Handle action-based messages (new format)
-      if (message.action) {
-        switch (message.action) {
-          case 'goBack':
-            router.back();
-            break;
-
-          case 'downloadPDF':
-          // alert(JSON.stringify(message));
-            await downloadPDFFromURL(message.filename, message.filename);
-            // await downloadPDF(message.data, message.filename);
-            break;
-
-          default:
-            console.log('Action non gestita:', message.action);
-        }
-        return;
-      }
-
-      // Handle type-based messages (legacy format)
-      switch (message.type) {
-        case 'navigation':
-          if (message.route) {
-            router.push(message.route);
-          }
-          break;
-
-        case 'close':
-          router.back();
-          break;
-
-        case 'data':
-          console.log('Dati ricevuti:', message.data);
-          break;
-
-        default:
-          console.log('Tipo di messaggio non gestito:', message.type);
-      }
-    } catch (error) {
-      console.error('Errore nel parsing del messaggio dalla webview:', error);
-    }
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any),
+      onData: (data: any) => {
+        console.log('Dati ricevuti:', data);
+      },
+    });
   };
 
   const injectedJavaScript = `

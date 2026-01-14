@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { handleWebViewMessage } from '@/utils/pdf-downloader';
 
 export default function WebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -25,36 +26,14 @@ export default function WebViewScreen() {
   const title = params.title || 'WebView';
   const shouldInjectToken = params.injectToken === 'true';
 
-  const handleMessage = (event: any) => {
-    try {
-      const message = JSON.parse(event.nativeEvent.data);
-      console.log('Messaggio ricevuto dalla webview:', message);
-
-      // Gestisci diversi tipi di messaggi
-      switch (message.type) {
-        case 'navigation':
-          // Naviga ad un'altra schermata dell'app
-          if (message.route) {
-            router.push(message.route);
-          }
-          break;
-
-        case 'close':
-          // Chiudi la webview e torna indietro
-          router.back();
-          break;
-
-        case 'data':
-          // Gestisci dati ricevuti dalla webview
-          console.log('Dati ricevuti:', message.data);
-          break;
-
-        default:
-          console.log('Tipo di messaggio non gestito:', message.type);
-      }
-    } catch (error) {
-      console.error('Errore nel parsing del messaggio dalla webview:', error);
-    }
+  const handleMessage = async (event: any) => {
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any),
+      onData: (data: any) => {
+        console.log('Dati ricevuti:', data);
+      },
+    });
   };
 
   const sendMessageToWebView = (message: any) => {
