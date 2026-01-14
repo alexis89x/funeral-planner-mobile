@@ -92,7 +92,8 @@ export default function ServicesScreen() {
   const handleServicePress = (service: ServiceItem) => {
     // Se l'URL inizia con /, naviga su webview con set-token
     if (service.url.startsWith('/')) {
-      const fullUrl = `${APP_BASE_URL}${service.url}?forceMode=mobile`;
+
+      const fullUrl = `${APP_BASE_URL}${service.url}?standalone=true&forceMode=mobile`;
       router.push({
         pathname: `/services/webview`,
         params: {

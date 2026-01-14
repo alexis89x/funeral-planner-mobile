@@ -1,21 +1,16 @@
 import * as FileSystem from 'expo-file-system';
 import { File, Directory, Paths } from 'expo-file-system';
-import { fetch } from 'expo/fetch';
 import * as Sharing from 'expo-sharing';
 import { Alert, Platform } from 'react-native';
-
-export interface PDFDownloadMessage {
-  action: 'downloadPDF';
-  data: string; // Base64 string
-  filename: string;
-}
 
 /**
  * Sanitizes filename to remove invalid characters
  */
 const sanitizeFilename = (filename: string): string => {
   console.log('🧹 Sanitizing filename:', filename);
-  const sanitized = filename
+  const sanitized = (filename
+    .split(('/'))
+    .pop() || filename)
     .replace(/[^a-zA-Z0-9._-]/g, '_')
     .replace(/_{2,}/g, '_')
     .substring(0, 255); // Limit filename length
@@ -197,10 +192,8 @@ export const downloadPDF = async (
   base64Data: string,
   filename: string
 ): Promise<void> => {
-
-
-  return;
-
+  alert('Not implemented');
+  /*
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('📱 PDF DOWNLOAD STARTED');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -333,5 +326,6 @@ export const downloadPDF = async (
 
     throw error; // Re-throw for caller to handle if needed
   }
+   */
 };
 
