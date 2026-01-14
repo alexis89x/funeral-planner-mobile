@@ -47,7 +47,7 @@ export default function MyPlanScreen() {
           }
         }}
         style={styles.webview}
-        startInLoadingState={true}
+        startInLoadingState={false}
         renderLoading={() => (
           <ActivityIndicator
             size="large"

@@ -15,6 +15,7 @@ export default function RegisterScreen() {
       />
       <WebView
         source={{ uri: 'https://app.tramontosereno.it/registration?forceMode=mobile' }}
+        startInLoadingState={false}
         style={styles.webview}
       />
     </ThemedView>

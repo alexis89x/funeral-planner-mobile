@@ -13,7 +13,7 @@ export default function ProductsScreen() {
         ref={webViewRef}
         source={{ uri: 'https://app.tramontosereno.it/products' }}
         style={styles.webview}
-        startInLoadingState={true}
+        startInLoadingState={false}
         renderLoading={() => (
           <ActivityIndicator
             size="large"

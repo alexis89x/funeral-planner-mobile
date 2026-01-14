@@ -68,7 +68,7 @@ export default function WebViewScreen() {
           ref={webViewRef}
           source={{ uri: url }}
           style={styles.webview}
-          startInLoadingState={true}
+          startInLoadingState={false}
           onMessage={handleMessage}
           javaScriptEnabled={true}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScript}

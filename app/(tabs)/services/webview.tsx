@@ -71,6 +71,7 @@ export default function ServiceWebViewScreen() {
           }}
           style={styles.webview}
           onMessage={handleMessage}
+          startInLoadingState={false}
           javaScriptEnabled={true}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
           cacheEnabled={!__DEV__}

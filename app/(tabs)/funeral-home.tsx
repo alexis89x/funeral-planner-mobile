@@ -57,7 +57,7 @@ export default function FuneralHomeScreen() {
         }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
         style={styles.webview}
-        startInLoadingState={true}
+        startInLoadingState={false}
         onMessage={handleMessage}
         cacheEnabled={!__DEV__}
         incognito={__DEV__}
