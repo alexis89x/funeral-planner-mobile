@@ -5,7 +5,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
-import { handleWebViewMessage } from '@/utils/pdf-downloader';
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 export default function ConsultoPsicologicoScreen() {
   const { token } = useAuth();

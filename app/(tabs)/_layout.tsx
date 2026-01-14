@@ -81,29 +81,36 @@ export default function TabLayout() {
           href: null, // Hide from tab bar
         }}
       />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Altro',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="ellipsis.circle.fill" color={color} />,
-          href: null, // Hide from tab bar
-        }}
-      />
-      {/* Legacy home screen - hidden */}
-      <Tabs.Screen
-        name="index"
-        options={{
-          href: null, // Hide from tab bar
-        }}
-      />
-      {/* Test Login - hidden, for debugging */}
-      <Tabs.Screen
-        name="test-login"
-        options={{
-          title: 'Test Login',
-          href: null, // Hide from tab bar
-        }}
-      />
     </Tabs>
   );
 }
+
+/*
+  <Tabs.Screen
+    name="explore"
+    options={{
+      title: 'Altro',
+      tabBarIcon: ({ color }) => <IconSymbol size={28} name="ellipsis.circle.fill" color={color} />,
+      href: null, // Hide from tab bar
+    }}
+  />
+ */
+{/* Test Login - hidden, for debugging */}
+/*
+<Tabs.Screen
+  name="test-login"
+  options={{
+    title: 'Test Login',
+    href: null, // Hide from tab bar
+  }}
+/>
+ */
+{/* Legacy home screen - hidden */}
+/*
+<Tabs.Screen
+  name="index"
+  options={{
+    href: null, // Hide from tab bar
+  }}
+/>
+ */
