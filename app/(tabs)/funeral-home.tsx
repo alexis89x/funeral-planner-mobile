@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { router, useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
-import { handleWebViewMessage } from '@/utils/pdf-downloader';
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 export default function FuneralHomeScreen() {
   const { token, userProfile } = useAuth();
@@ -31,7 +31,10 @@ export default function FuneralHomeScreen() {
   `;
 
   const handleMessage = async (event: any) => {
-    await handleWebViewMessage(event, () => router.back());
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any)
+    });
   };
 
   // Add cache-busting timestamp in dev mode

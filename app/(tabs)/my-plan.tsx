@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { router, useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
-import { handleWebViewMessage } from '@/utils/pdf-downloader';
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 export default function MyPlanScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -21,8 +21,10 @@ export default function MyPlanScreen() {
   );
 
   const handleMessage = async (event: any) => {
-    console.log('Received event: ', event);
-    await handleWebViewMessage(event, () => router.back());
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any)
+    });
   };
 
   // Add cache-busting timestamp in dev mode

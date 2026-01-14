@@ -6,7 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
-import { handleWebViewMessage } from '@/utils/pdf-downloader';
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 export default function WebViewScreen() {
   const webViewRef = useRef<WebView>(null);

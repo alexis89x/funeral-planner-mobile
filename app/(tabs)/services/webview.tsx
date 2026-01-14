@@ -6,7 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
-import { downloadPDF, downloadPDFFromURL } from '@/utils/pdf-downloader';
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 export default function ServiceWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -31,10 +31,7 @@ export default function ServiceWebViewScreen() {
   const handleMessage = async (event: any) => {
     await handleWebViewMessage(event, {
       onGoBack: () => router.back(),
-      onNavigate: (route: string) => router.push(route as any),
-      onData: (data: any) => {
-        console.log('Dati ricevuti:', data);
-      },
+      onNavigate: (route: string) => router.push(route as any)
     });
   };
 
