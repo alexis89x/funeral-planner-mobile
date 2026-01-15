@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 120,
     height: 120,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   appName: {
     textAlign: 'center',

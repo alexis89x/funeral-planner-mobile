@@ -8,6 +8,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -87,6 +88,18 @@ export default function LoginEmailScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}>
         <View style={styles.content}>
+          {/* Logo */}
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('@/assets/images/icon.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <ThemedText type="title" style={styles.appName}>
+              Tramonto Sereno
+            </ThemedText>
+          </View>
+
           <View style={styles.form}>
             <TextInput
               style={[styles.input, { color: colors.text, borderColor: colors.border }]}
@@ -148,6 +161,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 32,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 36,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
+  },
+  appName: {
+    textAlign: 'center',
+    fontSize: 24,
   },
   form: {
     width: '100%',
