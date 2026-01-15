@@ -16,6 +16,7 @@ import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { APP_BASE_URL } from "@/utils/api";
 
 const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 
@@ -68,7 +69,7 @@ export default function LoginEmailScreen() {
     router.push({
       pathname: '/webview',
       params: {
-        url: 'https://app.tramontosereno.it/auth/forgot-psw?r=user&forceMode=mobile',
+        url: `${APP_BASE_URL}/auth/forgot-psw?r=user&forceMode=mobile`,
         title: 'Recupero Password',
       },
     });

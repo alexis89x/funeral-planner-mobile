@@ -12,6 +12,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
+import { APP_BASE_URL } from '@/utils/api';
 
 const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 
@@ -118,7 +119,13 @@ export default function WelcomeScreen() {
 
               <TouchableOpacity
                 style={[styles.secondaryButton, { borderColor: colors.border }]}
-                onPress={() => router.push('/register')}>
+                onPress={() => router.push({
+                  pathname: '/webview',
+                  params: {
+                    url: `${APP_BASE_URL}/registration?forceMode=mobile`,
+                    title: 'Registrazione',
+                  },
+                })}>
                 <ThemedText style={styles.secondaryButtonText}>Registrati</ThemedText>
               </TouchableOpacity>
             </>
