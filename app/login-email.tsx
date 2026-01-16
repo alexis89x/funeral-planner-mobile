@@ -82,6 +82,7 @@ export default function LoginEmailScreen() {
         options={{
           title: 'Accedi con Email',
           headerShown: true,
+          headerBackTitle: 'Indietro',
         }}
       />
       <KeyboardAvoidingView
