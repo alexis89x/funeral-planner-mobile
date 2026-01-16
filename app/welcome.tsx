@@ -111,11 +111,13 @@ export default function WelcomeScreen() {
                 <ThemedText style={styles.primaryButtonText}>Accedi con Email</ThemedText>
               </TouchableOpacity>
 
+              {/* Google login - hidden for now
               <TouchableOpacity
                 style={[styles.secondaryButton, { borderColor: colors.border }]}
                 onPress={() => router.push('/login-google')}>
                 <ThemedText style={styles.secondaryButtonText}>Accedi con Google</ThemedText>
               </TouchableOpacity>
+              */}
 
               <TouchableOpacity
                 style={[styles.secondaryButton, { borderColor: colors.border }]}
