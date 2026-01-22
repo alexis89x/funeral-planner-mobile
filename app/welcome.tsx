@@ -13,20 +13,23 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from '@/utils/api';
+import { AuthFooter } from '@/components/auth-footer';
 
 const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 
 export default function WelcomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { getLastSavedProfile, validateToken } = useAuth();
+  const { getLastSavedProfile, getLastPartnerName, validateToken } = useAuth();
   const [lastProfile, setLastProfile] = useState<UserProfile | null>(null);
+  const [lastPartnerName, setLastPartnerName] = useState<string | null>(null);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   console.log("SHOWING WELCOME SCREEN");
 
   useEffect(() => {
     loadLastProfile();
+    loadLastPartner();
   }, []);
 
   const loadLastProfile = async () => {
@@ -42,6 +45,11 @@ export default function WelcomeScreen() {
       console.log('✅ Token valid:', isValid);
     }
     setIsValidating(false);
+  };
+
+  const loadLastPartner = async () => {
+    const partnerName = await getLastPartnerName();
+    setLastPartnerName(partnerName);
   };
 
   const handleAccediPress = () => {
@@ -134,17 +142,21 @@ export default function WelcomeScreen() {
           )}
         </View>
 
-        {/* Partner section at bottom */}
-        {lastProfile?.referralPartner && (
+        {/* Partner section - persists across logout */}
+        {lastPartnerName && (
           <View style={styles.partnerSectionBottom}>
             <ThemedText style={styles.partnerText}>
               in collaborazione con
             </ThemedText>
             <ThemedText style={styles.partnerName}>
-              {lastProfile.referralPartner.shop_name}
+              {lastPartnerName}
             </ThemedText>
           </View>
         )}
+
+        {!lastPartnerName ? (
+          <AuthFooter />
+        ) : null}
       </View>
     </ThemedView>
   );

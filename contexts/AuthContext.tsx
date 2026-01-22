@@ -107,6 +107,7 @@ interface AuthContextType {
   getUserProfile: () => Promise<UserProfile | null>;
   reloadProfile: () => Promise<void>;
   getLastSavedProfile: () => Promise<UserProfile | null>;
+  getLastPartnerName: () => Promise<string | null>;
   isLoading: boolean;
   lastActivity: number | null;
 }
@@ -116,6 +117,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
+const LAST_PARTNER_KEY = '@tramonto_sereno_last_partner';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<LoggedUser | null>(null);
@@ -359,6 +361,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUserProfile(profile);
         // Save profile to storage for "welcome back" feature
         await AsyncStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+
+        // Save referral partner name separately (persists across logout)
+        if (profile.referralPartner?.shop_name) {
+          await AsyncStorage.setItem(LAST_PARTNER_KEY, profile.referralPartner.shop_name);
+          console.log("PARTNER NAME SAVED:", profile.referralPartner.shop_name);
+        } else {
+          await AsyncStorage.setItem(LAST_PARTNER_KEY, '');
+          console.log("No partner, saved empty");
+        }
+
         console.log("PROFILE LOADED SUCCESSFULLY AND SAVED TO STORAGE");
         return profile;
       }
@@ -382,6 +394,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return null;
     } catch (error) {
       console.error('Error loading saved profile:', error);
+      return null;
+    }
+  };
+
+  const getLastPartnerName = async (): Promise<string | null> => {
+    try {
+      return await AsyncStorage.getItem(LAST_PARTNER_KEY);
+    } catch (error) {
+      console.error('Error loading last partner name:', error);
       return null;
     }
   };
@@ -461,6 +482,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         getUserProfile,
         reloadProfile,
         getLastSavedProfile,
+        getLastPartnerName,
         isLoading,
         lastActivity,
       }}>

@@ -18,6 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { APP_BASE_URL } from "@/utils/api";
+import { AuthFooter } from '@/components/auth-footer';
 
 const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 
@@ -25,13 +26,14 @@ export default function LoginEmailScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [lastPartnerName, setLastPartnerName] = useState<string | null>(null);
+  const { login, getLastPartnerName } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
   console.log("LOADING LOGIN SCREEN");
 
-  // Load last saved email on mount
+  // Load last saved email and partner on mount
   useEffect(() => {
     const loadLastEmail = async () => {
       try {
@@ -45,7 +47,13 @@ export default function LoginEmailScreen() {
       }
     };
 
+    const loadLastPartner = async () => {
+      const partnerName = await getLastPartnerName();
+      setLastPartnerName(partnerName);
+    };
+
     loadLastEmail();
+    loadLastPartner();
   }, []);
 
   const handleLogin = async () => {
@@ -147,6 +155,20 @@ export default function LoginEmailScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      {/* Partner section - persists across logout */}
+      {lastPartnerName ? (
+        <View style={styles.partnerSectionBottom}>
+          <ThemedText style={styles.partnerText}>
+            in collaborazione con
+          </ThemedText>
+          <ThemedText style={styles.partnerName}>
+            {lastPartnerName}
+          </ThemedText>
+        </View>
+      ) : (
+        <AuthFooter />
+      )}
     </ThemedView>
   );
 }
@@ -175,6 +197,22 @@ const styles = StyleSheet.create({
   appName: {
     textAlign: 'center',
     fontSize: 24,
+  },
+  partnerSectionBottom: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  partnerText: {
+    fontSize: 14,
+    opacity: 0.7,
+    marginBottom: 4,
+  },
+  partnerName: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   form: {
     width: '100%',
