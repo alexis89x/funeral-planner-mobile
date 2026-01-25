@@ -17,7 +17,6 @@ import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const LAST_EMAIL_STORAGE_KEY = '@tramonto_sereno_last_email';
 
@@ -65,10 +64,6 @@ export default function LoginScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleGoogleLogin = () => {
-    Alert.alert('Google Login', 'Funzionalità in arrivo');
   };
 
   return (

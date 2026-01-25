@@ -86,7 +86,8 @@ export default function AccountScreen() {
           </View>
         </View>
       </View>
-      {false && userProfile?.current_plan && (
+        {/*
+        {false && userProfile?.current_plan && (
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Piano corrente
@@ -110,7 +111,9 @@ export default function AccountScreen() {
           </View>
         </View>
       )}
-      {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
+
+        */}
+        {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Piani posseduti: {userProfile.owned_plans.length}

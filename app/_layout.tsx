@@ -76,11 +76,14 @@ function RootLayoutNav() {
       // Logged in, but on auth screens
       console.log('➡️ Redirecting to /(tabs)/my-plan (logged in)');
       router.replace('/(tabs)/my-plan');
-    } else if (!currentUser && segments.length === 0) {
-      console.log('➡️ Redirecting to /welcome (initial load, no user)');
-      router.replace('/welcome');
     } else {
-      console.log('✅ No redirect needed');
+      // @ts-ignore
+      if (!currentUser && segments.length === 0) {
+        console.log('➡️ Redirecting to /welcome (initial load, no user)');
+        router.replace('/welcome');
+      } else {
+        console.log('✅ No redirect needed');
+      }
     }
   }, [currentUser, isLoading, segments]);
 

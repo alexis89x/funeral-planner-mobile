@@ -31,7 +31,10 @@ export default function ConsultoPsicologicoScreen() {
   `;
 
   const handleMessage = async (event: any) => {
-    await handleWebViewMessage(event, () => router.back());
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any)
+    });
   };
 
   // Add cache-busting timestamp in dev mode
