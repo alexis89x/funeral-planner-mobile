@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Image,
+  Keyboard,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,11 +28,29 @@ export default function LoginEmailScreen() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lastPartnerName, setLastPartnerName] = useState<string | null>(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const { login, getLastPartnerName } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
   console.log("LOADING LOGIN SCREEN");
+
+  // Listen for keyboard show/hide
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setIsKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setIsKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   // Load last saved email and partner on mount
   useEffect(() => {
@@ -156,18 +175,20 @@ export default function LoginEmailScreen() {
         </View>
       </KeyboardAvoidingView>
 
-      {/* Partner section - persists across logout */}
-      {lastPartnerName ? (
-        <View style={styles.partnerSectionBottom}>
-          <ThemedText style={styles.partnerText}>
-            in collaborazione con
-          </ThemedText>
-          <ThemedText style={styles.partnerName}>
-            {lastPartnerName}
-          </ThemedText>
-        </View>
-      ) : (
-        <AuthFooter />
+      {/* Partner section - hidden when keyboard is visible */}
+      {!isKeyboardVisible && (
+        lastPartnerName ? (
+          <View style={styles.partnerSectionBottom}>
+            <ThemedText style={styles.partnerText}>
+              in collaborazione con
+            </ThemedText>
+            <ThemedText style={styles.partnerName}>
+              {lastPartnerName}
+            </ThemedText>
+          </View>
+        ) : (
+          <AuthFooter />
+        )
       )}
     </ThemedView>
   );
