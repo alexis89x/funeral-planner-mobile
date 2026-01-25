@@ -93,6 +93,7 @@ function RootLayoutNav() {
         <Stack.Screen name="login-google" options={{ headerShown: false, headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="webview" options={{ headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="delete-account" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>

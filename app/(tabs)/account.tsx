@@ -130,6 +130,18 @@ export default function AccountScreen() {
           <ThemedText style={styles.logoutButtonText}>Esci</ThemedText>
         </TouchableOpacity>
       </View>
+
+      <View style={styles.section}>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>
+          Altre Azioni
+        </ThemedText>
+        <TouchableOpacity
+          style={styles.deleteAccountButton}
+          onPress={() => router.push('/delete-account')}>
+          <IconSymbol name="trash" size={18} color="#dc3545" />
+          <ThemedText style={styles.deleteAccountButtonText}>Elimina Account</ThemedText>
+        </TouchableOpacity>
+      </View>
       </ScrollView>
     </ThemedView>
   );
@@ -201,5 +213,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  deleteAccountButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 12,
+  },
+  deleteAccountButtonText: {
+    color: '#dc3545',
+    fontSize: 14,
   },
 });
