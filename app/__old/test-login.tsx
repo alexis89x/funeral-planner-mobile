@@ -155,7 +155,7 @@ export default function TestLoginScreen() {
         {!result && !error && !loading && (
           <View style={styles.emptyState}>
             <ThemedText style={styles.emptyText}>
-              Premi "Test Login" per fare una chiamata di test all'API
+              Premi Test Login per fare una chiamata di test alle API
             </ThemedText>
           </View>
         )}

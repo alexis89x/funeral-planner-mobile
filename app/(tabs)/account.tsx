@@ -9,7 +9,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function AccountScreen() {
-  const { currentUser, userProfile, logout, reloadProfile } = useAuth();
+  const { userProfile, logout } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
@@ -28,10 +28,6 @@ export default function AccountScreen() {
         },
       },
     ]);
-  };
-
-  const handleRefresh = async () => {
-    await reloadProfile();
   };
 
   /*

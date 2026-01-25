@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { router, useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';

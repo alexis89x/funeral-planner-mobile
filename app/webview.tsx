@@ -36,9 +36,9 @@ export default function WebViewScreen() {
     });
   };
 
-  const sendMessageToWebView = (message: any) => {
+  /*const sendMessageToWebView = (message: any) => {
     webViewRef.current?.postMessage(JSON.stringify(message));
-  };
+  };*/
 
   const injectedJavaScript = shouldInjectToken
     ? `
