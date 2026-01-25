@@ -13,7 +13,8 @@
     "draft": "npx eas-cli@latest workflow:run create-draft.yml",
     "development-builds": "npx eas-cli@latest workflow:run create-development-builds.yml",
     "deploy": "npx eas-cli@latest workflow:run deploy-to-production.yml",
-    "build-preview-android": "eas build --profile preview --platform android"
+    "build-preview-android": "eas build --profile preview --platform android",
+    "build-android-prod": "eas build --platform android --profile production"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
