@@ -72,6 +72,10 @@ export default function WebViewScreen() {
           onMessage={handleMessage}
           javaScriptEnabled={true}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          // Camera/media permissions for iOS
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
+          mediaCapturePermissionGrantType="grant"
           renderLoading={() => (
             <View style={styles.loading}>
               <ActivityIndicator size="large" color={colors.tint} />

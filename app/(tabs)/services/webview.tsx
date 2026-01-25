@@ -77,6 +77,10 @@ export default function ServiceWebViewScreen() {
           cacheEnabled={!__DEV__}
           incognito={__DEV__}
           {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
+          // Camera/media permissions for iOS
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
+          mediaCapturePermissionGrantType="grant"
           renderLoading={() => (
             <View style={styles.loading}>
               <ActivityIndicator size="large" color={colors.tint} />

@@ -13,7 +13,10 @@
       "bundleIdentifier": "it.nanuktechnology.tramontosereno",
       "buildNumber": "1",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Questa app necessita dell'accesso alla fotocamera per scattare foto da caricare nel tuo piano.",
+        "NSPhotoLibraryUsageDescription": "Questa app necessita dell'accesso alla libreria foto per selezionare immagini da caricare nel tuo piano.",
+        "NSMicrophoneUsageDescription": "Questa app necessita dell'accesso al microfono per registrare video."
       }
     },
     "android": {
@@ -34,6 +37,13 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Questa app necessita dell'accesso alla libreria foto per selezionare immagini.",
+          "cameraPermission": "Questa app necessita dell'accesso alla fotocamera per scattare foto."
+        }
+      ],
       [
         "expo-splash-screen",
         {
