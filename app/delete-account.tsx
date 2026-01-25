@@ -7,6 +7,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -19,6 +20,7 @@ export default function DeleteAccountScreen() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { logout } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
@@ -92,22 +94,35 @@ export default function DeleteAccountScreen() {
             Per confermare, inserisci la tua password:
           </ThemedText>
 
-          <TextInput
-            style={[
-              styles.input,
-              { color: colors.text, borderColor: error ? '#dc3545' : colors.border }
-            ]}
-            placeholder="Password"
-            placeholderTextColor={colors.tabIconDefault}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              setError(null);
-            }}
-            secureTextEntry
-            autoCapitalize="none"
-            editable={!isLoading}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={[
+                styles.passwordInput,
+                { color: colors.text, borderColor: error ? '#dc3545' : colors.border }
+              ]}
+              placeholder="Password"
+              placeholderTextColor={colors.tabIconDefault}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setError(null);
+              }}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              editable={!isLoading}
+            />
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => setShowPassword(!showPassword)}
+              disabled={isLoading}
+            >
+              <Ionicons
+                name={showPassword ? 'eye-off' : 'eye'}
+                size={20}
+                color={colors.tabIconDefault}
+              />
+            </TouchableOpacity>
+          </View>
 
           {error && (
             <ThemedText style={styles.errorText}>{error}</ThemedText>
@@ -131,7 +146,7 @@ export default function DeleteAccountScreen() {
             onPress={() => router.back()}
             disabled={isLoading}>
             <ThemedText style={styles.cancelButtonText}>
-              No, non voglio più eliminare l'account
+              No, non voglio più eliminare l&apos;account
             </ThemedText>
           </TouchableOpacity>
         </View>
@@ -186,6 +201,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 8,
     fontSize: 16,
+  },
+  passwordContainer: {
+    position: 'relative',
+    marginBottom: 8,
+  },
+  passwordInput: {
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingRight: 50,
+    fontSize: 16,
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 16,
+    height: 50,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   errorText: {
     color: '#dc3545',

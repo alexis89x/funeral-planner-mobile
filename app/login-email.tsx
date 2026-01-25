@@ -11,6 +11,7 @@ import {
   Image,
   Keyboard,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
@@ -29,6 +30,7 @@ export default function LoginEmailScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [lastPartnerName, setLastPartnerName] = useState<string | null>(null);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login, getLastPartnerName } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
@@ -140,17 +142,30 @@ export default function LoginEmailScreen() {
               editable={!isLoading}
             />
 
-            <TextInput
-              style={[styles.input, { color: colors.text, borderColor: colors.border }]}
-              placeholder="Password"
-              placeholderTextColor={colors.tabIconDefault}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoCapitalize="none"
-              editable={!isLoading}
-              onSubmitEditing={handleLogin}
-            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.passwordInput, { color: colors.text, borderColor: colors.border }]}
+                placeholder="Password"
+                placeholderTextColor={colors.tabIconDefault}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                editable={!isLoading}
+                onSubmitEditing={handleLogin}
+              />
+              <TouchableOpacity
+                style={styles.eyeButton}
+                onPress={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
+              >
+                <Ionicons
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  size={20}
+                  color={colors.tabIconDefault}
+                />
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity
               onPress={handleForgotPassword}
@@ -245,6 +260,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     fontSize: 16,
+  },
+  passwordContainer: {
+    position: 'relative',
+    marginBottom: 16,
+  },
+  passwordInput: {
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingRight: 50,
+    fontSize: 16,
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 16,
+    height: 50,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   forgotPasswordButton: {
     alignItems: 'flex-end',
