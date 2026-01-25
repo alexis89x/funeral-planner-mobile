@@ -93,7 +93,7 @@ export default function AccountScreen() {
       {false && userProfile?.current_plan && (
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Piano Corrente
+            Piano corrente
           </ThemedText>
 
           <View style={[styles.infoCard, { backgroundColor: colors.cardBackground }]}>
@@ -117,7 +117,7 @@ export default function AccountScreen() {
       {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Piani Posseduti: {userProfile.owned_plans.length}
+            Piani posseduti: {userProfile.owned_plans.length}
           </ThemedText>
         </View>
       )}
@@ -133,7 +133,7 @@ export default function AccountScreen() {
 
       <View style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>
-          Altre Azioni
+          Altre azioni
         </ThemedText>
         <TouchableOpacity
           style={styles.deleteAccountButton}
