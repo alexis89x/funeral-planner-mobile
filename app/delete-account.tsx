@@ -56,7 +56,7 @@ export default function DeleteAccountScreen() {
       }
     } catch (err: any) {
       console.error('Delete account error:', err);
-      setError(err.message || 'Password non corretta o errore di connessione');
+      setError('Password non corretta o errore di connessione'); // err.message
     } finally {
       setIsLoading(false);
     }
