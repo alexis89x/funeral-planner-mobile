@@ -11,6 +11,7 @@ import {
   Image,
   Keyboard,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,6 +35,7 @@ export default function LoginEmailScreen() {
   const { login, getLastPartnerName } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const insets = useSafeAreaInsets();
 
   console.log("LOADING LOGIN SCREEN");
 
@@ -194,7 +196,7 @@ export default function LoginEmailScreen() {
       {/* Partner section - hidden when keyboard is visible */}
       {!isKeyboardVisible && (
         lastPartnerName ? (
-          <View style={styles.partnerSectionBottom}>
+          <View style={[styles.partnerSectionBottom, { bottom: Math.max(40, insets.bottom + 16) }]}>
             <ThemedText style={styles.partnerText}>
               in collaborazione con
             </ThemedText>

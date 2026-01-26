@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
@@ -25,6 +26,7 @@ export default function WelcomeScreen() {
   const [lastPartnerName, setLastPartnerName] = useState<string | null>(null);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
+  const insets = useSafeAreaInsets();
   console.log("SHOWING WELCOME SCREEN");
 
   useEffect(() => {
@@ -142,7 +144,7 @@ export default function WelcomeScreen() {
 
         {/* Partner section - persists across logout */}
         {lastPartnerName && (
-          <View style={styles.partnerSectionBottom}>
+          <View style={[styles.partnerSectionBottom, { bottom: Math.max(40, insets.bottom + 16) }]}>
             <ThemedText style={styles.partnerText}>
               in collaborazione con
             </ThemedText>
