@@ -11,12 +11,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "it.nanuktechnology.tramontosereno",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "Questa app necessita dell'accesso alla fotocamera per scattare foto da caricare nel tuo piano.",
-        "NSPhotoLibraryUsageDescription": "Questa app necessita dell'accesso alla libreria foto per selezionare immagini da caricare nel tuo piano.",
-        "NSMicrophoneUsageDescription": "Questa app necessita dell'accesso al microfono per registrare video."
+        "NSCameraUsageDescription": "Tramonto Sereno ha bisogno di accedere alla fotocamera per permetterti di scattare e caricare la tua foto profilo personale, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
+        "NSPhotoLibraryUsageDescription": "Tramonto Sereno ha bisogno di accedere alla galleria per permetterti di selezionare una foto profilo personale esistente dal tuo dispositivo, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
+        "NSMicrophoneUsageDescription": "Tramonto Sereno ha bisogno di accedere al microfono per permetterti di registrare messaggi audio o video personali che verranno inclusi nella tua pianificazione funebre e condivisi con l'onoranza funebre selezionata per rispettare le tue volontà."
       }
     },
     "android": {
@@ -40,8 +40,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Questa app necessita dell'accesso alla libreria foto per selezionare immagini.",
-          "cameraPermission": "Questa app necessita dell'accesso alla fotocamera per scattare foto."
+          "photosPermission": "Tramonto Sereno ha bisogno di accedere alla galleria per selezionare foto profilo da utilizzare nella pianificazione funebre.",
+          "cameraPermission": "Tramonto Sereno ha bisogno di accedere alla fotocamera per scattare foto profilo da utilizzare nella pianificazione funebre."
         }
       ],
       [
