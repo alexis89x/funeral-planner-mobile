@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState, AppStateStatus } from 'react-native';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { getDeviceInfo } from '@/utils/device';
 import { api, API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from "@/utils/security";
@@ -108,6 +110,8 @@ interface AuthContextType {
   reloadProfile: () => Promise<void>;
   getLastSavedProfile: () => Promise<UserProfile | null>;
   getLastPartnerName: () => Promise<string | null>;
+  getCurrentDeviceId: () => Promise<string | null>;
+  clearDeviceId: () => Promise<void>;
   isLoading: boolean;
   lastActivity: number | null;
 }
@@ -118,6 +122,93 @@ const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 const LAST_PARTNER_KEY = '@tramonto_sereno_last_partner';
+const DEVICE_ID_KEY = '@tramonto_device_id';
+
+// ============================================================================
+// DEVICE ID MANAGEMENT FUNCTIONS
+// ============================================================================
+
+/**
+ * Get or create a unique device ID for this device
+ * Stored in AsyncStorage to persist across app sessions
+ */
+const getOrCreateDeviceId = async (): Promise<string> => {
+  try {
+    let deviceId = await AsyncStorage.getItem(DEVICE_ID_KEY);
+
+    if (!deviceId) {
+      deviceId = generateDeviceId();
+      await AsyncStorage.setItem(DEVICE_ID_KEY, deviceId);
+      console.log('📱 Generated new device ID:', deviceId);
+    } else {
+      console.log('📱 Using existing device ID:', deviceId);
+    }
+
+    return deviceId;
+  } catch (error) {
+    console.error('Error managing device ID:', error);
+    // Fallback to temporary device ID if storage fails
+    return generateDeviceId();
+  }
+};
+
+/**
+ * Generate a unique device ID
+ * Format: app_[platform]_[timestamp]_[random]
+ */
+const generateDeviceId = (): string => {
+  const platform = Device.osName?.toLowerCase() || 'unknown';
+  const timestamp = Date.now().toString(36);
+  const randomStr = Math.random().toString(36).substring(2, 15);
+  const randomStr2 = Math.random().toString(36).substring(2, 15);
+  return `app_${platform}_${timestamp}_${randomStr}${randomStr2}`;
+};
+
+/**
+ * Get human-readable device name
+ * Examples: "iPhone 14 Pro", "Samsung Galaxy S23", "Pixel 7"
+ */
+const getDeviceName = async (): Promise<string> => {
+  try {
+    const deviceName = Device.deviceName || 'Unknown Device';
+    const modelName = Device.modelName || '';
+
+    // Combine device name and model for clarity
+    if (modelName && !deviceName.includes(modelName)) {
+      return `${deviceName} (${modelName})`;
+    }
+
+    return deviceName;
+  } catch (error) {
+    console.error('Error getting device name:', error);
+    return 'Unknown Device';
+  }
+};
+
+/**
+ * Get device type (mobile/tablet)
+ */
+const getDeviceType = (): string => {
+  return Device.deviceType === Device.DeviceType.TABLET ? 'tablet' : 'mobile';
+};
+
+/**
+ * Get OS version
+ */
+const getOSVersion = (): string => {
+  return Device.osVersion || 'unknown';
+};
+
+/**
+ * Get app version
+ */
+const getAppVersion = (): string => {
+  return Constants.expoConfig?.version || 'unknown';
+};
+
+// ============================================================================
+// AUTH PROVIDER
+// ============================================================================
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<LoggedUser | null>(null);
@@ -194,21 +285,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       // Get device information
       const deviceInfo = await getDeviceInfo();
+      const deviceId = await getOrCreateDeviceId();
+      const deviceName = await getDeviceName();
+      const deviceType = getDeviceType();
+      const osVersion = getOSVersion();
+      const appVersion = getAppVersion();
 
       console.log('\n🔐 ===== LOGIN ATTEMPT =====');
       console.log('Username:', username);
       console.log('Role:', role);
+      console.log('Device ID:', deviceId);
+      console.log('Device Name:', deviceName);
+      console.log('Device Type:', deviceType);
+      console.log('OS Version:', osVersion);
+      console.log('App Version:', appVersion);
       console.log('Device Info:', JSON.stringify(deviceInfo, null, 2));
 
-      // Create FormData like Angular version
+      // Create FormData
       const formData = new FormData();
       formData.append('username', (username || '').trim());
       formData.append('password', (password || '').trim());
       formData.append('role', role.toString());
+
+      // Device identification (new fields)
+      formData.append('device_id', deviceId);
+      formData.append('device_name', deviceName);
+      formData.append('device_type', deviceType);
+
+      // Device details (existing fields + additions)
       formData.append('device', deviceInfo.device);
       formData.append('os', deviceInfo.os);
+      formData.append('os_version', osVersion);
       formData.append('browser', deviceInfo.browser);
       formData.append('user_agent', deviceInfo.userAgent);
+      formData.append('app_version', appVersion);
       formData.append('remind', '1');
 
       // Log FormData contents
@@ -216,7 +326,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logFormData(formData, 'Login FormData');
 
       const securityHeaders = getSecurityHeaders(undefined);
-      console.log(  '\n🔒 Security Headers:', JSON.stringify(securityHeaders, null, 2));
+      console.log('\n🔒 Security Headers:', JSON.stringify(securityHeaders, null, 2));
 
       const headers: Record<string, string> = {
         ...securityHeaders,
@@ -407,6 +517,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /**
+   * Get the current device ID (useful for debugging or display in settings)
+   */
+  const getCurrentDeviceId = async (): Promise<string | null> => {
+    try {
+      return await AsyncStorage.getItem(DEVICE_ID_KEY);
+    } catch (error) {
+      console.error('Error getting device ID:', error);
+      return null;
+    }
+  };
+
+  /**
+   * Clear device ID (useful for testing or when user wants to reset device registration)
+   */
+  const clearDeviceId = async (): Promise<void> => {
+    try {
+      await AsyncStorage.removeItem(DEVICE_ID_KEY);
+      console.log('📱 Device ID cleared');
+    } catch (error) {
+      console.error('Error clearing device ID:', error);
+    }
+  };
+
   const reloadProfile = async (): Promise<void> => {
     console.log("RELOADING USER PROFILE");
     await getUserProfile(currentUser || undefined, true);
@@ -463,6 +597,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
       // Clear cached services
       await AsyncStorage.removeItem('@funeral_planner_services');
+      // NOTE: Device ID is NOT cleared on logout - it persists
       setCurrentUser(null);
       setUserProfile(null);
       setLastActivity(null);
@@ -483,6 +618,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         reloadProfile,
         getLastSavedProfile,
         getLastPartnerName,
+        getCurrentDeviceId,
+        clearDeviceId,
         isLoading,
         lastActivity,
       }}>
