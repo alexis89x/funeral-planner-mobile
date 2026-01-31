@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
@@ -62,8 +63,9 @@ export default function WebViewScreen() {
           headerShown: true,
         }}
       />
-      {url ? (
-        <WebView
+      <SafeAreaView style={styles.safeContainer} edges={['bottom']}>
+        {url ? (
+          <WebView
           key={webViewKey}
           ref={webViewRef}
           source={{ uri: url }}
@@ -81,14 +83,18 @@ export default function WebViewScreen() {
               <ActivityIndicator size="large" color={colors.tint} />
             </View>
           )}
-        />
-      ) : null}
+          />
+        ) : null}
+      </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  safeContainer: {
     flex: 1,
   },
   webview: {
