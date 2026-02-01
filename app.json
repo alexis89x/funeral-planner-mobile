@@ -38,6 +38,12 @@
     "plugins": [
       "expo-router",
       [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.933975100826-jhr6igtmd4b0vh1pl4a8q3ksvdl19gbc"
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "Tramonto Sereno ha bisogno di accedere alla galleria per selezionare foto profilo da utilizzare nella pianificazione funebre.",
