@@ -5,8 +5,10 @@ import {
   Alert,
   Image,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
+import Constants from 'expo-constants';
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -18,14 +20,19 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-// Configure Google Sign-In
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_WEB_ID,
-  scopes: ['profile', 'email'],
-  offlineAccess: true,
-  forceCodeForRefreshToken: false,
-  iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
-});
+// Check if running in Expo Go (development)
+const isExpoGo = Constants.appOwnership === 'expo';
+
+// Configure Google Sign-In only for device builds
+if (!isExpoGo) {
+  GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_WEB_ID,
+    scopes: ['profile', 'email'],
+    offlineAccess: true,
+    forceCodeForRefreshToken: false,
+    iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+  });
+}
 
 export default function LoginGoogleScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -81,7 +88,29 @@ export default function LoginGoogleScreen() {
     }
   };
 
+  const handleDevModeLogin = () => {
+    Alert.alert(
+      'Development Mode',
+      'Google Sign-In non è disponibile in Expo Go. Questa funzionalità funzionerà nel build di produzione.',
+      [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Simulate successful login for development
+            console.log('🔧 Development mode: Simulating successful Google Sign-In');
+          }
+        }
+      ]
+    );
+  };
+
   const googleSignIn = async () => {
+    // In Expo Go, show development message instead
+    if (isExpoGo) {
+      handleDevModeLogin();
+      return;
+    }
+
     try {
       setIsLoading(true);
       console.log('🚀 Starting Google Sign-In...');
@@ -94,6 +123,7 @@ export default function LoginGoogleScreen() {
       
       if (idToken) {
         console.log('🔐 ID Token received:', idToken.substring(0, 20) + '...');
+        console.log('🔐 ID Token received:', idToken);
         console.log('👤 User info:', user);
         
         // TODO: Call your backend to validate the token & process user data
@@ -157,6 +187,12 @@ export default function LoginGoogleScreen() {
           <View style={styles.debugContainer}>
             <ThemedText style={styles.debugText}>
               Platform: {Platform.OS}
+            </ThemedText>
+            <ThemedText style={styles.debugText}>
+              Build Type: {isExpoGo ? 'Expo Go (Development)' : 'Device Build'}
+            </ThemedText>
+            <ThemedText style={styles.debugText}>
+              Google Sign-In: {isExpoGo ? 'Disabled' : 'Enabled'}
             </ThemedText>
             <ThemedText style={styles.debugText}>
               Web Client ID: {process.env.EXPO_PUBLIC_WEB_ID?.substring(0, 20)}...
