@@ -94,16 +94,17 @@ export default function MyPlansScreen() {
               {plan.plan_for}
             </ThemedText>
             <View style={styles.badgeContainer}>
-              <View style={[styles.typeBadge, { backgroundColor: BaseColors.mainLight }]}>
+              <View style={[styles.typeBadge, { backgroundColor: BaseColors.mainDark }]}>
                 <Text style={styles.badgeText}>
                   {formatPlanType(plan.type)}
                 </Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+              {/* Payment status commented out as requested */}
+              {/* <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
                 <Text style={styles.statusBadgeText}>
                   {formatPaymentStatus(plan.payment_status)}
                 </Text>
-              </View>
+              </View> */}
             </View>
             <Text style={styles.detailText}>
               Ultima modifica: {formatDate(plan.modified)}
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   badgeText: {
-    color: BaseColors.mainDark,
+    color: BaseColors.white,
     fontSize: 12,
     fontWeight: '600',
   },

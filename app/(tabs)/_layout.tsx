@@ -19,8 +19,8 @@ export default function TabLayout() {
     : 'Cerca onoranza';
 
   const activePlansCount = (userProfile?.owned_plans.filter(r => r.status === PLAN_STATUS.ACTIVE) || []).length;
-  const myPlanTitle = activePlansCount > 1 ? 'I miei piani' : 'Il mio piano';
-
+  // const myPlanTitle = activePlansCount > 1 ? 'I miei piani' : 'Il mio piano';
+  const myPlanTitle = 'I miei piani';
   return (
     <Tabs
       screenOptions={{
@@ -44,7 +44,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.fill" color={color} />,
           href: null, // Hidden from tab bar - accessed only via navigation
           headerShown: true,
-          headerLeft: () => null,
         }}
       />
       <Tabs.Screen
