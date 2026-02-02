@@ -74,8 +74,8 @@ function RootLayoutNav() {
       router.replace('/welcome');
     } else if (currentUser && (inWelcome || inLoginFlow)) {
       // Logged in, but on auth screens
-      console.log('➡️ Redirecting to /(tabs)/my-plan (logged in)');
-      router.replace('/(tabs)/my-plan');
+      console.log('➡️ Redirecting to /(tabs)/my-plans (logged in)');
+      router.replace('/(tabs)/my-plans');
     } else {
       // @ts-ignore
       if (!currentUser && segments.length === 0) {
