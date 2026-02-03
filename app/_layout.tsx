@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { deactivateKeepAwake } from 'expo-keep-awake';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -10,6 +11,9 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import LoadingScreen from '@/components/LoadingScreen';
 
 SplashScreen.preventAutoHideAsync();
+
+// Disable keep awake since we don't need it for this app
+deactivateKeepAwake();
 
 export const unstable_settings = {
   anchor: '(tabs)',

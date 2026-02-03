@@ -17,7 +17,9 @@
     "build-android-prod": "eas build --platform android --profile production",
     "build-ios-preview": "eas build --platform ios --profile preview",
     "build-ios-prod": "eas build --platform ios --profile production",
-    "submit-ios-prod": "eas submit --platform ios --profile production"
+    "submit-ios-prod": "eas submit --platform ios --profile production",
+    "test-device-pt1": "npx expo prebuild --clean",
+    "test-device-pt2": "npx expo run:android"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
