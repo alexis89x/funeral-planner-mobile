@@ -8,6 +8,16 @@ import { api, API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from "@/utils/security";
 import { logRequest, logResponse, logError, logFormData } from '@/utils/http-logger';
 
+export type LoadingState = 
+  | 'initializing'
+  | 'loading_storage' 
+  | 'validating_token'
+  | 'loading_profile'
+  | 'completing'
+  | 'timeout'
+  | 'error'
+  | 'completed';
+
 export interface LoggedUser {
   token: string;
   role: number;
@@ -113,6 +123,8 @@ interface AuthContextType {
   getCurrentDeviceId: () => Promise<string | null>;
   clearDeviceId: () => Promise<void>;
   isLoading: boolean;
+  loadingState: LoadingState;
+  loadingError: string | null;
   lastActivity: number | null;
 }
 
@@ -215,6 +227,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [lastActivity, setLastActivity] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingState, setLoadingState] = useState<LoadingState>('initializing');
+  const [loadingError, setLoadingError] = useState<string | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const appState = useRef(AppState.currentState);
 
@@ -258,26 +272,62 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loadStoredAuth = async () => {
     try {
+      setLoadingState('loading_storage');
+      setLoadingError(null);
+      
       const storedAuth = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      
       if (storedAuth) {
         const user = JSON.parse(storedAuth);
         setCurrentUser(user);
-        // Validate token on app start
-        const isValid = await validateToken();
-        if (!isValid) {
-          await logout();
-          setIsLoading(false);
-        } else {
-          // Wait for profile to load before setting isLoading to false
-          await getUserProfile(user);
-          setIsLoading(false);
+        
+        // Add timeout for token validation and profile loading
+        const timeoutPromise = new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Auth timeout')), 10000) // 10 second timeout
+        );
+
+        try {
+          setLoadingState('validating_token');
+          // Validate token with timeout
+          const isValid = await Promise.race([validateToken(), timeoutPromise]);
+          
+          if (!isValid) {
+            console.log('Token invalid, logging out');
+            await logout();
+            setLoadingState('completed');
+            setIsLoading(false);
+          } else {
+            setLoadingState('loading_profile');
+            // Load profile with timeout
+            await Promise.race([getUserProfile(user), timeoutPromise]);
+            setLoadingState('completing');
+            setTimeout(() => {
+              setLoadingState('completed');
+              setIsLoading(false);
+            }, 500); // Small delay to show "completing" state
+          }
+        } catch (timeoutError) {
+          console.error('Auth timeout - proceeding offline:', timeoutError);
+          setLoadingState('timeout');
+          setLoadingError('Connessione lenta, continuiamo offline');
+          // On timeout, continue with cached user but mark as loading complete
+          setTimeout(() => {
+            setLoadingState('completed');
+            setIsLoading(false);
+          }, 2000); // Show timeout message for 2 seconds
         }
       } else {
+        setLoadingState('completed');
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Error loading auth:', error);
-      setIsLoading(false);
+      setLoadingState('error');
+      setLoadingError('Errore durante il caricamento dei dati');
+      setTimeout(() => {
+        setLoadingState('completed');
+        setIsLoading(false);
+      }, 3000); // Show error for 3 seconds
     }
   };
 
@@ -621,6 +671,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         getCurrentDeviceId,
         clearDeviceId,
         isLoading,
+        loadingState,
+        loadingError,
         lastActivity,
       }}>
       {children}

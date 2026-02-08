@@ -44,6 +44,7 @@ export default function ServiceWebViewScreen() {
         status: 310
       };
       localStorage.setItem('uinfo', JSON.stringify(user));
+      window.tsMobileApp = true;
       true; // Required for iOS
     })();
   `;

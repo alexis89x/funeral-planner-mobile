@@ -18,9 +18,9 @@ export default function TabLayout() {
     ? 'La mia onoranza'
     : 'Cerca onoranza';
 
-  const myPlanTitle = (userProfile?.owned_plans.filter(r => r.status === PLAN_STATUS.ACTIVE) || []).length > 1 ?
-    'I miei piani' : 'Il mio piano';
-
+  const activePlansCount = (userProfile?.owned_plans.filter(r => r.status === PLAN_STATUS.ACTIVE) || []).length;
+  // const myPlanTitle = activePlansCount > 1 ? 'I miei piani' : 'Il mio piano';
+  const myPlanTitle = 'I miei piani';
   return (
     <Tabs
       screenOptions={{
@@ -29,12 +29,21 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="my-plan"
+        name="my-plans"
         options={{
           title: myPlanTitle,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
           headerShown: true,
           headerLeft: () => null,
+        }}
+      />
+      <Tabs.Screen
+        name="my-plan"
+        options={{
+          title: 'Il mio piano',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.fill" color={color} />,
+          href: null, // Hidden from tab bar - accessed only via navigation
+          headerShown: true,
         }}
       />
       <Tabs.Screen

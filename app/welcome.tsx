@@ -56,8 +56,8 @@ export default function WelcomeScreen() {
 
   const handleAccediPress = () => {
     if (isTokenValid) {
-      // Token valido, vai direttamente a my-plan
-      router.replace('/(tabs)/my-plan');
+      // Token valido, vai direttamente a my-plans
+      router.replace('/(tabs)/my-plans');
     }
     // Se il token non è valido, resta su welcome per far scegliere all'utente
   };

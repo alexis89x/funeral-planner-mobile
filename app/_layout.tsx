@@ -3,41 +3,45 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { deactivateKeepAwake } from 'expo-keep-awake';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import LoadingScreen from '@/components/LoadingScreen';
 
 SplashScreen.preventAutoHideAsync();
+
+// Disable keep awake since we don't need it for this app
+deactivateKeepAwake();
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
 function RootLayoutNav() {
-  const { currentUser, isLoading } = useAuth();
+  const { currentUser, isLoading, loadingState, loadingError } = useAuth();
   const segments = useSegments();
   const router = useRouter();
   const colorScheme = useColorScheme();
 
-  console.log('🚀 RootLayoutNav render', { isLoading, hasUser: !!currentUser, segments });
+  console.log('🚀 RootLayoutNav render', { isLoading, loadingState, hasUser: !!currentUser, segments });
 
-  // Hide splash screen when auth is loaded
+  // Hide splash screen immediately when component mounts, we'll use our custom LoadingScreen
   useEffect(() => {
-    if (!isLoading) {
-      console.log('🎬 Auth loaded, hiding splash screen...');
-      const timer = setTimeout(async () => {
-        try {
-          await SplashScreen.hideAsync();
-          console.log('✅ Splash screen hidden');
-        } catch (e) {
-          console.warn('❌ Error hiding splash:', e);
-        }
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
+    const hideSplash = async () => {
+      try {
+        await SplashScreen.hideAsync();
+        console.log('✅ Default splash screen hidden, showing custom loading screen');
+      } catch (e) {
+        console.warn('❌ Error hiding splash:', e);
+      }
+    };
+    
+    // Hide splash screen with a small delay to ensure smooth transition
+    const timer = setTimeout(hideSplash, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Handle auth-based routing
   useEffect(() => {
@@ -74,8 +78,8 @@ function RootLayoutNav() {
       router.replace('/welcome');
     } else if (currentUser && (inWelcome || inLoginFlow)) {
       // Logged in, but on auth screens
-      console.log('➡️ Redirecting to /(tabs)/my-plan (logged in)');
-      router.replace('/(tabs)/my-plan');
+      console.log('➡️ Redirecting to /(tabs)/my-plans (logged in)');
+      router.replace('/(tabs)/my-plans');
     } else {
       // @ts-ignore
       if (!currentUser && segments.length === 0) {
@@ -86,6 +90,19 @@ function RootLayoutNav() {
       }
     }
   }, [currentUser, isLoading, segments]);
+
+  // Show custom loading screen while loading
+  if (isLoading && loadingState !== 'completed') {
+    return (
+      <>
+        <LoadingScreen 
+          loadingState={loadingState} 
+          error={loadingError || undefined} 
+        />
+        <StatusBar style="light" />
+      </>
+    );
+  }
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

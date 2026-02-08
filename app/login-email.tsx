@@ -89,7 +89,7 @@ export default function LoginEmailScreen() {
     setIsLoading(true);
     try {
       await login(email, password);
-      router.replace('/(tabs)/my-plan');
+      router.replace('/(tabs)/my-plans');
     } catch (error) {
       console.log("ERROR", error);
       Alert.alert('Errore', 'Email o password non validi');

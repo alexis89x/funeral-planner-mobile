@@ -50,10 +50,16 @@ export default function WebViewScreen() {
         status: 310
       };
       localStorage.setItem('uinfo', JSON.stringify(user));
+      window.tsMobileApp = true;
       true; // Required for iOS
     })();
   `
-    : undefined;
+    : `
+    (function() {
+      window.tsMobileApp = true;
+      true; // Required for iOS
+    })();
+  `;
 
   return (
     <ThemedView style={styles.container}>
