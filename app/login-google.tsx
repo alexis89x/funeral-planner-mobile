@@ -15,15 +15,22 @@ import {
   isErrorWithCode,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { API_BASE_URL, APP_BASE_URL } from "@/utils/api";
 import { getSecurityHeaders } from '@/utils/security';
+import { useAuth } from '@/contexts/AuthContext';
+import type { LoggedUser } from '@/contexts/AuthContext';
 
 // Check if running in Expo Go (development)
 const isExpoGo = Constants.appOwnership === 'expo';
+
+// Storage keys
+const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
+const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 
 // Configure Google Sign-In only for device builds
 if (!isExpoGo) {
@@ -40,6 +47,7 @@ export default function LoginGoogleScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { setCurrentUser, getUserProfile, setLastActivity } = useAuth();
 
   useEffect(() => {
     // Check if Google Play Services are available (Android)
@@ -124,8 +132,23 @@ export default function LoginGoogleScreen() {
         // Successful login
         console.log('✅ Backend authentication successful:', data);
         
-        // Store token and user data (you might want to use secure storage)
-        // await SecureStore.setItemAsync('authToken', data.token);
+        const user: LoggedUser = {
+          token: data.token,
+          role: parseInt(data.role, 10),
+          status: parseInt(data.status, 10),
+        };
+
+        console.log("USER AFTER LOGIN...", user);
+        // Store user and token
+        setCurrentUser(user);
+        await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+
+        // Save last used email (don't clear on logout)
+        await AsyncStorage.setItem(LAST_EMAIL_KEY, data.user.email.trim());
+
+        // Load user profile after successful login
+        console.log("GETTING USER PROFILE AFTER LOGIN");
+        await getUserProfile(user);
         
         Alert.alert(
           'Accesso effettuato!',
