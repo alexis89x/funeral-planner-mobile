@@ -81,6 +81,7 @@ export default function LoginGoogleScreen() {
             Alert.alert('Errore', 'Google Play Services non disponibili');
             break;
           default:
+            console.log("ERROR details", error);
             console.log('Some other error happened');
         }
       } else {
@@ -108,7 +109,7 @@ export default function LoginGoogleScreen() {
 
   const authenticateWithBackend = async (idToken: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/google-login.php`, {
+      const response = await fetch(`${API_BASE_URL}/v1/google-oauth-mobile.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
