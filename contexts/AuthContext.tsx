@@ -114,6 +114,7 @@ interface AuthContextType {
   setCurrentUser: (user: LoggedUser | null) => void;
   token: string | undefined;
   login: (username: string, password: string, role?: string) => Promise<void>;
+  googleLogin: (idToken: string, onSuccess?: (email: string) => void, onRegistrationRequired?: (registrationUrl: string) => void) => Promise<void>;
   logout: () => Promise<void>;
   validateToken: () => Promise<boolean>;
   getUserProfile: () => Promise<UserProfile | null>;
@@ -464,6 +465,91 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const googleLogin = async (idToken: string, onSuccess?: (email: string) => void, onRegistrationRequired?: (registrationUrl: string) => void) => {
+    try {
+      console.log('\n🔐 ===== GOOGLE LOGIN =====');
+      console.log('ID Token:', idToken.substring(0, 20) + '...');
+      
+      // Authenticate with backend
+      const response = await fetch(`${API_BASE_URL}/v1/google-oauth-mobile.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getSecurityHeaders(),
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        // Successful login
+        console.log('✅ Backend authentication successful:', data);
+        
+        const user: LoggedUser = {
+          token: data.token,
+          role: parseInt(data.role, 10),
+          status: parseInt(data.status, 10),
+        };
+
+        console.log("USER AFTER GOOGLE LOGIN...", user);
+        // Store user and token
+        setCurrentUser(user);
+        await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+
+        // Save last used email (don't clear on logout)
+        await AsyncStorage.setItem(LAST_EMAIL_KEY, data.user.email.trim());
+
+        // Load user profile after successful login
+        console.log("GETTING USER PROFILE AFTER GOOGLE LOGIN");
+        await getUserProfile(user);
+        
+        // Call success callback
+        if (onSuccess) {
+          onSuccess(data.user.email);
+        }
+      } else {
+        // Handle different error scenarios
+        switch (response.status) {
+          case 404:
+            if (data.needsRegistration) {
+              // User needs to register
+              const registrationUrl = `${API_BASE_URL.replace('/api', '')}/registration?forceMode=mobile&premail=${encodeURIComponent(data.registrationData.email)}&prefirst=${encodeURIComponent(data.registrationData.firstName)}&prelast=${encodeURIComponent(data.registrationData.lastName)}&type=google`;
+              
+              if (onRegistrationRequired) {
+                onRegistrationRequired(registrationUrl);
+              } else {
+                throw new Error('Registration required but no callback provided');
+              }
+            } else {
+              throw new Error(data.error || 'Utente non trovato');
+            }
+            break;
+          case 403:
+            if (data.error === 'Partner login not allowed in mobile app') {
+              throw new Error('Gli account partner possono accedere solo tramite il sito web.');
+            } else if (data.error === 'Account not active') {
+              throw new Error('Il tuo account non è attivo. Contatta il supporto per assistenza.');
+            } else {
+              throw new Error(data.error || 'Accesso non autorizzato');
+            }
+            break;
+          case 401:
+            throw new Error('Token di autenticazione non valido');
+          default:
+            throw new Error(data.error || 'Errore del server');
+        }
+      }
+    } catch (error: any) {
+      console.error('\n💥 ===== GOOGLE LOGIN ERROR =====');
+      console.error('Error Type:', typeof error);
+      console.error('Error Message:', error.message);
+      console.error('Full Error:', JSON.stringify(error, null, 2));
+      console.error('===== END GOOGLE LOGIN ERROR =====\n');
+      throw error;
+    }
+  };
+
   const getUserProfile = async (providedUser?: LoggedUser, forceReload: boolean = false): Promise<UserProfile | null> => {
     console.log("LOADING USER_PROFILE...", { hasProfile: !!userProfile, loadingProfile, forceReload });
 
@@ -662,6 +748,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setCurrentUser,
         token: currentUser?.token,
         login,
+        googleLogin,
         logout,
         validateToken,
         getUserProfile,

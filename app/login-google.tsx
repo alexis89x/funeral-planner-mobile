@@ -15,22 +15,15 @@ import {
   isErrorWithCode,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { API_BASE_URL, APP_BASE_URL } from "@/utils/api";
-import { getSecurityHeaders } from '@/utils/security';
+import { APP_BASE_URL } from "@/utils/api";
 import { useAuth } from '@/contexts/AuthContext';
-import type { LoggedUser } from '@/contexts/AuthContext';
 
 // Check if running in Expo Go (development)
 const isExpoGo = Constants.appOwnership === 'expo';
-
-// Storage keys
-const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
-const LAST_EMAIL_KEY = '@tramonto_sereno_last_email';
 
 // Configure Google Sign-In only for device builds
 if (!isExpoGo) {
@@ -47,7 +40,7 @@ export default function LoginGoogleScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { setCurrentUser, getUserProfile, setLastActivity } = useAuth();
+  const { googleLogin } = useAuth();
 
   useEffect(() => {
     // Check if Google Play Services are available (Android)
@@ -115,116 +108,6 @@ export default function LoginGoogleScreen() {
     );
   };
 
-  const authenticateWithBackend = async (idToken: string) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/v1/google-oauth-mobile.php`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getSecurityHeaders(),
-        },
-        body: JSON.stringify({ idToken }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // Successful login
-        console.log('✅ Backend authentication successful:', data);
-        
-        const user: LoggedUser = {
-          token: data.token,
-          role: parseInt(data.role, 10),
-          status: parseInt(data.status, 10),
-        };
-
-        console.log("USER AFTER LOGIN...", user);
-        // Store user and token
-        setCurrentUser(user);
-        await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
-
-        // Save last used email (don't clear on logout)
-        await AsyncStorage.setItem(LAST_EMAIL_KEY, data.user.email.trim());
-
-        // Load user profile after successful login
-        console.log("GETTING USER PROFILE AFTER LOGIN");
-        await getUserProfile(user);
-        
-        Alert.alert(
-          'Accesso effettuato!',
-          `Benvenuto ${data.user.email}!`,
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                // Navigate to main app
-                router.replace('/(tabs)/my-plans');
-              }
-            }
-          ]
-        );
-        
-        return data;
-      } else {
-        // Handle different error scenarios
-        switch (response.status) {
-          case 404:
-            if (data.needsRegistration) {
-              // User needs to register
-              Alert.alert(
-                'Registrazione richiesta',
-                'Account non trovato. Vuoi registrarti con questo account Google?',
-                [
-                  { text: 'Annulla', style: 'cancel' },
-                  {
-                    text: 'Registrati',
-                    onPress: () => {
-                      // Navigate to webview registration with pre-filled data
-                      const registrationUrl = `${APP_BASE_URL}/registration?forceMode=mobile&premail=${encodeURIComponent(data.registrationData.email)}&prefirst=${encodeURIComponent(data.registrationData.firstName)}&prelast=${encodeURIComponent(data.registrationData.lastName)}&type=google`;
-                      
-                      router.push({
-                        pathname: '/webview',
-                        params: {
-                          url: registrationUrl,
-                          title: 'Registrazione',
-                        },
-                      });
-                    }
-                  }
-                ]
-              );
-            } else {
-              throw new Error(data.error || 'Utente non trovato');
-            }
-            break;
-          case 403:
-            if (data.error === 'Partner login not allowed in mobile app') {
-              Alert.alert(
-                'Accesso non consentito',
-                'Gli account partner possono accedere solo tramite il sito web.',
-                [{ text: 'OK' }]
-              );
-            } else if (data.error === 'Account not active') {
-              Alert.alert(
-                'Account non attivo',
-                'Il tuo account non è attivo. Contatta il supporto per assistenza.',
-                [{ text: 'OK' }]
-              );
-            } else {
-              throw new Error(data.error || 'Accesso non autorizzato');
-            }
-            break;
-          case 401:
-            throw new Error('Token di autenticazione non valido');
-          default:
-            throw new Error(data.error || 'Errore del server');
-        }
-      }
-    } catch (error: any) {
-      console.error('❌ Backend authentication error:', error);
-      throw error;
-    }
-  };
 
   const googleSignIn = async () => {
     // In Expo Go, show development message instead
@@ -248,8 +131,51 @@ export default function LoginGoogleScreen() {
         console.log('🔐 ID Token received:', idToken);
         console.log('👤 User info:', user);
         
-        // Authenticate with backend
-        await authenticateWithBackend(idToken);
+        // Authenticate with backend using AuthContext
+        await googleLogin(
+          idToken,
+          (email: string) => {
+            // Success callback
+            router.replace('/(tabs)/my-plans');
+            /*
+              Alert.alert(
+              'Accesso effettuato!',
+              `Benvenuto ${email}!`,
+              [
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    // Navigate to main app
+                    router.replace('/(tabs)/my-plans');
+                  }
+                }
+              ]
+            );*/
+          },
+          (registrationUrl: string) => {
+            // Registration required callback
+            Alert.alert(
+              'Registrazione richiesta',
+              'Account non trovato. Vuoi registrarti con questo account Google?',
+              [
+                { text: 'Annulla', style: 'cancel' },
+                {
+                  text: 'Registrati',
+                  onPress: () => {
+                    // Navigate to webview registration
+                    router.push({
+                      pathname: '/webview',
+                      params: {
+                        url: registrationUrl,
+                        title: 'Registrazione',
+                      },
+                    });
+                  }
+                }
+              ]
+            );
+          }
+        );
       } else {
         throw new Error('Nessun token ID ricevuto da Google');
       }
