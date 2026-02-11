@@ -19,12 +19,10 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { APP_BASE_URL } from "@/utils/api";
 import { useAuth } from '@/contexts/AuthContext';
+import { isExpoGo } from "@/utils/utils";
 
 // Check if running in Expo Go (development)
-const isExpoGo = Constants.appOwnership === 'expo';
-
 // Configure Google Sign-In only for device builds
 if (!isExpoGo) {
   GoogleSignin.configure({

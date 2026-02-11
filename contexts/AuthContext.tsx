@@ -3,10 +3,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState, AppStateStatus } from 'react-native';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { getDeviceInfo } from '@/utils/device';
 import { api, API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from "@/utils/security";
 import { logRequest, logResponse, logError, logFormData } from '@/utils/http-logger';
+import { isExpoGo } from "@/utils/utils";
 
 export type LoadingState = 
   | 'initializing'
@@ -727,6 +729,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
     } catch (error) {
       console.error('Logout API error:', error);
+    }
+
+    try {
+      // Sign out from Google to clear cached authentication (only if signed in with Google)
+      if (!isExpoGo) {
+        const isSignedIn = GoogleSignin.hasPreviousSignIn();
+        console.log("HAS LOGGED WITH GOOGLE?", isSignedIn);
+        if (isSignedIn) {
+          await GoogleSignin.signOut();
+          console.log('✅ Google Sign-Out successful');
+        } else {
+          console.log('👤 User not signed in with Google, skipping Google sign-out');
+        }
+      }
+    } catch (googleError) {
+      console.error('Google Sign-Out error:', googleError);
+      // Don't throw error - continue with logout even if Google sign-out fails
     } finally {
       // Always clear local data
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
