@@ -8,13 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
-import Constants from 'expo-constants';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  isErrorWithCode,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
@@ -22,16 +15,31 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { isExpoGo } from "@/utils/utils";
 
-// Check if running in Expo Go (development)
-// Configure Google Sign-In only for device builds
+// Conditional import for Google Sign-In (only for device builds)
+let GoogleSignin: any = null;
+let GoogleSigninButton: any = null;
+let isErrorWithCode: any = null;
+let statusCodes: any = null;
+
 if (!isExpoGo) {
-  GoogleSignin.configure({
-    webClientId: process.env.EXPO_PUBLIC_WEB_ID,
-    scopes: ['profile', 'email'],
-    offlineAccess: true,
-    forceCodeForRefreshToken: false,
-    iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
-  });
+  try {
+    const GoogleSigninModule = require('@react-native-google-signin/google-signin');
+    GoogleSignin = GoogleSigninModule.GoogleSignin;
+    GoogleSigninButton = GoogleSigninModule.GoogleSigninButton;
+    isErrorWithCode = GoogleSigninModule.isErrorWithCode;
+    statusCodes = GoogleSigninModule.statusCodes;
+
+    // Configure Google Sign-In only for device builds
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_WEB_ID,
+      scopes: ['profile', 'email'],
+      offlineAccess: true,
+      forceCodeForRefreshToken: false,
+      iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+    });
+  } catch (error) {
+    console.warn('Google Sign-In module not available:', error);
+  }
 }
 
 export default function LoginGoogleScreen() {
@@ -43,6 +51,8 @@ export default function LoginGoogleScreen() {
   useEffect(() => {
     // Check if Google Play Services are available (Android)
     const checkPlayServices = async () => {
+      if (!GoogleSignin) return;
+      
       try {
         if (Platform.OS === 'android') {
           await GoogleSignin.hasPlayServices();
@@ -57,6 +67,10 @@ export default function LoginGoogleScreen() {
   }, []);
 
   const GoogleLogin = async () => {
+    if (!GoogleSignin) {
+      throw new Error('Google Sign-In not available');
+    }
+
     try {
       // Check if device has Google Play Services
       if (Platform.OS === 'android') {
@@ -67,15 +81,15 @@ export default function LoginGoogleScreen() {
       const userInfo = await GoogleSignin.signIn();
       return userInfo;
     } catch (error) {
-      if (isErrorWithCode(error)) {
+      if (isErrorWithCode && isErrorWithCode(error)) {
         switch (error.code) {
-          case statusCodes.SIGN_IN_CANCELLED:
+          case statusCodes?.SIGN_IN_CANCELLED:
             console.log('User cancelled the login flow');
             break;
-          case statusCodes.IN_PROGRESS:
+          case statusCodes?.IN_PROGRESS:
             console.log('Sign-in is in progress');
             break;
-          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          case statusCodes?.PLAY_SERVICES_NOT_AVAILABLE:
             console.log('Play services not available');
             Alert.alert('Errore', 'Google Play Services non disponibili');
             break;
@@ -218,13 +232,25 @@ export default function LoginGoogleScreen() {
           </ThemedText>
         </View>
 
-        <GoogleSigninButton
-          style={styles.googleButton}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={googleSignIn}
-          disabled={isLoading}
-        />
+        {GoogleSigninButton ? (
+          <GoogleSigninButton
+            style={styles.googleButton}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={googleSignIn}
+            disabled={isLoading}
+          />
+        ) : (
+          <TouchableOpacity
+            style={[styles.googleButton, styles.fallbackButton]}
+            onPress={googleSignIn}
+            disabled={isLoading}
+          >
+            <ThemedText style={styles.fallbackButtonText}>
+              {isLoading ? 'Accesso...' : 'Accedi con Google'}
+            </ThemedText>
+          </TouchableOpacity>
+        )}
 
         {__DEV__ && (
           <View style={styles.debugContainer}>
@@ -288,6 +314,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 48,
     marginBottom: 24,
+  },
+  fallbackButton: {
+    backgroundColor: '#4285F4',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+  },
+  fallbackButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
   },
   debugContainer: {
     marginTop: 24,

@@ -3,12 +3,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState, AppStateStatus } from 'react-native';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { getDeviceInfo } from '@/utils/device';
-import { api, API_BASE_URL } from '@/utils/api';
+import { api, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from "@/utils/security";
 import { logRequest, logResponse, logError, logFormData } from '@/utils/http-logger';
 import { isExpoGo } from "@/utils/utils";
+
+// Conditional import for Google Sign-In (only for device builds)
+let GoogleSignin: any = null;
+if (!isExpoGo) {
+  try {
+    const GoogleSigninModule = require('@react-native-google-signin/google-signin');
+    GoogleSignin = GoogleSigninModule.GoogleSignin;
+  } catch (error) {
+    console.warn('Google Sign-In module not available:', error);
+  }
+}
 
 export type LoadingState = 
   | 'initializing'
@@ -516,7 +526,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           case 404:
             if (data.needsRegistration) {
               // User needs to register
-              const registrationUrl = `${API_BASE_URL.replace('/api', '')}/registration?forceMode=mobile&premail=${encodeURIComponent(data.registrationData.email)}&prefirst=${encodeURIComponent(data.registrationData.firstName)}&prelast=${encodeURIComponent(data.registrationData.lastName)}&type=google`;
+              const registrationUrl = `${APP_BASE_URL}/registration?forceMode=mobile&premail=${encodeURIComponent(data.registrationData.email)}&prefirst=${encodeURIComponent(data.registrationData.firstName)}&prelast=${encodeURIComponent(data.registrationData.lastName)}&type=google`;
+              console.log(registrationUrl);
               
               if (onRegistrationRequired) {
                 onRegistrationRequired(registrationUrl);
@@ -733,7 +744,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       // Sign out from Google to clear cached authentication (only if signed in with Google)
-      if (!isExpoGo) {
+      if (!isExpoGo && GoogleSignin) {
         const isSignedIn = GoogleSignin.hasPreviousSignIn();
         console.log("HAS LOGGED WITH GOOGLE?", isSignedIn);
         if (isSignedIn) {

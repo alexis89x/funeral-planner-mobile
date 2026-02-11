@@ -15,6 +15,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from '@/utils/api';
 import { AuthFooter } from '@/components/auth-footer';
+import { isExpoGo } from "@/utils/utils";
 
 const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 
@@ -119,11 +120,13 @@ export default function WelcomeScreen() {
                 <ThemedText style={styles.primaryButtonText}>Accedi con Email</ThemedText>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.secondaryButton, { borderColor: colors.border }]}
-                onPress={() => router.push('/login-google')}>
-                <ThemedText style={styles.secondaryButtonText}>Accedi con Google</ThemedText>
-              </TouchableOpacity>
+              {!isExpoGo && (
+                <TouchableOpacity
+                  style={[styles.secondaryButton, { borderColor: colors.border }]}
+                  onPress={() => router.push('/login-google')}>
+                  <ThemedText style={styles.secondaryButtonText}>Accedi con Google</ThemedText>
+                </TouchableOpacity>
+              )}
 
               <TouchableOpacity
                 style={[styles.secondaryButton, { borderColor: colors.border }]}
