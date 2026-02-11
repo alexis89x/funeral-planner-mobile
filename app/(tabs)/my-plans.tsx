@@ -44,7 +44,7 @@ export default function MyPlansScreen() {
       return;
     }
 
-    Alert.alert(
+    /*Alert.alert(
       'Cambia piano',
       `Vuoi passare al piano "${plan.plan_for}"?`,
       [
@@ -54,7 +54,9 @@ export default function MyPlansScreen() {
           onPress: () => handlePlanSwitch(plan)
         }
       ]
-    );
+    ); */
+
+    await handlePlanSwitch(plan);
   };
 
   const handlePlanSwitch = async (plan: Plan) => {
@@ -158,7 +160,7 @@ export default function MyPlansScreen() {
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color={BaseColors.main} />
           <ThemedText style={styles.loadingText}>
-            Cambio piano in corso...
+            Caricamento piano in corso...
           </ThemedText>
         </View>
       )}
