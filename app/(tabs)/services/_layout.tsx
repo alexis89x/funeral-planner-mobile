@@ -1,24 +1,45 @@
 import { Stack } from 'expo-router';
+import { Platform } from 'react-native';
 
 export default function ServicesLayout() {
   return (
     <Stack
       screenOptions={{
-        headerTransparent: false,
-        headerBlurEffect: 'regular',
+        headerShown: true,
+        headerBackTitle: 'Indietro',
         presentation: 'card',
         animation: 'default',
+        headerTransparent: false,
+        headerStyle: {
+          backgroundColor: Platform.OS === 'ios' ? undefined : '#fff',
+        },
       }}>
       <Stack.Screen
         name="index"
         options={{
-          headerShown: false,
+          title: 'Servizi',
+          headerLeft: () => null,
         }}
       />
       <Stack.Screen
         name="webview"
         options={{
-          headerShown: false,
+          title: 'Servizio',
+          headerBackTitle: 'Indietro',
+        }}
+      />
+      <Stack.Screen
+        name="products"
+        options={{
+          title: 'Prodotti',
+          headerBackTitle: 'Indietro',
+        }}
+      />
+      <Stack.Screen
+        name="product-detail"
+        options={{
+          title: 'Dettaglio prodotto',
+          headerBackTitle: 'Indietro',
         }}
       />
     </Stack>

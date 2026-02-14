@@ -41,7 +41,8 @@ const iconMap: Record<string, string> = {
   'envelope': 'envelope.fill',
   'star': 'star.fill',
   'bookmark': 'bookmark.fill',
-  'building': 'building.2.fill'
+  'building': 'building.2.fill',
+  'bag': 'bag.fill'
 };
 
 export default function ServicesScreen() {
@@ -154,15 +155,12 @@ export default function ServicesScreen() {
             <TouchableOpacity
               key={service.id || index}
               style={[
-                styles.serviceCard,
-                {
-                  backgroundColor: Colors[colorScheme ?? 'light'].background,
-                  borderColor: BaseColors.borderLight,
-                },
+                styles.serviceRow,
+                { borderBottomColor: BaseColors.borderLight },
               ]}
               onPress={() => handleServicePress(service)}
               activeOpacity={0.7}>
-              <ThemedView style={styles.serviceCardContent}>
+              <ThemedView style={styles.serviceRowContent}>
                 <ThemedView
                   style={[
                     styles.iconContainer,
@@ -170,7 +168,7 @@ export default function ServicesScreen() {
                   ]}>
                   <IconSymbol
                     name={getIconName(service.icon) as any}
-                    size={32}
+                    size={28}
                     color={BaseColors.main}
                   />
                 </ThemedView>
@@ -216,30 +214,22 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   servicesContainer: {
-    paddingHorizontal: 20,
     paddingBottom: 40,
   },
-  serviceCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    marginBottom: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+  serviceRow: {
+    borderBottomWidth: 1,
   },
-  serviceCardContent: {
+  serviceRowContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    gap: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    gap: 12,
   },
   iconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -247,11 +237,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   serviceTitle: {
-    fontSize: 18,
-    marginBottom: 4,
+    fontSize: 16,
+    marginBottom: 2,
   },
   serviceDescription: {
-    fontSize: 14,
+    fontSize: 13,
     opacity: 0.7,
   },
   loadingContainer: {
