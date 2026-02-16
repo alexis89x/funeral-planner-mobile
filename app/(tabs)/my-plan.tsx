@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +12,7 @@ export default function MyPlanScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
   const router = useRouter();
+  const { type } = useLocalSearchParams<{ type?: string }>();
   const [webViewKey, setWebViewKey] = useState(0);
 
   useFocusEffect(
@@ -29,7 +30,30 @@ export default function MyPlanScreen() {
 
   // Add cache-busting timestamp in dev mode
   const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
-  const url = `${APP_BASE_URL}/auth/set-token?token=${btoa(token || '')}&path=${encodeURIComponent('/user/plans')}&forceMode=mobile${timestamp}`;
+
+  // Determine homepage based on plan type
+  const getHomepagePath = () => {
+    if (type === 'pet') {
+      return '/plan/pet_homepage';
+    }
+    return '/plan/plan_homepage';
+  };
+
+  const baseUrl = `${APP_BASE_URL}${getHomepagePath()}?standalone=true&forceMode=mobile`;
+  const url = baseUrl + (baseUrl.includes('?') ? `${timestamp}` : `?_t=${timestamp.slice(1)}`);
+
+  const injectedJavaScript = `
+    (function() {
+      const user = {
+        token: "${token}",
+        role: 150,
+        status: 310
+      };
+      localStorage.setItem('uinfo', JSON.stringify(user));
+      window.tsMobileApp = true;
+      true; // Required for iOS
+    })();
+  `;
 
   return (
     <ThemedView style={styles.container}>
@@ -47,7 +71,17 @@ export default function MyPlanScreen() {
           }
         }}
         style={styles.webview}
+        onMessage={handleMessage}
         startInLoadingState={false}
+        javaScriptEnabled={true}
+        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+        cacheEnabled={!__DEV__}
+        incognito={__DEV__}
+        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
+        // Camera/media permissions for iOS
+        allowsInlineMediaPlayback={true}
+        mediaPlaybackRequiresUserAction={false}
+        mediaCapturePermissionGrantType="grant"
         renderLoading={() => (
           <ActivityIndicator
             size="large"
@@ -55,14 +89,6 @@ export default function MyPlanScreen() {
             style={styles.loading}
           />
         )}
-        onMessage={handleMessage}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        thirdPartyCookiesEnabled={true}
-        mixedContentMode="always"
-        cacheEnabled={!__DEV__}
-        incognito={__DEV__}
-        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
       />
     </ThemedView>
   );

@@ -40,7 +40,10 @@ export default function MyPlansScreen() {
   const handlePlanPress = async (plan: Plan) => {
     if (plan.id === currentPlanId) {
       // Plan already selected, go to plan details
-      router.push('/(tabs)/my-plan');
+      router.push({
+        pathname: '/(tabs)/my-plan',
+        params: { type: plan.type }
+      });
       return;
     }
 
@@ -64,9 +67,12 @@ export default function MyPlansScreen() {
     try {
       await switchPlan(plan.id);
       await reloadProfile();
-      
+
       // Redirect to WebView to see the selected plan
-      router.push('/(tabs)/my-plan');
+      router.push({
+        pathname: '/(tabs)/my-plan',
+        params: { type: plan.type }
+      });
     } catch (error: any) {
       Alert.alert(
         'Errore',
