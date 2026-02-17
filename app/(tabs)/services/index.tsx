@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors } from '@/constants/theme';
@@ -17,6 +18,7 @@ interface ServiceItem {
   title: string;
   desc: string;
   icon: string;
+  minVersion?: number;
 }
 
 interface ServicesResponse {
@@ -50,6 +52,10 @@ export default function ServicesScreen() {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Get app version
+  const appVersion = Constants.expoConfig?.version || '1.0.0';
+  const appMajorVersion = parseInt(appVersion.split('.')[0], 10);
 
   useEffect(() => {
     loadServices();
@@ -114,6 +120,14 @@ export default function ServicesScreen() {
     return iconMap[iconName] || 'circle.fill';
   };
 
+  // Filter services based on minVersion
+  const filteredServices = services.filter(service => {
+    // If no minVersion specified, always show
+    if (!service.minVersion) return true;
+    // Show only if app version is >= minVersion
+    return appMajorVersion >= service.minVersion;
+  });
+
   if (loading) {
     return (
       <ThemedView style={styles.container}>
@@ -151,7 +165,7 @@ export default function ServicesScreen() {
         </ThemedView>
 
         <ThemedView style={styles.servicesContainer}>
-          {services.map((service, index) => (
+          {filteredServices.map((service, index) => (
             <TouchableOpacity
               key={service.id || index}
               style={[
