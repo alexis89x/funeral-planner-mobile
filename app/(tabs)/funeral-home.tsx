@@ -6,11 +6,15 @@ import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
+import { PartnerDetail } from '@/components/PartnerDetail';
 
 export default function FuneralHomeScreen() {
-  const { token } = useAuth();
+  const { token, userProfile } = useAuth();
   const [webViewKey, setWebViewKey] = useState(0);
   const router = useRouter();
+
+  // Check if user has a partner referral
+  const partnerReferralId = userProfile?.user?.id_partner_referral;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -38,6 +42,12 @@ export default function FuneralHomeScreen() {
     });
   };
 
+  // If user has a partner referral, show native partner detail
+  if (partnerReferralId) {
+    return <PartnerDetail partnerId={partnerReferralId} showBackButton={false} showPurchaseButton={false} />;
+  }
+
+  // Otherwise, show webview
   // Add cache-busting timestamp in dev mode
   const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
   const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile${timestamp}`;
