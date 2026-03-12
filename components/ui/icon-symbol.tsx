@@ -35,6 +35,10 @@ const MAPPING = {
 
   // Action icons
   'rectangle.portrait.and.arrow.right': 'logout',
+
+  // Emergenza icons
+  'exclamationmark.shield.fill': 'warning',
+  'phone.fill': 'phone',
 } as IconMapping;
 
 /**

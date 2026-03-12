@@ -64,6 +64,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="emergenza"
+        options={{
+          title: 'Emergenza',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="exclamationmark.shield.fill" color={color} />,
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="account"
         options={{
           title: 'Profilo',
