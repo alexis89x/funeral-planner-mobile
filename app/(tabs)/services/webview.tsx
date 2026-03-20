@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
@@ -24,7 +23,7 @@ export default function ServiceWebViewScreen() {
   );
 
   // Add cache-busting timestamp in dev mode
-  const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
+  const timestamp = true || __DEV__ ? `&_t=${Date.now()}` : '';
   const baseUrl = params.url || '';
   const url = baseUrl ? (baseUrl.includes('?') ? `${baseUrl}${timestamp}` : `${baseUrl}?_t=${timestamp.slice(1)}`) : '';
   const title = params.title || 'Servizio';
@@ -57,50 +56,45 @@ export default function ServiceWebViewScreen() {
           headerBackTitle: 'Indietro',
         }}
       />
-      <SafeAreaView style={styles.safeContainer} edges={['bottom']}>
-        {url ? (
-          <WebView
-          key={webViewKey}
-          ref={webViewRef}
-          source={{
-            uri: url,
-            ...__DEV__ && {
-              headers: {
-                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0'
-              }
+      {url ? (
+        <WebView
+        key={webViewKey}
+        ref={webViewRef}
+        source={{
+          uri: url,
+          ...__DEV__ && {
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
             }
-          }}
-          style={styles.webview}
-          onMessage={handleMessage}
-          startInLoadingState={false}
-          javaScriptEnabled={true}
-          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-          cacheEnabled={!__DEV__}
-          incognito={__DEV__}
-          {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
-          // Camera/media permissions for iOS
-          allowsInlineMediaPlayback={true}
-          mediaPlaybackRequiresUserAction={false}
-          mediaCapturePermissionGrantType="grant"
-          renderLoading={() => (
-            <View style={styles.loading}>
-              <ActivityIndicator size="large" color={colors.tint} />
-            </View>
-          )}
-          />
-        ) : null}
-      </SafeAreaView>
+          }
+        }}
+        style={styles.webview}
+        onMessage={handleMessage}
+        startInLoadingState={false}
+        javaScriptEnabled={true}
+        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+        cacheEnabled={!__DEV__}
+        incognito={__DEV__}
+        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
+        // Camera/media permissions for iOS
+        allowsInlineMediaPlayback={true}
+        mediaPlaybackRequiresUserAction={false}
+        mediaCapturePermissionGrantType="grant"
+        renderLoading={() => (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color={colors.tint} />
+          </View>
+        )}
+        />
+      ) : null}
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  safeContainer: {
     flex: 1,
   },
   webview: {

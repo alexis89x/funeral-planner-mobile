@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
@@ -24,8 +23,7 @@ export default function EmergenzaWebViewScreen() {
           headerBackTitle: 'Indietro',
         }}
       />
-      <SafeAreaView style={styles.safeContainer} edges={['bottom']}>
-        <WebView
+      <WebView
           ref={webViewRef}
           source={{ uri: url }}
           style={styles.webview}
@@ -38,16 +36,12 @@ export default function EmergenzaWebViewScreen() {
             </View>
           )}
         />
-      </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  safeContainer: {
     flex: 1,
   },
   webview: {

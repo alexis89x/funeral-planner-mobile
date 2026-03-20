@@ -49,7 +49,7 @@ export default function FuneralHomeScreen() {
 
   // Otherwise, show webview
   // Add cache-busting timestamp in dev mode
-  const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
+  const timestamp = true || __DEV__ ? `&_t=${Date.now()}` : '';
   const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile${timestamp}`;
 
   return (

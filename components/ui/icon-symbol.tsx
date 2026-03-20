@@ -32,9 +32,18 @@ const MAPPING = {
   'heart.fill': 'favorite',
   'calendar': 'calendar-today',
   'doc.text.fill': 'description',
+  'doc.fill': 'insert-drive-file',
+  'info.circle.fill': 'info',
+  'gearshape.fill': 'settings',
+  'envelope.fill': 'email',
+  'star.fill': 'star',
+  'bookmark.fill': 'bookmark',
+  'circle.fill': 'circle',
+  'seal.fill': 'verified',
 
   // Action icons
   'rectangle.portrait.and.arrow.right': 'logout',
+  'trash': 'delete',
 
   // Emergenza icons
   'exclamationmark.shield.fill': 'warning',

@@ -35,6 +35,8 @@ const iconMap: Record<string, string> = {
   'calendar': 'calendar',
   'save': 'doc.text.fill',
   'doc': 'doc.fill',
+  'document': 'doc.text.fill',
+  'seal': 'seal.fill',
   'list': 'list.bullet',
   'person': 'person.fill',
   'phone': 'phone.fill',
@@ -158,12 +160,6 @@ export default function ServicesScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.header}>
-          <ThemedText style={styles.subtitle}>
-            Scegli il servizio di cui hai bisogno
-          </ThemedText>
-        </ThemedView>
-
         <ThemedView style={styles.servicesContainer}>
           {filteredServices.map((service, index) => (
             <TouchableOpacity
@@ -214,18 +210,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
-    alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    opacity: 0.8,
   },
   servicesContainer: {
     paddingBottom: 40,

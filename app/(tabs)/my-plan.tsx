@@ -29,7 +29,7 @@ export default function MyPlanScreen() {
   };
 
   // Add cache-busting timestamp in dev mode
-  const timestamp = __DEV__ ? `&_t=${Date.now()}` : '';
+  const timestamp = true || __DEV__ ? `&_t=${Date.now()}` : '';
 
   // Determine homepage based on plan type
   const getHomepagePath = () => {

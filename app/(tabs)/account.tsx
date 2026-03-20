@@ -79,11 +79,20 @@ export default function AccountScreen() {
               </View>
             </>
           )}
-          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+          {/* <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <View style={styles.infoRow}>
             <ThemedText style={styles.infoLabel}>Lingua</ThemedText>
             <ThemedText style={styles.infoValue}>{userProfile?.user?.lang?.toUpperCase() || 'N/A'}</ThemedText>
-          </View>
+          </View> */}
+          {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
+            <>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+              <View style={styles.infoRow}>
+                <ThemedText style={styles.infoLabel}>Piani posseduti</ThemedText>
+                <ThemedText style={styles.infoValue}>{userProfile.owned_plans.length}</ThemedText>
+              </View>
+            </>
+          )}
         </View>
       </View>
         {/*
@@ -113,13 +122,6 @@ export default function AccountScreen() {
       )}
 
         */}
-        {userProfile?.owned_plans && userProfile.owned_plans.length > 0 && (
-        <View style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Piani posseduti: {userProfile.owned_plans.length}
-          </ThemedText>
-        </View>
-      )}
 
       <View style={styles.section}>
         <TouchableOpacity
