@@ -1,16 +1,31 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { PLAN_STATUS } from "@/models/data.models";
+import { APP_BASE_URL } from '@/utils/api';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { userProfile } = useAuth();
+  const router = useRouter();
+
+  const handleNewPlan = () => {
+    router.push({
+      pathname: '/webview',
+      params: {
+        url: `${APP_BASE_URL}/public/search-flow?forceMode=mobile&t=${new Date().getTime()}`,
+        title: 'Nuova pianificazione',
+        injectToken: 'true',
+      }
+    });
+  };
 
   console.log("USER PROFILE", userProfile);
   // Determina il titolo del tab funeral-home basandosi sul profilo
@@ -35,6 +50,11 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
           headerShown: true,
           headerLeft: () => null,
+          headerRight: () => (
+            <TouchableOpacity onPress={handleNewPlan} style={{ marginRight: 16 }}>
+              <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Tabs.Screen

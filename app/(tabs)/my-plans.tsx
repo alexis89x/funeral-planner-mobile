@@ -16,12 +16,24 @@ import { ThemedText } from '@/components/themed-text';
 import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { switchPlan, formatPlanType, formatPaymentStatus, formatDate, getStatusColor } from '@/utils/plans';
+import { APP_BASE_URL } from '@/utils/api';
 
 export default function MyPlansScreen() {
   const { userProfile, reloadProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+
+  const handleNewPlan = () => {
+    router.push({
+      pathname: '/webview',
+      params: {
+        url: `${APP_BASE_URL}/public/search-flow?forceMode=mobile&t=${new Date().getTime()}`,
+        title: 'Nuova pianificazione',
+        injectToken: 'true',
+      }
+    });
+  };
 
   const plans = userProfile?.owned_plans || [];
   const currentPlanId = userProfile?.current_plan?.id;
@@ -155,6 +167,10 @@ export default function MyPlansScreen() {
           <ThemedText style={styles.emptySubtitle}>
             Contatta la tua onoranza funebre per attivare un piano.
           </ThemedText>
+          <TouchableOpacity style={styles.newPlanButton} onPress={handleNewPlan}>
+            <Ionicons name="add-circle-outline" size={20} color={BaseColors.white} />
+            <Text style={styles.newPlanButtonText}>Nuova pianificazione</Text>
+          </TouchableOpacity>
         </View>
       </ThemedView>
     );
@@ -185,6 +201,10 @@ export default function MyPlansScreen() {
         <View style={styles.plansList}>
           {plans.map(renderPlanCard)}
         </View>
+        <TouchableOpacity style={styles.newPlanButton} onPress={handleNewPlan}>
+          <Ionicons name="add-circle-outline" size={20} color={BaseColors.white} />
+          <Text style={styles.newPlanButtonText}>Nuova pianificazione</Text>
+        </TouchableOpacity>
       </ScrollView>
     </ThemedView>
   );
@@ -289,6 +309,22 @@ const styles = StyleSheet.create({
     color: BaseColors.greyMedium,
     textAlign: 'center',
     lineHeight: 24,
+  },
+  newPlanButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: BaseColors.main,
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    gap: 8,
+    marginTop: 24,
+  },
+  newPlanButtonText: {
+    color: BaseColors.white,
+    fontSize: 16,
+    fontWeight: '600',
   },
   loadingOverlay: {
     position: 'absolute',
