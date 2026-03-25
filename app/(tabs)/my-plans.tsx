@@ -24,7 +24,7 @@ export default function MyPlansScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 
-  const handleNewPlan = () => {
+  const goToSearchFlow = () => {
     router.push({
       pathname: '/webview',
       params: {
@@ -33,6 +33,58 @@ export default function MyPlansScreen() {
         injectToken: 'true',
       }
     });
+  };
+
+  const goToUpgrade = async (plan: Plan) => {
+    setIsLoading(true);
+    try {
+      if (plan.id !== currentPlanId) {
+        await switchPlan(plan.id);
+        await reloadProfile();
+      }
+      router.push({
+        pathname: '/webview',
+        params: {
+          url: `${APP_BASE_URL}/plan/upgrade/${plan.id}?forceMode=mobile&standalone=true&t=${new Date().getTime()}`,
+          title: 'Upgrade piano',
+          injectToken: 'true',
+        }
+      });
+    } catch (error: any) {
+      Alert.alert('Errore', error.message || 'Impossibile procedere con l\'upgrade');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNewPlan = () => {
+    if (plans.length > 1) {
+      goToSearchFlow();
+      return;
+    }
+
+    // Single plan. TODO EVENTUALLY BE ABLE TO SHOW AN UPGRADE.
+    /*const plan = plans[0];
+    if (plan?.type?.toLowerCase() === 'free') {
+      Alert.alert(
+        'Nuova pianificazione',
+        'Cosa vuoi fare?',
+        [
+          {
+            text: 'Upgrade piano attuale',
+            onPress: () => goToUpgrade(plan),
+          },
+          {
+            text: 'Nuova pianificazione',
+            onPress: goToSearchFlow,
+          },
+          { text: 'Annulla', style: 'cancel' },
+        ]
+      );
+    } else {
+      goToSearchFlow();
+    }*/
+    goToSearchFlow();
   };
 
   const plans = userProfile?.owned_plans || [];
