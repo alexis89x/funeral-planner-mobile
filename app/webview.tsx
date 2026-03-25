@@ -14,7 +14,7 @@ export default function WebViewScreen() {
   const params = useLocalSearchParams<{ url: string; title?: string; injectToken?: string }>();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { token } = useAuth();
+  const { token, reloadProfile } = useAuth();
   const [webViewKey, setWebViewKey] = useState(0);
 
   useFocusEffect(
@@ -31,6 +31,10 @@ export default function WebViewScreen() {
     await handleWebViewMessage(event, {
       onGoBack: () => router.back(),
       onNavigate: (route: string) => router.push(route as any),
+      onRefreshUser: async () => {
+        await reloadProfile();
+        router.push('/(tabs)/my-plans');
+      },
       onData: (data: any) => {
         console.log('Dati ricevuti:', data);
       },

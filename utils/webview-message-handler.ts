@@ -4,7 +4,8 @@ import { APP_BASE_URL } from "@/utils/api";
 export interface WebViewMessageHandlers {
   onGoBack?: () => void;
   onNavigate?: (route: string) => void;
-  [key: string]: ((arg?: any) => void) | undefined;
+  onRefreshUser?: () => Promise<void>;
+  [key: string]: ((arg?: any) => void | Promise<void>) | undefined;
 }
 
 /**
@@ -62,6 +63,13 @@ export const handleWebViewMessage = async (
           console.error('❌ Missing route in navigate message');
         } else {
           console.warn('⚠️ No onNavigate callback provided');
+        }
+        break;
+      case 'refreshUser':
+        if (handlers.onRefreshUser) {
+          await handlers.onRefreshUser();
+        } else {
+          console.warn('⚠️ No onRefreshUser callback provided');
         }
         break;
       case 'downloadPDF':
