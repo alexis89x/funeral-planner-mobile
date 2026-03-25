@@ -7,6 +7,7 @@ import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
+import { skipCacheInWebview } from "@/utils/webview.utils";
 
 export default function MyPlanScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -29,7 +30,7 @@ export default function MyPlanScreen() {
   };
 
   // Add cache-busting timestamp in dev mode
-  const timestamp = true || __DEV__ ? `&_t=${Date.now()}` : '';
+  const timestamp = skipCacheInWebview() ? `&_t=${Date.now()}` : '';
 
   // Determine homepage based on plan type
   const getHomepagePath = () => {
@@ -75,9 +76,9 @@ export default function MyPlanScreen() {
         startInLoadingState={false}
         javaScriptEnabled={true}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-        cacheEnabled={!__DEV__}
+        cacheEnabled={!skipCacheInWebview()}
         incognito={__DEV__}
-        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
+        {...(skipCacheInWebview() && { cacheMode: "LOAD_NO_CACHE" })}
         // Camera/media permissions for iOS
         allowsInlineMediaPlayback={true}
         mediaPlaybackRequiresUserAction={false}

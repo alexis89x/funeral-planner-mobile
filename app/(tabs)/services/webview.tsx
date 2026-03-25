@@ -7,6 +7,7 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
+import { skipCacheInWebview } from "@/utils/webview.utils";
 
 export default function ServiceWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -23,7 +24,7 @@ export default function ServiceWebViewScreen() {
   );
 
   // Add cache-busting timestamp in dev mode
-  const timestamp = true || __DEV__ ? `&_t=${Date.now()}` : '';
+  const timestamp = skipCacheInWebview() ? `&_t=${Date.now()}` : '';
   const baseUrl = params.url || '';
   const url = baseUrl ? (baseUrl.includes('?') ? `${baseUrl}${timestamp}` : `${baseUrl}?_t=${timestamp.slice(1)}`) : '';
   const title = params.title || 'Servizio';
@@ -62,7 +63,7 @@ export default function ServiceWebViewScreen() {
         ref={webViewRef}
         source={{
           uri: url,
-          ...__DEV__ && {
+          ...skipCacheInWebview() && {
             headers: {
               'Cache-Control': 'no-cache, no-store, must-revalidate',
               'Pragma': 'no-cache',
@@ -75,9 +76,9 @@ export default function ServiceWebViewScreen() {
         startInLoadingState={false}
         javaScriptEnabled={true}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-        cacheEnabled={!__DEV__}
+        cacheEnabled={!skipCacheInWebview()}
         incognito={__DEV__}
-        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
+        {...(skipCacheInWebview() && { cacheMode: "LOAD_NO_CACHE" })}
         // Camera/media permissions for iOS
         allowsInlineMediaPlayback={true}
         mediaPlaybackRequiresUserAction={false}

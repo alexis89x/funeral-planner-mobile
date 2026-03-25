@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
 import { PartnerDetail } from '@/components/PartnerDetail';
+import { skipCacheInWebview } from "@/utils/webview.utils";
 
 export default function FuneralHomeScreen() {
   const { token, userProfile } = useAuth();
@@ -49,7 +50,7 @@ export default function FuneralHomeScreen() {
 
   // Otherwise, show webview
   // Add cache-busting timestamp in dev mode
-  const timestamp = true || __DEV__ ? `&_t=${Date.now()}` : '';
+  const timestamp = skipCacheInWebview() ? `&_t=${Date.now()}` : '';
   const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile${timestamp}`;
 
   return (
@@ -58,7 +59,7 @@ export default function FuneralHomeScreen() {
         key={webViewKey}
         source={{
           uri: url,
-          ...__DEV__ && {
+          ...skipCacheInWebview() && {
             headers: {
               'Cache-Control': 'no-cache, no-store, must-revalidate',
               'Pragma': 'no-cache',
@@ -70,9 +71,9 @@ export default function FuneralHomeScreen() {
         style={styles.webview}
         startInLoadingState={false}
         onMessage={handleMessage}
-        cacheEnabled={!__DEV__}
+        cacheEnabled={!skipCacheInWebview()}
         incognito={__DEV__}
-        {...(__DEV__ && { cacheMode: "LOAD_NO_CACHE" })}
+        {...(skipCacheInWebview() && { cacheMode: "LOAD_NO_CACHE" })}
       />
     </ThemedView>
   );
