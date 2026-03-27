@@ -13,7 +13,7 @@ export default function MyPlanScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
   const router = useRouter();
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { type, action } = useLocalSearchParams<{ type?: string; action?: string }>();
   const [webViewKey, setWebViewKey] = useState(0);
 
   useFocusEffect(
@@ -40,7 +40,8 @@ export default function MyPlanScreen() {
     return '/plan/plan_homepage';
   };
 
-  const baseUrl = `${APP_BASE_URL}${getHomepagePath()}?standalone=true&forceMode=mobile`;
+  const actionParam = action ? `&action=${action}` : '';
+  const baseUrl = `${APP_BASE_URL}${getHomepagePath()}?standalone=true&forceMode=mobile${actionParam}`;
   const url = baseUrl + (baseUrl.includes('?') ? `${timestamp}` : `?_t=${timestamp.slice(1)}`);
 
   const injectedJavaScript = `

@@ -43,12 +43,8 @@ export default function MyPlansScreen() {
         await reloadProfile();
       }
       router.push({
-        pathname: '/webview',
-        params: {
-          url: `${APP_BASE_URL}/plan/upgrade/${plan.id}?forceMode=mobile&standalone=true&t=${new Date().getTime()}`,
-          title: 'Upgrade piano',
-          injectToken: 'true',
-        }
+        pathname: '/(tabs)/my-plan',
+        params: { type: plan.type, action: 'upgradePlan' }
       });
     } catch (error: any) {
       Alert.alert('Errore', error.message || 'Impossibile procedere con l\'upgrade');
@@ -64,7 +60,7 @@ export default function MyPlansScreen() {
     }
 
     // Single plan. TODO EVENTUALLY BE ABLE TO SHOW AN UPGRADE.
-    /*const plan = plans[0];
+    const plan = plans[0];
     if (plan?.type?.toLowerCase() === 'free') {
       Alert.alert(
         'Nuova pianificazione',
@@ -83,8 +79,7 @@ export default function MyPlansScreen() {
       );
     } else {
       goToSearchFlow();
-    }*/
-    goToSearchFlow();
+    }
   };
 
   const plans = userProfile?.owned_plans || [];
