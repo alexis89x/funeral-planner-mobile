@@ -6,7 +6,7 @@
   "expo": {
     "version": "1.1.0",  // <- Incrementa versione
     "ios": {
-      "buildNumber": "3"  // <- Incrementa build number
+      "buildNumber": "3"  // <- NON SERVE, LO FA LUI AUTOMATICAMENTE Incrementa build number
     }
   }
 }
@@ -16,6 +16,8 @@
 ```bash
 eas build --platform ios --profile production
 ```
+
+Login con account nanuktechnology@gmail.com
 
 Aspetta 15-20 minuti.
 

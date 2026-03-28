@@ -20,9 +20,19 @@ eas build --platform android --profile production
 Aspetta 15-20 minuti.
 
 ## 3. Submit su Google Play Console
+
+NON FUNZIONA! DEVI FARLO MANUALMENTE
 ```bash
 eas submit --platform android --profile production
 ```
+
+Carica manualmente su Play Console:
+
+Vai sulla pagina che hai nello screenshot
+Sezione "App bundle" → Click sull'icona del file
+Seleziona il file .aab scaricato
+Compila le note di rilascio
+Click "Avanti"
 
 Aspetta 10-15 minuti.
 
@@ -33,7 +43,7 @@ https://play.google.com/console
 ### 5. Vai alla tua app
 
 - Seleziona **Tramonto Sereno**
-- Menu laterale → **Release** → **Produzione**
+- Menu laterale → **Testa e rilascia** → **Produzione**
 
 ### 6. Crea nuova release
 

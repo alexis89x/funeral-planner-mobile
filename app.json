@@ -2,7 +2,7 @@
   "expo": {
     "name": "Tramonto Sereno",
     "slug": "funeral-planner-mobile",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tramontosereno",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "it.nanuktechnology.tramontosereno",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Tramonto Sereno ha bisogno di accedere alla fotocamera per permetterti di scattare e caricare la tua foto profilo personale, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
@@ -29,7 +29,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "it.nanuktechnology.tramontosereno",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "output": "static",
