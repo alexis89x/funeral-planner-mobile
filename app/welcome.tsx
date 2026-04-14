@@ -331,6 +331,15 @@ export default function WelcomeScreen() {
           )}
         </View>
 
+        {/* Emergency contact link */}
+        <View style={styles.emergencyLinkContainer}>
+          <TouchableOpacity onPress={() => router.push('/emergency-contact')}>
+            <ThemedText style={[styles.emergencyLinkText, { color: colors.tint }]}>
+              Sei un contatto di emergenza? Accedi qui
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
         {/* Partner section - persists across logout */}
         {lastPartnerName && (
           <View style={[styles.partnerSectionBottom, { bottom: Math.max(40, insets.bottom + 16) }]}>
@@ -434,5 +443,13 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: 8,
+  },
+  emergencyLinkContainer: {
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  emergencyLinkText: {
+    fontSize: 14,
+    textDecorationLine: 'underline',
   },
 });
