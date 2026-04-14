@@ -38,7 +38,7 @@ function RootLayoutNav() {
         console.warn('❌ Error hiding splash:', e);
       }
     };
-    
+
     // Hide splash screen with a small delay to ensure smooth transition
     const timer = setTimeout(hideSplash, 100);
     return () => clearTimeout(timer);
@@ -55,6 +55,7 @@ function RootLayoutNav() {
     const inWelcome = segments[0] === 'welcome';
     const inLoginFlow = segments[0] === 'login-email' || segments[0] === 'login-google';
     const inWebview = segments[0] === 'webview';
+    const inEmergencyContact = segments[0] === 'emergency-contact';
     const inModal = segments[0] === 'modal';
 
     console.log('🔐 Checking routes', {
@@ -67,9 +68,9 @@ function RootLayoutNav() {
       segments
     });
 
-    // Don't redirect if in webview or modal
-    if (inWebview || inModal) {
-      console.log('✅ In webview/modal, no redirect');
+    // Don't redirect if in webview, modal or emergency contact
+    if (inWebview || inModal || inEmergencyContact) {
+      console.log('✅ In webview/modal/emergency-contact, no redirect');
       return;
     }
 
@@ -96,9 +97,9 @@ function RootLayoutNav() {
   if (isLoading && loadingState !== 'completed') {
     return (
       <>
-        <LoadingScreen 
-          loadingState={loadingState} 
-          error={loadingError || undefined} 
+        <LoadingScreen
+          loadingState={loadingState}
+          error={loadingError || undefined}
         />
         <StatusBar style="light" />
       </>
@@ -113,6 +114,7 @@ function RootLayoutNav() {
         <Stack.Screen name="login-email" options={{ headerShown: false, headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="login-google" options={{ headerShown: false, headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="webview" options={{ headerBackTitle: 'Indietro' }} />
+        <Stack.Screen name="emergency-contact" options={{ headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="delete-account" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
