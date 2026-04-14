@@ -1,13 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useLocalSearchParams, router, useFocusEffect } from 'expo-router';
+import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
+import { isWebviewCacheStale, markWebviewLoaded } from '@/utils/webview.utils';
 
 export default function WebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -15,17 +16,19 @@ export default function WebViewScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { token, reloadProfile } = useAuth();
-  const [webViewKey, setWebViewKey] = useState(0);
+  const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setWebViewKey(prev => prev + 1);
-    }, [])
-  );
-
-  const url = params.url || '';
+  const rawUrl = params.url || '';
   const title = params.title || 'WebView';
   const shouldInjectToken = params.injectToken === 'true';
+
+  // Decide se aggiungere il timestamp per busting della cache HTTP
+  useEffect(() => {
+    if (!rawUrl) return;
+    isWebviewCacheStale(rawUrl).then(stale => {
+      setEffectiveUrl(stale ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}_t=${Date.now()}` : rawUrl);
+    });
+  }, [rawUrl]);
 
   const handleMessage = async (event: any) => {
     await handleWebViewMessage(event, {
@@ -41,9 +44,9 @@ export default function WebViewScreen() {
     });
   };
 
-  /*const sendMessageToWebView = (message: any) => {
-    webViewRef.current?.postMessage(JSON.stringify(message));
-  };*/
+  const handleLoadEnd = () => {
+    if (rawUrl) markWebviewLoaded(rawUrl);
+  };
 
   const injectedJavaScript = shouldInjectToken
     ? `
@@ -74,16 +77,18 @@ export default function WebViewScreen() {
         }}
       />
       <SafeAreaView style={styles.safeContainer} edges={['bottom']}>
-        {url ? (
+        {effectiveUrl ? (
           <WebView
-          key={webViewKey}
           ref={webViewRef}
-          source={{ uri: url }}
+          source={{ uri: effectiveUrl }}
           style={styles.webview}
           startInLoadingState={false}
           onMessage={handleMessage}
+          onLoadEnd={handleLoadEnd}
           javaScriptEnabled={true}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          cacheEnabled={true}
+          sharedCookiesEnabled={true}
           // Camera/media permissions for iOS
           allowsInlineMediaPlayback={true}
           mediaPlaybackRequiresUserAction={false}

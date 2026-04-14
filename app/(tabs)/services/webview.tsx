@@ -1,13 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
-import { skipCacheInWebview } from "@/utils/webview.utils";
+import { isWebviewCacheStale, markWebviewLoaded } from "@/utils/webview.utils";
 
 export default function ServiceWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -15,19 +15,17 @@ export default function ServiceWebViewScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { token } = useAuth();
-  const [webViewKey, setWebViewKey] = useState(0);
+  const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setWebViewKey(prev => prev + 1);
-    }, [])
-  );
-
-  // Add cache-busting timestamp in dev mode
-  const timestamp = skipCacheInWebview() ? `&_t=${Date.now()}` : '';
-  const baseUrl = params.url || '';
-  const url = baseUrl ? (baseUrl.includes('?') ? `${baseUrl}${timestamp}` : `${baseUrl}?_t=${timestamp.slice(1)}`) : '';
+  const rawUrl = params.url || '';
   const title = params.title || 'Servizio';
+
+  useEffect(() => {
+    if (!rawUrl) return;
+    isWebviewCacheStale(rawUrl).then(stale => {
+      setEffectiveUrl(stale ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}_t=${Date.now()}` : rawUrl);
+    });
+  }, [rawUrl]);
 
   const handleMessage = async (event: any) => {
     await handleWebViewMessage(event, {
@@ -57,37 +55,27 @@ export default function ServiceWebViewScreen() {
           headerBackTitle: 'Indietro',
         }}
       />
-      {url ? (
+      {effectiveUrl ? (
         <WebView
-        key={webViewKey}
-        ref={webViewRef}
-        source={{
-          uri: url,
-          ...skipCacheInWebview() && {
-            headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0'
-            }
-          }
-        }}
-        style={styles.webview}
-        onMessage={handleMessage}
-        startInLoadingState={false}
-        javaScriptEnabled={true}
-        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-        cacheEnabled={!skipCacheInWebview()}
-        incognito={__DEV__}
-        {...(skipCacheInWebview() && { cacheMode: "LOAD_NO_CACHE" })}
-        // Camera/media permissions for iOS
-        allowsInlineMediaPlayback={true}
-        mediaPlaybackRequiresUserAction={false}
-        mediaCapturePermissionGrantType="grant"
-        renderLoading={() => (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color={colors.tint} />
-          </View>
-        )}
+          ref={webViewRef}
+          source={{ uri: effectiveUrl }}
+          style={styles.webview}
+          onMessage={handleMessage}
+          onLoadEnd={() => markWebviewLoaded(rawUrl)}
+          startInLoadingState={false}
+          javaScriptEnabled={true}
+          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          cacheEnabled={true}
+          sharedCookiesEnabled={true}
+          // Camera/media permissions for iOS
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
+          mediaCapturePermissionGrantType="grant"
+          renderLoading={() => (
+            <View style={styles.loading}>
+              <ActivityIndicator size="large" color={colors.tint} />
+            </View>
+          )}
         />
       ) : null}
     </ThemedView>

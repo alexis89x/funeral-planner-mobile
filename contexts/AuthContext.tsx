@@ -8,6 +8,7 @@ import { api, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from "@/utils/security";
 import { logRequest, logResponse, logError, logFormData } from '@/utils/http-logger';
 import { isExpoGo } from "@/utils/utils";
+import { clearWebviewCache } from "@/utils/webview.utils";
 
 // Conditional import for Google Sign-In (only for device builds)
 let GoogleSignin: any = null;
@@ -763,6 +764,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
       // Clear cached services
       await AsyncStorage.removeItem('@funeral_planner_services');
+      // Clear webview cache so the next login fetches fresh content
+      await clearWebviewCache();
       // NOTE: Device ID is NOT cleared on logout - it persists
       setCurrentUser(null);
       setUserProfile(null);

@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from "@/utils/api";
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
 import { PartnerDetail } from '@/components/PartnerDetail';
-import { skipCacheInWebview } from "@/utils/webview.utils";
+import { isWebviewCacheStale, markWebviewLoaded } from "@/utils/webview.utils";
 
 export default function FuneralHomeScreen() {
   const { token, userProfile } = useAuth();
-  const [webViewKey, setWebViewKey] = useState(0);
   const router = useRouter();
+  const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
 
-  // Check if user has a partner referral
   const partnerReferralId = userProfile?.user?.id_partner_referral;
+  const rawUrl = `${APP_BASE_URL}/user/main-partner?forceMode=mobile`;
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setWebViewKey(prev => prev + 1);
-    }, [])
-  );
+  useEffect(() => {
+    if (partnerReferralId) return;
+    isWebviewCacheStale(rawUrl).then(stale => {
+      setEffectiveUrl(stale ? `${rawUrl}&_t=${Date.now()}` : rawUrl);
+    });
+  }, [partnerReferralId, rawUrl]);
 
   const injectedJavaScript = `
     (function() {
@@ -43,38 +44,25 @@ export default function FuneralHomeScreen() {
     });
   };
 
-  // If user has a partner referral, show native partner detail
   if (partnerReferralId) {
     return <PartnerDetail partnerId={partnerReferralId} showBackButton={false} showPurchaseButton={false} />;
   }
 
-  // Otherwise, show webview
-  // Add cache-busting timestamp in dev mode
-  const timestamp = skipCacheInWebview() ? `&_t=${Date.now()}` : '';
-  const url = `${APP_BASE_URL}/user/main-partner?forceMode=mobile${timestamp}`;
-
   return (
     <ThemedView style={styles.container}>
-      <WebView
-        key={webViewKey}
-        source={{
-          uri: url,
-          ...skipCacheInWebview() && {
-            headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0'
-            }
-          }
-        }}
-        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-        style={styles.webview}
-        startInLoadingState={false}
-        onMessage={handleMessage}
-        cacheEnabled={!skipCacheInWebview()}
-        incognito={__DEV__}
-        {...(skipCacheInWebview() && { cacheMode: "LOAD_NO_CACHE" })}
-      />
+      {effectiveUrl ? (
+        <WebView
+          source={{ uri: effectiveUrl }}
+          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          style={styles.webview}
+          startInLoadingState={false}
+          onMessage={handleMessage}
+          onLoadEnd={() => markWebviewLoaded(rawUrl)}
+          javaScriptEnabled={true}
+          cacheEnabled={true}
+          sharedCookiesEnabled={true}
+        />
+      ) : null}
     </ThemedView>
   );
 }
