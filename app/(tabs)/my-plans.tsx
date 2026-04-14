@@ -18,11 +18,28 @@ import { useAuth, Plan } from '@/contexts/AuthContext';
 import { switchPlan, formatPlanType, formatPaymentStatus, formatDate, getStatusColor } from '@/utils/plans';
 import { APP_BASE_URL } from '@/utils/api';
 
+const USER_STATUS_FORCE_PSW_CHANGE = 350;
+
 export default function MyPlansScreen() {
   const { userProfile, reloadProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userProfile?.user.status === USER_STATUS_FORCE_PSW_CHANGE) {
+        router.replace({
+          pathname: '/webview',
+          params: {
+            url: `${APP_BASE_URL}/user/profile?forceMode=mobile`,
+            title: 'Cambia password',
+            injectToken: 'true',
+          },
+        });
+      }
+    }, [userProfile])
+  );
 
   const goToSearchFlow = () => {
     router.push({
