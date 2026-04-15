@@ -13,7 +13,7 @@ export default function MyPlanScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
   const router = useRouter();
-  const { type, action } = useLocalSearchParams<{ type?: string; action?: string }>();
+  const { type, action, forceReload } = useLocalSearchParams<{ type?: string; action?: string; forceReload?: string }>();
   const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
 
   const getHomepagePath = () => {
@@ -25,10 +25,14 @@ export default function MyPlanScreen() {
   const rawUrl = `${APP_BASE_URL}${getHomepagePath()}?standalone=true&forceMode=mobile${actionParam}`;
 
   useEffect(() => {
+    if (forceReload === 'true') {
+      setEffectiveUrl(`${rawUrl}&_t=${Date.now()}`);
+      return;
+    }
     isWebviewCacheStale(rawUrl).then(stale => {
       setEffectiveUrl(stale ? `${rawUrl}&_t=${Date.now()}` : rawUrl);
     });
-  }, [rawUrl]);
+  }, [rawUrl, forceReload]);
 
   const handleMessage = async (event: any) => {
     await handleWebViewMessage(event, {
