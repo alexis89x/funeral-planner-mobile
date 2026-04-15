@@ -17,6 +17,7 @@ import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { switchPlan, formatPlanType, formatPaymentStatus, formatDate, getStatusColor } from '@/utils/plans';
 import { APP_BASE_URL } from '@/utils/api';
+import { clearWebviewCache } from '@/utils/webview.utils';
 
 const USER_STATUS_FORCE_PSW_CHANGE = 350;
 
@@ -57,6 +58,7 @@ export default function MyPlansScreen() {
     try {
       if (plan.id !== currentPlanId) {
         await switchPlan(plan.id);
+        await clearWebviewCache();
         await reloadProfile();
       }
       router.push({
@@ -142,6 +144,7 @@ export default function MyPlansScreen() {
     setIsLoading(true);
     try {
       await switchPlan(plan.id);
+      await clearWebviewCache();
       await reloadProfile();
 
       // Redirect to WebView to see the selected plan
