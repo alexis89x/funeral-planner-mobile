@@ -115,10 +115,9 @@ export default function MyPlansScreen() {
 
   const handlePlanPress = async (plan: Plan) => {
     if (plan.id === currentPlanId) {
-      // Plan already selected, go to plan details
       router.push({
         pathname: '/(tabs)/my-plan',
-        params: { type: plan.type }
+        params: { type: plan.type, forceReload: 'true' }
       });
       return;
     }

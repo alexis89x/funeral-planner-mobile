@@ -6,8 +6,9 @@ import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { APP_BASE_URL } from "@/utils/api";
 
-const EMERGENCY_URL = 'https://app.tramontosereno.it/auth/plan-emergency?forceMode=mobile';
+const EMERGENCY_URL = `${APP_BASE_URL}/auth/plan-emergency?forceMode=mobile`;
 
 export default function EmergencyContactScreen() {
   const webViewRef = useRef<WebView>(null);

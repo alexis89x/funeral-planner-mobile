@@ -3,6 +3,7 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
+import { APP_BASE_URL } from "@/utils/api";
 
 export default function ProductsScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -11,7 +12,7 @@ export default function ProductsScreen() {
     <ThemedView style={styles.container}>
       <WebView
         ref={webViewRef}
-        source={{ uri: 'https://app.tramontosereno.it/products' }}
+        source={{ uri: `${APP_BASE_URL}/products` }}
         style={styles.webview}
         startInLoadingState={false}
         renderLoading={() => (

@@ -588,7 +588,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoadingProfile(true);
       console.log("FETCHING PROFILE FROM API");
-      const response = await api.get<any>('profile');
+      const response = await api.get<any>('profile', undefined, { manualErrorManagement: true });
 
       if (response.data) {
         const profile: UserProfile = {

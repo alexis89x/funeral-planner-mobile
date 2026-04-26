@@ -90,9 +90,17 @@ export default function LoginEmailScreen() {
     try {
       await login(email, password);
       router.replace('/(tabs)/my-plans');
-    } catch (error) {
+    } catch (error: any) {
       console.log("ERROR", error);
-      Alert.alert('Errore', 'Email o password non validi');
+      const msg = error?.message || '';
+      const rateLimitMessages: Record<string, string> = {
+        'ERROR_API.RATE-LIMIT-5MIN': 'Troppi tentativi. Riprova tra 5 minuti.',
+        'ERROR_API.RATE-LIMIT-1HOUR': 'Troppi tentativi. Riprova tra 1 ora.',
+        'ERROR_API.USERNAME-RATE-LIMIT-5MIN': 'Troppi tentativi per questo account. Riprova tra 5 minuti.',
+        'ERROR_API.USERNAME-RATE-LIMIT-1HOUR': 'Troppi tentativi per questo account. Riprova tra 1 ora.',
+        'ERROR_API.RATE-LIMITED': 'Troppi tentativi. Riprova più tardi.',
+      };
+      Alert.alert('Errore', rateLimitMessages[msg] ?? 'Email o password non validi');
     } finally {
       setIsLoading(false);
     }
