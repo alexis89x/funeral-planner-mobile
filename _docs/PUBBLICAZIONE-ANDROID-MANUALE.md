@@ -40,7 +40,7 @@ https://play.google.com/console
 
 ### 4.3. Crea nuova release
 
-- Menu laterale → **Release** → **Produzione**
+- Menu laterale → **Testa e rilascia** → **Produzione**
 - Clicca **"Crea nuova release"**
 
 ### 4.4. Carica l'AAB
