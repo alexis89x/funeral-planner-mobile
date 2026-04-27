@@ -13,8 +13,9 @@ export default function MyPlanScreen() {
   const webViewRef = useRef<WebView>(null);
   const { token } = useAuth();
   const router = useRouter();
-  const { type, action, forceReload } = useLocalSearchParams<{ type?: string; action?: string; forceReload?: string }>();
+  const { type, action, forceReload, planId } = useLocalSearchParams<{ type?: string; action?: string; forceReload?: string; planId?: string }>();
   const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
+  const loadedPlanIdRef = useRef<string | undefined>(undefined);
 
   const getHomepagePath = () => {
     if (type === 'pet') return '/plan/pet_homepage';
@@ -25,14 +26,19 @@ export default function MyPlanScreen() {
   const rawUrl = `${APP_BASE_URL}${getHomepagePath()}?standalone=true&forceMode=mobile${actionParam}`;
 
   useEffect(() => {
-    if (forceReload === 'true') {
-      setEffectiveUrl(`${rawUrl}&_t=${Date.now()}`);
+    if (forceReload) {
+      loadedPlanIdRef.current = planId;
+      setEffectiveUrl(`${rawUrl}&_t=${forceReload}`);
       return;
     }
+
+    if (planId && planId === loadedPlanIdRef.current) return;
+    loadedPlanIdRef.current = planId;
+
     isWebviewCacheStale(rawUrl).then(stale => {
       setEffectiveUrl(stale ? `${rawUrl}&_t=${Date.now()}` : rawUrl);
     });
-  }, [rawUrl, forceReload]);
+  }, [rawUrl, forceReload, planId]);
 
   const handleMessage = async (event: any) => {
     await handleWebViewMessage(event, {
@@ -59,6 +65,7 @@ export default function MyPlanScreen() {
       {effectiveUrl ? (
         <WebView
           ref={webViewRef}
+          key={effectiveUrl}
           source={{ uri: effectiveUrl }}
           style={styles.webview}
           onMessage={handleMessage}

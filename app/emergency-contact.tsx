@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { APP_BASE_URL } from "@/utils/api";
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 const EMERGENCY_URL = `${APP_BASE_URL}/auth/plan-emergency?forceMode=mobile`;
 
@@ -15,6 +16,13 @@ export default function EmergencyContactScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleMessage = async (event: any) => {
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any),
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -38,6 +46,7 @@ export default function EmergencyContactScreen() {
               true;
             })();
           `}
+          onMessage={handleMessage}
           onLoadEnd={() => setIsLoading(false)}
           renderLoading={() => (
             <View style={styles.loading}>

@@ -117,7 +117,7 @@ export default function MyPlansScreen() {
     if (plan.id === currentPlanId) {
       router.push({
         pathname: '/(tabs)/my-plan',
-        params: { type: plan.type, forceReload: 'true' }
+        params: { type: plan.type, planId: plan.id.toString() }
       });
       return;
     }
@@ -145,7 +145,7 @@ export default function MyPlansScreen() {
 
       router.push({
         pathname: '/(tabs)/my-plan',
-        params: { type: plan.type, forceReload: 'true' }
+        params: { type: plan.type, planId: plan.id.toString(), forceReload: Date.now().toString() }
       });
     } catch (error: any) {
       Alert.alert(

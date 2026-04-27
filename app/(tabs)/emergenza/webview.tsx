@@ -5,6 +5,7 @@ import { WebView } from 'react-native-webview';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { handleWebViewMessage } from '@/utils/webview-message-handler';
 
 export default function EmergenzaWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -14,6 +15,13 @@ export default function EmergenzaWebViewScreen() {
 
   const url = params.url || 'https://app.tramontosereno.it';
   const title = params.title || 'Emergenza';
+
+  const handleMessage = async (event: any) => {
+    await handleWebViewMessage(event, {
+      onGoBack: () => router.back(),
+      onNavigate: (route: string) => router.push(route as any),
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -30,6 +38,7 @@ export default function EmergenzaWebViewScreen() {
           startInLoadingState={false}
           javaScriptEnabled={true}
           domStorageEnabled={true}
+          onMessage={handleMessage}
           renderLoading={() => (
             <View style={styles.loading}>
               <ActivityIndicator size="large" color={colors.tint} />
