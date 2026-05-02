@@ -10,6 +10,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import LoadingScreen from '@/components/LoadingScreen';
+import { UpdateBanner } from '@/components/UpdateBanner';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -119,6 +120,7 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
+      <UpdateBanner />
       <StatusBar style="auto" />
     </ThemeProvider>
   );
