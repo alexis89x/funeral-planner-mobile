@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
@@ -7,11 +7,41 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ApiService } from '@/utils/api';
 
 export default function AccountScreen() {
   const { userProfile, logout } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const [unlinkLoading, setUnlinkLoading] = useState(false);
+
+  const handleUnlinkFuneralHome = () => {
+    Alert.alert(
+      'Cambia onoranza funebre',
+      'I tuoi piani sono stati offerti dall\'onoranza funebre a cui sei collegato. Richiedendo il cambio dovrai scegliere una nuova onoranza funebre o passare a un piano avanzato. Vuoi procedere?',
+      [
+        { text: 'Annulla', style: 'cancel' },
+        {
+          text: 'Conferma',
+          style: 'destructive',
+          onPress: async () => {
+            setUnlinkLoading(true);
+            try {
+              await ApiService.post('user-request-unlink', {}, { manualErrorManagement: true });
+              Alert.alert(
+                'Richiesta inviata',
+                'Abbiamo ricevuto la richiesta di cambio onoranza funebre, verrai contattato il prima possibile tramite email o telefono.'
+              );
+            } catch {
+              Alert.alert('Errore', 'Si è verificato un errore durante l\'invio della richiesta. Riprova più tardi.');
+            } finally {
+              setUnlinkLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Sei sicuro di voler uscire?', [
@@ -136,6 +166,20 @@ export default function AccountScreen() {
         <ThemedText type="subtitle" style={styles.sectionTitle}>
           Altre azioni
         </ThemedText>
+        {!!userProfile?.user?.id_partner_referral && (
+          <>
+            <TouchableOpacity
+              style={[styles.deleteAccountButton, unlinkLoading && styles.disabledButton]}
+              onPress={handleUnlinkFuneralHome}
+              disabled={unlinkLoading}>
+              <IconSymbol name="link.badge.minus" size={18} color="#dc3545" />
+              <ThemedText style={styles.deleteAccountButtonText}>
+                {unlinkLoading ? 'Invio in corso...' : 'Cambia onoranza funebre'}
+              </ThemedText>
+            </TouchableOpacity>
+            <View style={[styles.divider, { backgroundColor: colors.border, marginVertical: 4 }]} />
+          </>
+        )}
         <TouchableOpacity
           style={styles.deleteAccountButton}
           onPress={() => router.push('/delete-account')}>
@@ -224,5 +268,8 @@ const styles = StyleSheet.create({
   deleteAccountButtonText: {
     color: '#dc3545',
     fontSize: 14,
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });

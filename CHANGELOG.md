@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.4.1] - 2026-05-03
+
+### Aggiunto
+- Pulsante "Cambia onoranza funebre" nella schermata profilo: visibile solo se l'utente è collegato a un'onoranza funebre (`id_partner_referral`), chiede conferma e invia la richiesta tramite API (`user-request-unlink`)
+
+
 ## [v1.4.0] - 2026-05-02
 
 ### Aggiunto
