@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.4.0] - 2026-05-02
+
+### Aggiunto
+- Richiesta permesso di localizzazione nella schermata "Cerca onoranza": le coordinate vengono passate alla WebView come parametri URL e salvate in `localStorage`
+- Banner di aggiornamento disponibile: controlla silenziosamente la versione più recente dell'app all'avvio e mostra un banner una tantum (per versione) con link al download
+
+
 ## [v1.3.0] - 2026-04-27
 
 ### Aggiunto
