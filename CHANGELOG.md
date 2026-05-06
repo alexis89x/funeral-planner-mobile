@@ -1,17 +1,11 @@
 # Changelog
 
-## [v1.4.1] - 2026-05-03
-
-### Aggiunto
-- Pulsante "Cambia onoranza funebre" nella schermata profilo: visibile solo se l'utente è collegato a un'onoranza funebre (`id_partner_referral`), chiede conferma e invia la richiesta tramite API (`user-request-unlink`)
-
-
 ## [v1.4.0] - 2026-05-02
 
 ### Aggiunto
+- Pulsante "Cambia onoranza funebre" nella schermata profilo: visibile solo se l'utente è collegato a un'onoranza funebre (`id_partner_referral`), chiede conferma e invia la richiesta tramite API (`user-request-unlink`)
 - Richiesta permesso di localizzazione nella schermata "Cerca onoranza": le coordinate vengono passate alla WebView come parametri URL e salvate in `localStorage`
 - Banner di aggiornamento disponibile: controlla silenziosamente la versione più recente dell'app all'avvio e mostra un banner una tantum (per versione) con link al download
-
 
 ## [v1.3.0] - 2026-04-27
 
