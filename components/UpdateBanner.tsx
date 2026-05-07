@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Linking } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
@@ -21,6 +22,7 @@ function isNewerVersion(remote: string, current: string): boolean {
 export function UpdateBanner() {
   const [visible, setVisible] = useState(false);
   const [remoteVersion, setRemoteVersion] = useState('');
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     (async () => {
@@ -57,7 +59,7 @@ export function UpdateBanner() {
   if (!visible) return null;
 
   return (
-    <View style={styles.banner}>
+    <View style={[styles.banner, { paddingBottom: 20 + insets.bottom }]}>
       <ThemedText style={styles.title}>Aggiornamento disponibile</ThemedText>
       <ThemedText style={styles.text}>
         È disponibile la versione {remoteVersion} dell'app. Aggiorna per ricevere le ultime novità.
@@ -81,7 +83,6 @@ const styles = StyleSheet.create({
     backgroundColor: BaseColors.main,
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 40,
     gap: 10,
   },
   closeButton: {
