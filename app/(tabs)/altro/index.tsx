@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const MENU_ITEMS = [
   { label: 'Profilo', icon: 'person.fill' as const, route: '/altro/account' },
   { label: 'FAQ', icon: 'questionmark.circle.fill' as const, route: '/altro/faq-categories' },
-  { label: 'Tutorial', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
+  { label: 'Guide video', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
 ];
 
 export default function AltroScreen() {

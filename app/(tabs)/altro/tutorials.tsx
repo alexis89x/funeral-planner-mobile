@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { Linking } from 'react-native';
+import { Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -25,6 +26,7 @@ export default function TutorialsScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <Stack.Screen options={{ title: 'Guide video' }} />
       <ScrollView>
         {TUTORIALS.map((tutorial, index) => (
           <React.Fragment key={tutorial.id}>
