@@ -32,10 +32,6 @@ export default function AltroLayout() {
         name="faq-questions"
         options={{ title: 'Domande frequenti' }}
       />
-      <Stack.Screen
-        name="faq-answer"
-        options={{ title: 'Risposta' }}
-      />
     </Stack>
   );
 }
