@@ -53,6 +53,7 @@ const MAPPING = {
 
   // FAQ / Help
   'questionmark.circle.fill': 'help',
+  'play.circle.fill': 'play-circle-filled',
 
   // Altro screen
   'rectangle.portrait.and.arrow.left': 'logout',
