@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import { StyleSheet, ScrollView, Text } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -32,15 +32,11 @@ export default function FaqAnswerScreen() {
   return (
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: 'Risposta' }} />
-      <ScrollView>
-        <View style={styles.content}>
-          <ThemedText style={styles.question}>{question}</ThemedText>
-          <View style={[styles.answerCard, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.answerText, { color: colors.text }]}>
-              {parseAnswer(answer ?? '', colors.text)}
-            </Text>
-          </View>
-        </View>
+      <ScrollView contentContainerStyle={styles.content}>
+        <ThemedText style={styles.question}>{question}</ThemedText>
+        <Text style={[styles.answer, { color: colors.text }]}>
+          {parseAnswer(answer ?? '', colors.text)}
+        </Text>
       </ScrollView>
     </ThemedView>
   );
@@ -60,12 +56,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 26,
   },
-  answerCard: {
-    borderRadius: 12,
-    padding: 16,
-  },
-  answerText: {
+  answer: {
     fontSize: 16,
-    lineHeight: 26,
+    lineHeight: 28,
   },
 });

@@ -20,26 +20,22 @@ export default function FaqQuestionsScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: category.label }} />
       <ScrollView>
-        <View style={styles.content}>
-          <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            {category.faqs.map((faq, index) => (
-              <React.Fragment key={index}>
-                {index > 0 && <View style={[styles.divider, { backgroundColor: colors.border }]} />}
-                <TouchableOpacity
-                  style={styles.row}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/altro/faq-answer' as any,
-                      params: { question: faq.q, answer: faq.a },
-                    })
-                  }>
-                  <ThemedText style={styles.question}>{faq.q}</ThemedText>
-                  <IconSymbol name="chevron.right" size={16} color={colors.icon} />
-                </TouchableOpacity>
-              </React.Fragment>
-            ))}
-          </View>
-        </View>
+        {category.faqs.map((faq, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && <View style={[styles.divider, { backgroundColor: colors.border }]} />}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() =>
+                router.push({
+                  pathname: '/altro/faq-answer' as any,
+                  params: { question: faq.q, answer: faq.a },
+                })
+              }>
+              <ThemedText style={styles.question}>{faq.q}</ThemedText>
+              <IconSymbol name="chevron.right" size={16} color={colors.icon} />
+            </TouchableOpacity>
+          </React.Fragment>
+        ))}
       </ScrollView>
     </ThemedView>
   );
@@ -48,14 +44,6 @@ export default function FaqQuestionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  content: {
-    padding: 16,
-    paddingTop: 24,
-  },
-  card: {
-    borderRadius: 12,
-    overflow: 'hidden',
   },
   row: {
     flexDirection: 'row',
@@ -70,7 +58,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   divider: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     marginLeft: 16,
   },
 });

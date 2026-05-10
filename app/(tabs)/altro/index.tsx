@@ -52,7 +52,7 @@ export default function AltroScreen() {
       <TouchableOpacity style={styles.row} onPress={() => router.push('/delete-account')}>
         <IconSymbol name="trash" size={22} color={colors.danger} />
         <ThemedText style={[styles.label, { color: colors.danger }]}>Elimina Account</ThemedText>
-      </TouchableOpacity>a
+      </TouchableOpacity>
 
       <View style={[styles.divider, { backgroundColor: colors.border }]} />
 

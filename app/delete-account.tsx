@@ -169,8 +169,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
-    borderLeftWidth: 4,
-    borderLeftColor: '#ffc107',
   },
   warningTitle: {
     fontSize: 18,

@@ -15,29 +15,25 @@ export default function FaqCategoriesScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView>
-        <View style={styles.content}>
-          <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            {faqData.categories.map((category, index) => (
-              <React.Fragment key={category.id}>
-                {index > 0 && <View style={[styles.divider, { backgroundColor: colors.border }]} />}
-                <TouchableOpacity
-                  style={styles.row}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/altro/faq-questions' as any,
-                      params: { categoryId: category.id },
-                    })
-                  }>
-                  <ThemedText style={styles.label}>{category.label}</ThemedText>
-                  <ThemedText style={[styles.count, { color: colors.icon }]}>
-                    {category.faqs.length}
-                  </ThemedText>
-                  <IconSymbol name="chevron.right" size={16} color={colors.icon} />
-                </TouchableOpacity>
-              </React.Fragment>
-            ))}
-          </View>
-        </View>
+        {faqData.categories.map((category, index) => (
+          <React.Fragment key={category.id}>
+            {index > 0 && <View style={[styles.divider, { backgroundColor: colors.border }]} />}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() =>
+                router.push({
+                  pathname: '/altro/faq-questions' as any,
+                  params: { categoryId: category.id },
+                })
+              }>
+              <ThemedText style={styles.label}>{category.label}</ThemedText>
+              <ThemedText style={[styles.count, { color: colors.icon }]}>
+                {category.faqs.length}
+              </ThemedText>
+              <IconSymbol name="chevron.right" size={16} color={colors.icon} />
+            </TouchableOpacity>
+          </React.Fragment>
+        ))}
       </ScrollView>
     </ThemedView>
   );
@@ -46,14 +42,6 @@ export default function FaqCategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  content: {
-    padding: 16,
-    paddingTop: 24,
-  },
-  card: {
-    borderRadius: 12,
-    overflow: 'hidden',
   },
   row: {
     flexDirection: 'row',
@@ -70,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   divider: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     marginLeft: 16,
   },
 });
