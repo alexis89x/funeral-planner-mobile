@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
+import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
@@ -283,38 +283,31 @@ export default function WelcomeScreen() {
               </TouchableOpacity>
             </>
           ) : (
-            <>
-              <View style={styles.loginButtonsGroup}>
+            <View style={styles.loginSection}>
+              <ThemedText style={styles.loginLabel}>Accedi</ThemedText>
+
+              <View style={styles.loginButtonsRow}>
                 <TouchableOpacity
-                  style={[styles.primaryButton, { backgroundColor: colors.tint }]}
+                  style={[styles.loginButton, { backgroundColor: colors.tint }]}
                   onPress={() => router.push('/login-email')}>
-                  <ThemedText style={styles.primaryButtonText}>Accedi con Email</ThemedText>
+                  <AntDesign name="mail" size={16} color="#fff" style={styles.buttonIcon} />
+                  <ThemedText style={styles.loginButtonText}>Email</ThemedText>
                 </TouchableOpacity>
 
                 {!isExpoGo && (
                   <TouchableOpacity
-                    style={[
-                      styles.primaryButton, 
-                      { backgroundColor: isGoogleLoading ? `${colors.tint}80` : colors.tint }
-                    ]}
+                    style={[styles.loginButton, { backgroundColor: isGoogleLoading ? `${colors.tint}80` : colors.tint }]}
                     onPress={handleGoogleSignIn}
                     disabled={isGoogleLoading}>
-                    <View style={styles.buttonWithIcon}>
-                      {!isGoogleLoading && (
-                        <AntDesign 
-                          name="google" 
-                          size={20} 
-                          color="#fff" 
-                          style={styles.buttonIcon} 
-                        />
-                      )}
-                      <ThemedText style={styles.primaryButtonText}>
-                        {isGoogleLoading ? 'Accesso...' : 'Accedi con Google'}
-                      </ThemedText>
-                    </View>
+                    <AntDesign name="google" size={16} color="#fff" style={styles.buttonIcon} />
+                    <ThemedText style={styles.loginButtonText}>
+                      {isGoogleLoading ? '...' : 'Google'}
+                    </ThemedText>
                   </TouchableOpacity>
                 )}
               </View>
+
+              <ThemedText style={styles.orLabel}>oppure</ThemedText>
 
               <TouchableOpacity
                 style={[styles.secondaryButton, { borderColor: colors.tint }]}
@@ -327,18 +320,19 @@ export default function WelcomeScreen() {
                 })}>
                 <ThemedText style={[styles.secondaryButtonText, { color: colors.tint }]}>Registrati</ThemedText>
               </TouchableOpacity>
-            </>
+            </View>
           )}
         </View>
 
         {/* Emergency contact link */}
-        <View style={styles.emergencyLinkContainer}>
-          <TouchableOpacity onPress={() => router.push('/emergency-contact')}>
-            <ThemedText style={[styles.emergencyLinkText, { color: colors.tint }]}>
-              Sei un contatto di emergenza? Accedi qui
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.emergencyLinkContainer}
+          onPress={() => router.push('/emergency-contact')}>
+          <AntDesign name="warning" size={16} color={BaseColors.mainDark} style={styles.emergencyIcon} />
+          <ThemedText style={[styles.emergencyLinkTitle, { color: BaseColors.mainDark }]}>
+            Sei un contatto di emergenza?
+          </ThemedText>
+        </TouchableOpacity>
 
         {/* Partner section - persists across logout */}
         {lastPartnerName && (
@@ -395,8 +389,36 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 32,
   },
-  loginButtonsGroup: {
+  loginSection: {
+    alignItems: 'stretch',
     gap: 16,
+  },
+  loginLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  loginButtonsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  loginButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  orLabel: {
+    fontSize: 13,
+    textAlign: 'center',
+    opacity: 0.5,
   },
   partnerSectionBottom: {
     position: 'absolute',
@@ -445,11 +467,21 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   emergencyLinkContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 24,
+    justifyContent: 'center',
+    marginTop: 32,
+    gap: 10,
+    backgroundColor: '#FFFBEA',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
-  emergencyLinkText: {
-    fontSize: 14,
-    textDecorationLine: 'underline',
+  emergencyIcon: {
+    marginTop: 1,
+  },
+  emergencyLinkTitle: {
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
