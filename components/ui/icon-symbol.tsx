@@ -53,6 +53,9 @@ const MAPPING = {
 
   // FAQ / Help
   'questionmark.circle.fill': 'help',
+
+  // Altro screen
+  'rectangle.portrait.and.arrow.left': 'logout',
 } as IconMapping;
 
 /**
