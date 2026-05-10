@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { ApiService } from '@/utils/api';
 
 const MENU_ITEMS = [
   { label: 'Profilo', icon: 'person.fill' as const, route: '/altro/account' },
@@ -17,7 +18,8 @@ const MENU_ITEMS = [
 export default function AltroScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { logout } = useAuth();
+  const { logout, userProfile } = useAuth();
+  const [unlinkLoading, setUnlinkLoading] = useState(false);
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Sei sicuro di voler uscire?', [
@@ -31,6 +33,34 @@ export default function AltroScreen() {
         },
       },
     ]);
+  };
+
+  const handleUnlinkFuneralHome = () => {
+    Alert.alert(
+      'Cambia onoranza funebre',
+      "I tuoi piani sono stati offerti dall'onoranza funebre a cui sei collegato. Richiedendo il cambio dovrai scegliere una nuova onoranza funebre o passare a un piano avanzato. Vuoi procedere?",
+      [
+        { text: 'Annulla', style: 'cancel' },
+        {
+          text: 'Conferma',
+          style: 'destructive',
+          onPress: async () => {
+            setUnlinkLoading(true);
+            try {
+              await ApiService.post('user-request-unlink', {}, { manualErrorManagement: true });
+              Alert.alert(
+                'Richiesta inviata',
+                'Abbiamo ricevuto la richiesta di cambio onoranza funebre, verrai contattato il prima possibile tramite email o telefono.'
+              );
+            } catch {
+              Alert.alert('Errore', "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi.");
+            } finally {
+              setUnlinkLoading(false);
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -50,6 +80,21 @@ export default function AltroScreen() {
 
       <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
+      {!!userProfile?.user?.id_partner_referral && (
+        <>
+          <TouchableOpacity
+            style={[styles.row, unlinkLoading && styles.disabled]}
+            onPress={handleUnlinkFuneralHome}
+            disabled={unlinkLoading}>
+            <IconSymbol name="link.badge.minus" size={22} color={colors.danger} />
+            <ThemedText style={[styles.label, { color: colors.danger }]}>
+              {unlinkLoading ? 'Invio in corso...' : 'Cambia onoranza funebre'}
+            </ThemedText>
+          </TouchableOpacity>
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+        </>
+      )}
+
       <TouchableOpacity style={styles.row} onPress={() => router.push('/delete-account')}>
         <IconSymbol name="trash" size={22} color={colors.danger} />
         <ThemedText style={[styles.label, { color: colors.danger }]}>Elimina Account</ThemedText>
@@ -61,8 +106,6 @@ export default function AltroScreen() {
         <IconSymbol name="rectangle.portrait.and.arrow.right" size={22} color={colors.danger} />
         <ThemedText style={[styles.label, { color: colors.danger }]}>Esci</ThemedText>
       </TouchableOpacity>
-
-
     </ThemedView>
   );
 }
@@ -81,6 +124,9 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
     fontSize: 16,
+  },
+  disabled: {
+    opacity: 0.5,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
