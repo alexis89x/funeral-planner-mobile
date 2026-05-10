@@ -50,6 +50,9 @@ const MAPPING = {
   // Emergenza icons
   'exclamationmark.shield.fill': 'warning',
   'phone.fill': 'phone',
+
+  // FAQ / Help
+  'questionmark.circle.fill': 'help',
 } as IconMapping;
 
 /**
