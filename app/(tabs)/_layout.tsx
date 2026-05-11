@@ -8,26 +8,16 @@ import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { PLAN_STATUS } from "@/models/data.models";
-import { APP_BASE_URL } from '@/utils/api';
 import { Ionicons } from '@expo/vector-icons';
 import { switchPlan } from '@/utils/plans';
+import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { userProfile, reloadProfile } = useAuth();
   const router = useRouter();
   const isSwitchingRef = useRef(false);
-
-  const handleNewPlan = () => {
-    router.push({
-      pathname: '/webview',
-      params: {
-        url: `${APP_BASE_URL}/public/search-flow?forceMode=mobile&t=${new Date().getTime()}`,
-        title: 'Nuova pianificazione',
-        injectToken: 'true',
-      }
-    });
-  };
+  const { handleNewPlan } = useNewPlanHandler();
 
   const handleMyPlanTabPress = async () => {
     if (isSwitchingRef.current) return;

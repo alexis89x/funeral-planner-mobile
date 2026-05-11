@@ -15,8 +15,8 @@ import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
 import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
-import { switchPlan, formatPlanType, formatPaymentStatus, formatDate, getStatusColor } from '@/utils/plans';
-import { APP_BASE_URL } from '@/utils/api';
+import { switchPlan, formatPlanType, formatDate, getStatusColor } from '@/utils/plans';
+import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
 const USER_STATUS_FORCE_PSW_CHANGE = 350;
 
@@ -25,6 +25,7 @@ export default function MyPlansScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+  const { handleNewPlan } = useNewPlanHandler(setIsLoading);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -40,64 +41,6 @@ export default function MyPlansScreen() {
       }
     }, [userProfile])
   );
-
-  const goToSearchFlow = () => {
-    router.push({
-      pathname: '/webview',
-      params: {
-        url: `${APP_BASE_URL}/public/search-flow?forceMode=mobile&t=${new Date().getTime()}`,
-        title: 'Nuova pianificazione',
-        injectToken: 'true',
-      }
-    });
-  };
-
-  const goToUpgrade = async (plan: Plan) => {
-    setIsLoading(true);
-    try {
-      if (plan.id !== currentPlanId) {
-        await switchPlan(plan.id);
-        await reloadProfile();
-      }
-      router.push({
-        pathname: '/(tabs)/my-plan',
-        params: { type: plan.type, action: 'upgradePlan', forceReload: 'true' }
-      });
-    } catch (error: any) {
-      Alert.alert('Errore', error.message || 'Impossibile procedere con l\'upgrade');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleNewPlan = () => {
-    if (plans.length > 1) {
-      goToSearchFlow();
-      return;
-    }
-
-    // Single plan. TODO EVENTUALLY BE ABLE TO SHOW AN UPGRADE.
-    const plan = plans[0];
-    if (plan?.type?.toLowerCase() === 'free') {
-      Alert.alert(
-        'Nuova pianificazione',
-        'Cosa vuoi fare?',
-        [
-          {
-            text: 'Upgrade piano attuale',
-            onPress: () => goToUpgrade(plan),
-          },
-          {
-            text: 'Nuova pianificazione',
-            onPress: goToSearchFlow,
-          },
-          { text: 'Annulla', style: 'cancel' },
-        ]
-      );
-    } else {
-      goToSearchFlow();
-    }
-  };
 
   const plans = userProfile?.owned_plans || [];
   const currentPlanId = userProfile?.current_plan?.id;
