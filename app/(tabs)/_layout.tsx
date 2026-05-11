@@ -1,6 +1,6 @@
 import { Tabs, useRouter } from 'expo-router';
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { useRef } from 'react';
+import { TouchableOpacity, Alert } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -10,11 +10,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { PLAN_STATUS } from "@/models/data.models";
 import { APP_BASE_URL } from '@/utils/api';
 import { Ionicons } from '@expo/vector-icons';
+import { switchPlan } from '@/utils/plans';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { userProfile } = useAuth();
+  const { userProfile, reloadProfile } = useAuth();
   const router = useRouter();
+  const isSwitchingRef = useRef(false);
 
   const handleNewPlan = () => {
     router.push({
@@ -27,15 +29,52 @@ export default function TabLayout() {
     });
   };
 
+  const handleMyPlanTabPress = async () => {
+    if (isSwitchingRef.current) return;
+
+    const plans = userProfile?.owned_plans || [];
+    const currentPlanId = userProfile?.user?.id_current_plan;
+
+    if (currentPlanId) {
+      // Ha un piano corrente → vai direttamente alla webview
+      const currentPlan = plans.find(p => p.id === currentPlanId);
+      if (!currentPlan) {
+        router.navigate('/(tabs)/my-plans');
+        return;
+      }
+      router.navigate({
+        pathname: '/(tabs)/my-plan',
+        params: { type: currentPlan.type, planId: currentPlanId.toString() }
+      });
+    } else if (plans.length === 1) {
+      // Un solo piano, nessun piano corrente → switch automatico + webview
+      isSwitchingRef.current = true;
+      const plan = plans[0];
+      try {
+        await switchPlan(plan.id);
+        await reloadProfile();
+        router.navigate({
+          pathname: '/(tabs)/my-plan',
+          params: { type: plan.type, planId: plan.id.toString(), forceReload: Date.now().toString() }
+        });
+      } catch (error: any) {
+        Alert.alert('Errore', error.message || 'Impossibile caricare il piano');
+      } finally {
+        isSwitchingRef.current = false;
+      }
+    } else {
+      // Nessun piano corrente e più piani → vai a "I miei piani"
+      router.navigate('/(tabs)/my-plans');
+    }
+  };
+
   console.log("USER PROFILE", userProfile);
-  // Determina il titolo del tab funeral-home basandosi sul profilo
   const funeralHomeTitle = userProfile?.user?.id_partner_referral
     ? 'La mia onoranza'
     : 'Cerca onoranza';
 
   const activePlansCount = (userProfile?.owned_plans.filter(r => r.status === PLAN_STATUS.ACTIVE) || []).length;
-  // const myPlanTitle = activePlansCount > 1 ? 'I miei piani' : 'Il mio piano';
-  const myPlanTitle = 'I miei piani';
+
   return (
     <Tabs
       screenOptions={{
@@ -44,10 +83,35 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
+        name="my-plan"
+        options={{
+          title: 'Il mio piano',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
+          headerShown: true,
+          headerRight: () => (
+            <React.Fragment>
+              <TouchableOpacity onPress={() => router.push('/(tabs)/my-plans')} style={{ marginRight: 8 }}>
+                <Ionicons name="list-outline" size={26} color={BaseColors.main} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleNewPlan} style={{ marginRight: 16 }}>
+                <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
+              </TouchableOpacity>
+            </React.Fragment>
+          ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            handleMyPlanTabPress();
+          }
+        }}
+      />
+      <Tabs.Screen
         name="my-plans"
         options={{
-          title: myPlanTitle,
+          title: 'I miei piani',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
+          href: null,
           headerShown: true,
           headerLeft: () => null,
           headerRight: () => (
@@ -55,15 +119,6 @@ export default function TabLayout() {
               <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
             </TouchableOpacity>
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="my-plan"
-        options={{
-          title: 'Il mio piano',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.fill" color={color} />,
-          href: null, // Hidden from tab bar - accessed only via navigation
-          headerShown: true,
         }}
       />
       <Tabs.Screen

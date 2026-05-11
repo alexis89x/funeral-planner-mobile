@@ -11,6 +11,7 @@ import { ApiService } from '@/utils/api';
 
 const MENU_ITEMS = [
   { label: 'Profilo', icon: 'person.fill' as const, route: '/altro/account' },
+  { label: 'I miei piani', icon: 'list.bullet' as const, route: '/(tabs)/my-plans' },
   { label: 'FAQ', icon: 'questionmark.circle.fill' as const, route: '/altro/faq-categories' },
   { label: 'Guide video', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
 ];
