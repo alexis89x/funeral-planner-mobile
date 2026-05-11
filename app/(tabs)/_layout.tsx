@@ -7,8 +7,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
-import { PLAN_STATUS } from "@/models/data.models";
 import { Ionicons } from '@expo/vector-icons';
+import { PLAN_STATUS } from '@/models/data.models';
 import { switchPlan } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
@@ -19,42 +19,46 @@ export default function TabLayout() {
   const isSwitchingRef = useRef(false);
   const { handleNewPlan } = useNewPlanHandler();
 
+  const activePlans = (userProfile?.owned_plans || []).filter(p => p.status === PLAN_STATUS.ACTIVE);
+  const hasMultiplePlans = activePlans.length > 1;
+  const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
+
   const handleMyPlanTabPress = async () => {
     if (isSwitchingRef.current) return;
 
-    const plans = userProfile?.owned_plans || [];
+    if (hasMultiplePlans) {
+      router.navigate('/(tabs)/my-plans');
+      return;
+    }
+
+    if (activePlans.length === 0) {
+      router.navigate('/(tabs)/my-plans');
+      return;
+    }
+
+    const plan = activePlans[0];
     const currentPlanId = userProfile?.user?.id_current_plan;
 
-    if (currentPlanId) {
-      // Ha un piano corrente → vai direttamente alla webview
-      const currentPlan = plans.find(p => p.id === currentPlanId);
-      if (!currentPlan) {
-        router.navigate('/(tabs)/my-plans');
-        return;
-      }
+    if (currentPlanId === plan.id) {
       router.navigate({
         pathname: '/(tabs)/my-plan',
-        params: { type: currentPlan.type, planId: currentPlanId.toString() }
+        params: { type: plan.type, planId: plan.id.toString() }
       });
-    } else if (plans.length === 1) {
-      // Un solo piano, nessun piano corrente → switch automatico + webview
-      isSwitchingRef.current = true;
-      const plan = plans[0];
-      try {
-        await switchPlan(plan.id);
-        await reloadProfile();
-        router.navigate({
-          pathname: '/(tabs)/my-plan',
-          params: { type: plan.type, planId: plan.id.toString(), forceReload: Date.now().toString() }
-        });
-      } catch (error: any) {
-        Alert.alert('Errore', error.message || 'Impossibile caricare il piano');
-      } finally {
-        isSwitchingRef.current = false;
-      }
-    } else {
-      // Nessun piano corrente e più piani → vai a "I miei piani"
-      router.navigate('/(tabs)/my-plans');
+      return;
+    }
+
+    isSwitchingRef.current = true;
+    try {
+      await switchPlan(plan.id);
+      await reloadProfile();
+      router.navigate({
+        pathname: '/(tabs)/my-plan',
+        params: { type: plan.type, planId: plan.id.toString(), forceReload: Date.now().toString() }
+      });
+    } catch (error: any) {
+      Alert.alert('Errore', error.message || 'Impossibile caricare il piano');
+    } finally {
+      isSwitchingRef.current = false;
     }
   };
 
@@ -62,8 +66,6 @@ export default function TabLayout() {
   const funeralHomeTitle = userProfile?.user?.id_partner_referral
     ? 'La mia onoranza'
     : 'Cerca onoranza';
-
-  const activePlansCount = (userProfile?.owned_plans.filter(r => r.status === PLAN_STATUS.ACTIVE) || []).length;
 
   return (
     <Tabs
@@ -75,7 +77,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-plan"
         options={{
-          title: 'Il mio piano',
+          title: myPlanTabTitle,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
           headerShown: true,
           headerRight: () => (
