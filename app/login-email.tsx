@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
+import { resolvePostLoginRoute } from '@/utils/plans';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { APP_BASE_URL } from "@/utils/api";
@@ -88,8 +89,8 @@ export default function LoginEmailScreen() {
 
     setIsLoading(true);
     try {
-      await login(email, password);
-      router.replace('/(tabs)/my-plans');
+      const profile = await login(email, password);
+      router.replace(resolvePostLoginRoute(profile));
     } catch (error: any) {
       console.log("ERROR", error);
       const msg = error?.message || '';

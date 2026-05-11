@@ -8,8 +8,7 @@ import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-import { PLAN_STATUS } from '@/models/data.models';
-import { switchPlan } from '@/utils/plans';
+import { switchPlan, getActivePlans } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
 export default function TabLayout() {
@@ -19,7 +18,7 @@ export default function TabLayout() {
   const isSwitchingRef = useRef(false);
   const { handleNewPlan } = useNewPlanHandler();
 
-  const activePlans = (userProfile?.owned_plans || []).filter(p => p.status === PLAN_STATUS.ACTIVE);
+  const activePlans = getActivePlans(userProfile);
   const hasMultiplePlans = activePlans.length > 1;
   const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
 
@@ -82,9 +81,11 @@ export default function TabLayout() {
           headerShown: true,
           headerRight: () => (
             <React.Fragment>
-              <TouchableOpacity onPress={() => router.push('/(tabs)/my-plans')} style={{ marginRight: 8 }}>
-                <Ionicons name="list-outline" size={26} color={BaseColors.main} />
-              </TouchableOpacity>
+              {hasMultiplePlans && (
+                <TouchableOpacity onPress={() => router.push('/(tabs)/my-plans')} style={{ marginRight: 8 }}>
+                  <Ionicons name="list-outline" size={26} color={BaseColors.main} />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity onPress={handleNewPlan} style={{ marginRight: 16 }}>
                 <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
               </TouchableOpacity>

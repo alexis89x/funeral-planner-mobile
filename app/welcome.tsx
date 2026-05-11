@@ -17,6 +17,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from '@/utils/api';
+import { resolvePostLoginRoute } from '@/utils/plans';
 import { AuthFooter } from '@/components/auth-footer';
 import { isExpoGo } from "@/utils/utils";
 
@@ -100,10 +101,10 @@ export default function WelcomeScreen() {
     setLastPartnerName(partnerName);
   };
 
-  const handleAccediPress = () => {
+  const handleAccediPress = async () => {
     if (isTokenValid) {
-      // Token valido, vai direttamente a my-plans
-      router.replace('/(tabs)/my-plans');
+      const profile = await getLastSavedProfile();
+      router.replace(resolvePostLoginRoute(profile));
     }
     // Se il token non è valido, resta su welcome per far scegliere all'utente
   };
@@ -192,9 +193,8 @@ export default function WelcomeScreen() {
         // Authenticate with backend using AuthContext
         await googleLogin(
           idToken,
-          (email: string) => {
-            // Success callback
-            router.replace('/(tabs)/my-plans');
+          (email: string, profile) => {
+            router.replace(resolvePostLoginRoute(profile));
           },
           (registrationUrl: string) => {
             // Registration required callback

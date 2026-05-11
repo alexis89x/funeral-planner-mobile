@@ -127,7 +127,7 @@ interface AuthContextType {
   setCurrentUser: (user: LoggedUser | null) => void;
   token: string | undefined;
   login: (username: string, password: string, role?: string) => Promise<void>;
-  googleLogin: (idToken: string, onSuccess?: (email: string) => void, onRegistrationRequired?: (registrationUrl: string) => void) => Promise<void>;
+  googleLogin: (idToken: string, onSuccess?: (email: string, profile: UserProfile | null) => void, onRegistrationRequired?: (registrationUrl: string) => void) => Promise<void>;
   logout: () => Promise<void>;
   validateToken: () => Promise<boolean>;
   getUserProfile: () => Promise<UserProfile | null>;
@@ -461,7 +461,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Load user profile after successful login
         console.log("GETTING USER PROFILE AFTER LOGIN");
-        await getUserProfile(user);
+        return await getUserProfile(user);
       } else {
         console.error('\n❌ Login Failed - API returned error');
         console.error('Full error response:', JSON.stringify(data, null, 2));
@@ -478,7 +478,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const googleLogin = async (idToken: string, onSuccess?: (email: string) => void, onRegistrationRequired?: (registrationUrl: string) => void) => {
+  const googleLogin = async (idToken: string, onSuccess?: (email: string, profile: UserProfile | null) => void, onRegistrationRequired?: (registrationUrl: string) => void) => {
     try {
       console.log('\n🔐 ===== GOOGLE LOGIN =====');
       console.log('ID Token:', idToken.substring(0, 20) + '...');
@@ -515,11 +515,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Load user profile after successful login
         console.log("GETTING USER PROFILE AFTER GOOGLE LOGIN");
-        await getUserProfile(user);
-        
+        const profile = await getUserProfile(user);
+
         // Call success callback
         if (onSuccess) {
-          onSuccess(data.user.email);
+          onSuccess(data.user.email, profile);
         }
       } else {
         // Handle different error scenarios

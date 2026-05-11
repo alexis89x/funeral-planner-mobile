@@ -9,6 +9,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { resolvePostLoginRoute } from '@/utils/plans';
 import LoadingScreen from '@/components/LoadingScreen';
 import { UpdateBanner } from '@/components/UpdateBanner';
 
@@ -22,7 +23,7 @@ export const unstable_settings = {
 };
 
 function RootLayoutNav() {
-  const { currentUser, isLoading, loadingState, loadingError } = useAuth();
+  const { currentUser, userProfile, isLoading, loadingState, loadingError } = useAuth();
   const segments = useSegments();
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -80,9 +81,10 @@ function RootLayoutNav() {
       console.log('➡️ Redirecting to /welcome (not logged in)');
       router.replace('/welcome');
     } else if (currentUser && (inWelcome || inLoginFlow)) {
-      // Logged in, but on auth screens
-      console.log('➡️ Redirecting to /(tabs)/my-plans (logged in)');
-      router.replace('/(tabs)/my-plans');
+      // Aspetta che il profilo sia caricato prima di decidere la destinazione
+      if (!userProfile) return;
+      console.log('➡️ Redirecting after login');
+      router.replace(resolvePostLoginRoute(userProfile));
     } else {
       // @ts-ignore
       if (!currentUser && segments.length === 0) {
@@ -92,7 +94,7 @@ function RootLayoutNav() {
         console.log('✅ No redirect needed');
       }
     }
-  }, [currentUser, isLoading, segments]);
+  }, [currentUser, userProfile, isLoading, segments]);
 
   // Show custom loading screen while loading
   if (isLoading && loadingState !== 'completed') {

@@ -46,7 +46,8 @@ const iconMap: Record<string, string> = {
   'star': 'star.fill',
   'bookmark': 'bookmark.fill',
   'building': 'building.2.fill',
-  'bag': 'bag.fill'
+  'bag': 'bag.fill',
+  'home': 'house.fill'
 };
 
 export default function ServicesScreen() {

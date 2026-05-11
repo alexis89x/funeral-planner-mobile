@@ -3,13 +3,29 @@
  */
 
 import { api } from './api';
-import { Plan } from '@/contexts/AuthContext';
+import { Plan, UserProfile } from '@/contexts/AuthContext';
+import { PLAN_STATUS } from '@/models/data.models';
 
 /**
  * Switch to a specific plan and reload user profile
  * @param planId - The ID of the plan to switch to
  * @returns Promise<Plan> - The switched plan data
  */
+export const getActivePlans = (profile: UserProfile | null) =>
+  (profile?.owned_plans || []).filter(p => p.status === PLAN_STATUS.ACTIVE);
+
+export const resolvePostLoginRoute = (profile: UserProfile | null) => {
+  const activePlans = getActivePlans(profile);
+  if (activePlans.length === 1) {
+    const plan = activePlans[0];
+    return {
+      pathname: '/(tabs)/my-plan' as const,
+      params: { type: plan.type, planId: plan.id.toString() },
+    };
+  }
+  return { pathname: '/(tabs)/my-plans' as const };
+};
+
 export const switchPlan = async (planId: number | string): Promise<Plan> => {
   try {
     console.log('🔄 Switching to plan:', planId);
