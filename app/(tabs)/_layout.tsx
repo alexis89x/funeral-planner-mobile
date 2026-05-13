@@ -19,7 +19,7 @@ export default function TabLayout() {
   const { handleNewPlan } = useNewPlanHandler();
 
   const activePlans = getActivePlans(userProfile);
-  const hasMultiplePlans = activePlans.length > 1;
+  const hasMultiplePlans = !userProfile || activePlans.length !== 1;
   const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
 
   const handleMyPlanTabPress = async () => {
@@ -76,7 +76,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-plan"
         options={{
-          title: myPlanTabTitle,
+          title: 'Il mio piano',
+          tabBarLabel: myPlanTabTitle,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
           headerShown: true,
           headerRight: () => (

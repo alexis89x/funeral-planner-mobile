@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Image,
   Keyboard,
+  Linking,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -94,6 +95,20 @@ export default function LoginEmailScreen() {
     } catch (error: any) {
       console.log("ERROR", error);
       const msg = error?.message || '';
+      if (msg === 'ERROR_API.WRONG_LOGIN_PARTNER_APP') {
+        Alert.alert(
+          'Accesso non disponibile',
+          "L'app è disponibile solo per i clienti. L'accesso per i partner può essere eseguito solo da web.",
+          [
+            {
+              text: 'Apri sito web',
+              onPress: () => Linking.openURL(`${APP_BASE_URL}/auth/login`),
+            },
+            { text: 'Annulla', style: 'cancel' },
+          ]
+        );
+        return;
+      }
       const rateLimitMessages: Record<string, string> = {
         'ERROR_API.RATE-LIMIT-5MIN': 'Troppi tentativi. Riprova tra 5 minuti.',
         'ERROR_API.RATE-LIMIT-1HOUR': 'Troppi tentativi. Riprova tra 1 ora.',
@@ -148,8 +163,9 @@ export default function LoginEmailScreen() {
               placeholder="Email"
               placeholderTextColor={colors.tabIconDefault}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => setEmail(text.toLowerCase())}
               autoCapitalize="none"
+              autoCorrect={false}
               keyboardType="email-address"
               editable={!isLoading}
             />

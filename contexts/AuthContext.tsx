@@ -465,7 +465,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         console.error('\n❌ Login Failed - API returned error');
         console.error('Full error response:', JSON.stringify(data, null, 2));
-        throw new Error(data.message || data.error || 'Login failed');
+        const errorMsg = data.message ||
+          (typeof data.error === 'string' ? data.error : data.error?.message) ||
+          'Login failed';
+        throw new Error(errorMsg);
       }
     } catch (error: any) {
       console.error('\n💥 ===== LOGIN ERROR =====');

@@ -87,7 +87,7 @@ export default function AltroScreen() {
             style={[styles.row, unlinkLoading && styles.disabled]}
             onPress={handleUnlinkFuneralHome}
             disabled={unlinkLoading}>
-            <IconSymbol name="link.badge.minus" size={22} color={colors.danger} />
+            <IconSymbol name="minus.circle.fill" size={22} color={colors.danger} />
             <ThemedText style={[styles.label, { color: colors.danger }]}>
               {unlinkLoading ? 'Invio in corso...' : 'Cambia onoranza funebre'}
             </ThemedText>

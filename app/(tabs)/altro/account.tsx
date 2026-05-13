@@ -172,7 +172,7 @@ export default function AccountScreen() {
               style={[styles.deleteAccountButton, unlinkLoading && styles.disabledButton]}
               onPress={handleUnlinkFuneralHome}
               disabled={unlinkLoading}>
-              <IconSymbol name="link.badge.minus" size={18} color="#dc3545" />
+              <IconSymbol name="minus.circle.fill" size={18} color="#dc3545" />
               <ThemedText style={styles.deleteAccountButtonText}>
                 {unlinkLoading ? 'Invio in corso...' : 'Cambia onoranza funebre'}
               </ThemedText>

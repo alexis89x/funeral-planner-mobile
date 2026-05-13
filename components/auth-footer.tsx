@@ -4,8 +4,9 @@ import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { APP_BASE_URL } from "@/utils/api";
 
-const TERMS_URL = 'https://app.tramontosereno.it/terms-and-conditions.html';
+const TERMS_URL = APP_BASE_URL + '/terms-and-conditions.html';
 const PRIVACY_URL = 'https://www.tramontosereno.it/privacy-policy.html';
 
 export function AuthFooter({ hideTerms }: { hideTerms?: boolean }) {

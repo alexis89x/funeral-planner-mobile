@@ -45,7 +45,7 @@ const MAPPING = {
   // Action icons
   'rectangle.portrait.and.arrow.right': 'logout',
   'trash': 'delete',
-  'link.badge.minus': 'link-off',
+  'minus.circle.fill': 'remove-circle',
 
   // Emergenza icons
   'exclamationmark.shield.fill': 'warning',

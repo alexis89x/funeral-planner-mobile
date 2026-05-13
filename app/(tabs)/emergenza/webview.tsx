@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
+import { APP_BASE_URL } from "@/utils/api";
 
 export default function EmergenzaWebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -13,7 +14,7 @@ export default function EmergenzaWebViewScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
-  const url = params.url || 'https://app.tramontosereno.it';
+  const url = params.url || APP_BASE_URL;
   const title = params.title || 'Emergenza';
 
   const handleMessage = async (event: any) => {

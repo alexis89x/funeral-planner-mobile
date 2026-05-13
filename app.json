@@ -18,7 +18,8 @@
         "NSPhotoLibraryUsageDescription": "Tramonto Sereno ha bisogno di accedere alla galleria per permetterti di selezionare una foto profilo personale esistente dal tuo dispositivo, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
         "NSMicrophoneUsageDescription": "Tramonto Sereno ha bisogno di accedere al microfono per permetterti di registrare messaggi audio o video personali che verranno inclusi nella tua pianificazione funebre e condivisi con l'onoranza funebre selezionata per rispettare le tue volontà.",
         "NSLocationWhenInUseUsageDescription": "Tramonto Sereno ha bisogno di accedere alla tua posizione per trovare i servizi più vicini a te."
-      }
+      },
+      "appleTeamId": "KPS27RWESX"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,7 +34,8 @@
       "versionCode": 5,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
