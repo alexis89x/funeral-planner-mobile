@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import faqData from '@/assets/faq.json';
+import { useFaq } from '@/hooks/use-faq';
 
 function parseAnswer(text: string, textColor: string): React.ReactNode {
   const parts = text.split(/(<b>.*?<\/b>)/g);
@@ -23,6 +23,7 @@ export default function FaqQuestionsScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [expanded, setExpanded] = useState<number | null>(null);
+  const { faqData } = useFaq();
 
   const category = faqData.categories.find(c => c.id === categoryId);
   if (!category) return null;

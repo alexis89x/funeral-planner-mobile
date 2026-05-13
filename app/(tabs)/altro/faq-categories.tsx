@@ -6,11 +6,12 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import faqData from '@/assets/faq.json';
+import { useFaq } from '@/hooks/use-faq';
 
 export default function FaqCategoriesScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { faqData } = useFaq();
 
   return (
     <ThemedView style={styles.container}>

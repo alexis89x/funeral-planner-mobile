@@ -1,11 +1,22 @@
 # Changelog
 
-## [v1.4.0] - 2026-05-02
+## [v2.0.0] - 2026-05-13
 
 ### Aggiunto
 - Pulsante "Cambia onoranza funebre" nella schermata profilo: visibile solo se l'utente è collegato a un'onoranza funebre (`id_partner_referral`), chiede conferma e invia la richiesta tramite API (`user-request-unlink`)
 - Richiesta permesso di localizzazione nella schermata "Cerca onoranza": le coordinate vengono passate alla WebView come parametri URL e salvate in `localStorage`
 - Banner di aggiornamento disponibile: controlla silenziosamente la versione più recente dell'app all'avvio e mostra un banner una tantum (per versione) con link al download
+- Sezione FAQ con categorie e risposte, caricamento dinamico da API con cache giornaliera e fallback locale
+- Sezione Tutorial con video guide
+- Nuovo tab "Altro" con impostazioni, FAQ, logout e cancellazione account
+- Possibilità di scollegare il piano dall'onoranza funebre
+
+### Migliorato
+- Nuovo layout della schermata di login
+- Navigazione migliorata tra piano personale e piani multipli
+- Safe area e layout generale
+- Localizzazione della schermata di ricerca
+- Aggiornamento dipendenze
 
 ## [v1.3.0] - 2026-04-27
 
