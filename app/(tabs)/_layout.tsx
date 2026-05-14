@@ -159,15 +159,6 @@ export default function TabLayout() {
           headerLeft: () => null,
         }}
       />
-      {/* Hidden tabs - kept for future use */}
-      <Tabs.Screen
-        name="products"
-        options={{
-          title: 'Prodotti',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag.fill" color={color} />,
-          href: null, // Hide from tab bar
-        }}
-      />
       <Tabs.Screen
         name="search"
         options={{

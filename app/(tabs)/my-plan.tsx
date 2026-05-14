@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, ActivityIndicator } from 'react-native';
-import { WebView } from 'react-native-webview';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { StyleSheet } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
-import { BaseColors } from '@/constants/theme';
-import { useAuth } from '@/contexts/AuthContext';
-import { APP_BASE_URL } from "@/utils/api";
-import { handleWebViewMessage } from '@/utils/webview-message-handler';
-import { isWebviewCacheStale, markWebviewLoaded } from "@/utils/webview.utils";
+import { APP_BASE_URL } from '@/utils/api';
+import { isWebviewCacheStale, markWebviewLoaded } from '@/utils/webview.utils';
+import AppWebView from '@/components/AppWebView';
 
 export default function MyPlanScreen() {
-  const webViewRef = useRef<WebView>(null);
-  const { token } = useAuth();
-  const router = useRouter();
   const { type, action, forceReload, planId } = useLocalSearchParams<{ type?: string; action?: string; forceReload?: string; planId?: string }>();
   const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
   const loadedPlanIdRef = useRef<string | undefined>(undefined);
+  const [prevPlanId, setPrevPlanId] = useState<string | undefined>(planId);
+
+  if (planId !== prevPlanId) {
+    setPrevPlanId(planId);
+    setEffectiveUrl(null);
+  }
 
   const getHomepagePath = () => {
     if (type === 'pet') return '/plan/pet_homepage';
@@ -35,59 +35,19 @@ export default function MyPlanScreen() {
     if (planId && planId === loadedPlanIdRef.current) return;
     loadedPlanIdRef.current = planId;
 
+    setEffectiveUrl(null);
     isWebviewCacheStale(rawUrl).then(stale => {
       setEffectiveUrl(stale ? `${rawUrl}&_t=${Date.now()}` : rawUrl);
     });
   }, [rawUrl, forceReload, planId]);
 
-  const handleMessage = async (event: any) => {
-    await handleWebViewMessage(event, {
-      onGoBack: () => router.back(),
-      onNavigate: (route: string) => router.push(route as any)
-    });
-  };
-
-  const injectedJavaScript = `
-    (function() {
-      const user = {
-        token: "${token}",
-        role: 150,
-        status: 310
-      };
-      localStorage.setItem('uinfo', JSON.stringify(user));
-      window.tsMobileApp = true;
-      true; // Required for iOS
-    })();
-  `;
-
   return (
     <ThemedView style={styles.container}>
-      {effectiveUrl ? (
-        <WebView
-          ref={webViewRef}
-          key={effectiveUrl}
-          source={{ uri: effectiveUrl }}
-          style={styles.webview}
-          onMessage={handleMessage}
-          onLoadEnd={() => markWebviewLoaded(rawUrl)}
-          startInLoadingState={false}
-          javaScriptEnabled={true}
-          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-          cacheEnabled={true}
-          sharedCookiesEnabled={true}
-          // Camera/media permissions for iOS
-          allowsInlineMediaPlayback={true}
-          mediaPlaybackRequiresUserAction={false}
-          mediaCapturePermissionGrantType="grant"
-          renderLoading={() => (
-            <ActivityIndicator
-              size="large"
-              color={BaseColors.main}
-              style={styles.loading}
-            />
-          )}
-        />
-      ) : null}
+      <AppWebView
+        uri={effectiveUrl}
+        injectToken
+        onLoadEnd={() => markWebviewLoaded(rawUrl)}
+      />
     </ThemedView>
   );
 }
@@ -95,13 +55,5 @@ export default function MyPlanScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  webview: {
-    flex: 1,
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
