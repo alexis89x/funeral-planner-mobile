@@ -108,7 +108,8 @@ export default function ServicesScreen() {
         pathname: `/services/webview`,
         params: {
           url: fullUrl,
-          title: service.title
+          title: service.title,
+          ...(service.id === 'dat' && { showPlanSwitcher: 'true' }),
         }
       });
     }

@@ -14,6 +14,17 @@ import { PLAN_STATUS } from '@/models/data.models';
 export const getActivePlans = (profile: UserProfile | null) =>
   (profile?.owned_plans || []).filter(p => p.status === PLAN_STATUS.ACTIVE);
 
+export const hasMultiplePlans = (profile: UserProfile | null): boolean =>
+  getActivePlans(profile).length > 1;
+
+export const getCurrentPlanId = (profile: UserProfile | null): string => {
+  const currentId = profile?.user?.id_current_plan;
+  const active = getActivePlans(profile);
+  if (currentId && active.find(p => p.id === currentId)) return String(currentId);
+  if (active.length > 0) return String(active[0].id);
+  return '0';
+};
+
 export const resolvePostLoginRoute = (profile: UserProfile | null) => {
   const activePlans = getActivePlans(profile);
   if (activePlans.length === 1) {
