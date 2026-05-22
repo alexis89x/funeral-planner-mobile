@@ -28,8 +28,7 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
     title: 'Contatto di Emergenza',
     desc: 'Assistenza immediata in caso di necessità',
     icon: 'exclamationmark.shield.fill',
-    route: '/emergenza/webview',
-    url: 'https://app.tramontosereno.it',
+    route: '/emergenza/contatti',
   },
   {
     id: 'risarcimento-danni',

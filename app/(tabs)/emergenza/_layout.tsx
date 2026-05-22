@@ -29,6 +29,20 @@ export default function EmergenzaLayout() {
         }}
       />
       <Stack.Screen
+        name="contatti"
+        options={{
+          title: 'Contatti di Emergenza',
+          headerBackTitle: 'Indietro',
+        }}
+      />
+      <Stack.Screen
+        name="contatto-form"
+        options={{
+          title: 'Contatto',
+          headerBackTitle: 'Indietro',
+        }}
+      />
+      <Stack.Screen
         name="webview"
         options={{
           title: 'Emergenza',

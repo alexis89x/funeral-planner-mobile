@@ -37,6 +37,15 @@ export interface LoggedUser {
   status: number;
 }
 
+export interface EmergencyContact {
+  id: number;
+  id_plan: number;
+  email: string;
+  name: string;
+  relationship: string;
+  mobile_phone: string;
+}
+
 export interface Plan {
   id: number;
   id_user: number;
@@ -57,6 +66,7 @@ export interface Plan {
   discount_code: string;
   created: string;
   modified: string;
+  emergencyContacts: EmergencyContact[];
 }
 
 export interface Partner {

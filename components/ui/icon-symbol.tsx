@@ -58,6 +58,13 @@ const MAPPING = {
 
   // Altro screen
   'rectangle.portrait.and.arrow.left': 'logout',
+
+  // Emergency contacts
+  'pencil': 'edit',
+  'plus': 'add',
+  'chevron.down': 'keyboard-arrow-down',
+  'checkmark': 'check',
+  'person.2.fill': 'group',
 } as IconMapping;
 
 /**

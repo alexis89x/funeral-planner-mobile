@@ -138,7 +138,6 @@ export default function TabLayout() {
           title: 'Emergenza',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="exclamationmark.shield.fill" color={color} />,
           headerShown: false,
-          href: null,
         }}
       />
       <Tabs.Screen
