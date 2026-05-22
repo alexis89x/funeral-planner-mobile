@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView, View, Linking, Alert, Animated } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Stack, router } from 'expo-router';
@@ -10,6 +10,8 @@ import { BaseColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { EmergencyContact, Plan } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
+import { PlanSwitcher } from '@/components/PlanSwitcher';
+import { hasMultiplePlans } from '@/utils/plans';
 
 function ContactRow({
   contact,
@@ -107,11 +109,16 @@ function ContactRow({
 export default function ContattiEmergenzaScreen() {
   const { userProfile, reloadProfile } = useAuth();
 
-  const plansWithContacts = (userProfile?.owned_plans ?? []).filter(
-    (p: Plan) => p.emergencyContacts?.length > 0
-  );
+  useEffect(() => {
+    reloadProfile();
+  }, []);
 
-  const isFlat = plansWithContacts.length <= 1;
+  const currentPlan = (userProfile?.owned_plans ?? []).find(
+    (p: Plan) => p.id === userProfile?.user?.id_current_plan
+  ) ?? userProfile?.owned_plans?.[0] ?? null;
+
+  const contacts: EmergencyContact[] = currentPlan?.emergencyContacts ?? [];
+  const showSwitcher = hasMultiplePlans(userProfile);
 
   const handleAdd = () => router.push('/(tabs)/emergenza/contatto-form');
 
@@ -150,7 +157,9 @@ export default function ContattiEmergenzaScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ headerRight: () => <AddButton /> }} />
 
-      {plansWithContacts.length === 0 ? (
+      {showSwitcher && currentPlan && <PlanSwitcher plan={currentPlan} />}
+
+      {contacts.length === 0 ? (
         <View style={styles.emptyState}>
           <IconSymbol name="person.2.fill" size={48} color={BaseColors.greyLight} />
           <ThemedText style={styles.emptyText}>Nessun contatto di emergenza</ThemedText>
@@ -160,32 +169,15 @@ export default function ContattiEmergenzaScreen() {
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.scroll}>
-          {isFlat ? (
-            plansWithContacts[0].emergencyContacts.map((c: EmergencyContact) => (
-              <React.Fragment key={c.id}>
-                <ContactRow contact={c} onDelete={handleDelete} />
-                <View style={styles.divider} />
-              </React.Fragment>
-            ))
-          ) : (
-            plansWithContacts.map((plan: Plan) => (
-              <View key={plan.id}>
-                <View style={styles.planHeader}>
-                  <ThemedText style={styles.planName}>{plan.plan_for}</ThemedText>
-                </View>
-                {plan.emergencyContacts.map((c: EmergencyContact, i: number) => (
-                  <React.Fragment key={c.id}>
-                    <ContactRow contact={c} onDelete={handleDelete} />
-                    {i < plan.emergencyContacts.length - 1 && <View style={styles.divider} />}
-                  </React.Fragment>
-                ))}
-                <View style={styles.planDivider} />
-              </View>
-            ))
-          )}
+          {contacts.map((c: EmergencyContact, i: number) => (
+            <React.Fragment key={c.id}>
+              <ContactRow contact={c} onDelete={handleDelete} />
+              {i < contacts.length - 1 && <View style={styles.divider} />}
+            </React.Fragment>
+          ))}
           <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
             <Ionicons name="add-circle-outline" size={20} color="#fff" />
-            <ThemedText style={styles.addButtonText}>Salva contatto</ThemedText>
+            <ThemedText style={styles.addButtonText}>Aggiungi contatto</ThemedText>
           </TouchableOpacity>
         </ScrollView>
       )}
@@ -197,22 +189,6 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { paddingBottom: 32 },
   headerAdd: { marginRight: 16 },
-  planHeader: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 8,
-  },
-  planName: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: BaseColors.main,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  planDivider: {
-    height: 8,
-    backgroundColor: BaseColors.greyLightest,
-  },
   contactRow: {
     flexDirection: 'row',
     alignItems: 'center',
