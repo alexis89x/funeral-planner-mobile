@@ -9,6 +9,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { api } from '@/utils/api';
 
 const PRODUCTS_STORAGE_KEY = '@funeral_planner_products';
+const PRODUCTS_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 interface Product {
   id: number;
@@ -36,16 +37,19 @@ export default function ProductsScreen() {
 
       const cached = await AsyncStorage.getItem(PRODUCTS_STORAGE_KEY);
       if (cached) {
-        setProducts(JSON.parse(cached));
-        setLoading(false);
-        return;
+        const { data: cachedData, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < PRODUCTS_CACHE_TTL) {
+          setProducts(cachedData);
+          setLoading(false);
+          return;
+        }
       }
 
       const response = await api.post('products-search', { category: '', page: 1 });
       if (response.data) {
         const data = response.data as unknown as Product[];
         setProducts(data);
-        await AsyncStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(data));
+        await AsyncStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
       } else {
         setError('Errore nel caricamento dei prodotti');
       }

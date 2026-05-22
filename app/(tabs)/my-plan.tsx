@@ -5,9 +5,11 @@ import { ThemedView } from '@/components/themed-view';
 import { APP_BASE_URL } from '@/utils/api';
 import { isWebviewCacheStale, markWebviewLoaded } from '@/utils/webview.utils';
 import AppWebView from '@/components/AppWebView';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function MyPlanScreen() {
   const { type, action, forceReload, planId } = useLocalSearchParams<{ type?: string; action?: string; forceReload?: string; planId?: string }>();
+  const { reloadProfile } = useAuth();
   const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
   const loadedPlanIdRef = useRef<string | undefined>(undefined);
   const [prevPlanId, setPrevPlanId] = useState<string | undefined>(planId);
@@ -47,6 +49,10 @@ export default function MyPlanScreen() {
         uri={effectiveUrl}
         injectToken
         onLoadEnd={() => markWebviewLoaded(rawUrl)}
+        onRefreshUser={async () => {
+          await reloadProfile();
+          setEffectiveUrl(`${rawUrl}&_t=${Date.now()}`);
+        }}
       />
     </ThemedView>
   );

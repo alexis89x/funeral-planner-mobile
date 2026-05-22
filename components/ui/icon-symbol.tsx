@@ -46,6 +46,7 @@ const MAPPING = {
   'rectangle.portrait.and.arrow.right': 'logout',
   'trash': 'delete',
   'minus.circle.fill': 'remove-circle',
+  'arrow.clockwise': 'refresh',
 
   // Emergenza icons
   'exclamationmark.shield.fill': 'warning',

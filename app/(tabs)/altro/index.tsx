@@ -8,6 +8,7 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
+import { clearWebviewCache } from '@/utils/webview.utils';
 
 const MENU_ITEMS = [
   { label: 'Profilo', icon: 'person.fill' as const, route: '/altro/account' },
@@ -34,6 +35,11 @@ export default function AltroScreen() {
         },
       },
     ]);
+  };
+
+  const handleClearCache = async () => {
+    await clearWebviewCache();
+    Alert.alert('Cache svuotata', 'La cache è stata eliminata con successo.');
   };
 
   const handleUnlinkFuneralHome = () => {
@@ -78,6 +84,13 @@ export default function AltroScreen() {
           </TouchableOpacity>
         </React.Fragment>
       ))}
+
+      <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+      <TouchableOpacity style={styles.row} onPress={handleClearCache}>
+        <IconSymbol name="arrow.clockwise" size={22} color={colors.tint} />
+        <ThemedText style={styles.label}>Svuota cache</ThemedText>
+      </TouchableOpacity>
 
       <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
