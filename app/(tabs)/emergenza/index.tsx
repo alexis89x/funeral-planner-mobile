@@ -25,7 +25,7 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
   },
   {
     id: 'contatto-emergenza',
-    title: 'Contatto di Emergenza',
+    title: 'Contatti di Emergenza',
     desc: 'Assistenza immediata in caso di necessità',
     icon: 'exclamationmark.shield.fill',
     route: '/emergenza/contatti',

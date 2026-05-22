@@ -89,6 +89,7 @@ export default function ContattoFormScreen() {
   const [email, setEmail] = useState(params.email ?? '');
   const [phone, setPhone] = useState(params.phone ?? '');
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const nonPetPlans = (userProfile?.owned_plans ?? []).filter((p: Plan) => p.type !== 'pet');
   const hasMultiplePlans = nonPetPlans.length > 1;
@@ -128,21 +129,12 @@ export default function ContattoFormScreen() {
           phone: phone.trim(),
         });
       } else {
-        const targetPlans =
-          selectedPlanId === ALL_PLANS_VALUE
-            ? nonPetPlans.map(p => String(p.id))
-            : [selectedPlanId];
-
-        await Promise.all(
-          targetPlans.map(id =>
-            ApiService.post('emergency-contact-save', {
-              id_plan: id,
-              name: name.trim(),
-              email: email.trim().toLowerCase(),
-              phone: phone.trim(),
-            })
-          )
-        );
+        await ApiService.post('emergency-contact-save', {
+          id_plan: selectedPlanId === ALL_PLANS_VALUE ? '0' : selectedPlanId,
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          phone: phone.trim(),
+        });
       }
 
       await reloadProfile();
@@ -218,10 +210,53 @@ export default function ContattoFormScreen() {
             </View>
           )}
 
+          {isEdit && (
+            <TouchableOpacity
+              style={[styles.deleteButton, deleting && styles.saveButtonDisabled]}
+              onPress={() => {
+                Alert.alert(
+                  'Elimina contatto',
+                  'Vuoi eliminare questo contatto di emergenza?',
+                  [
+                    { text: 'Annulla', style: 'cancel' },
+                    {
+                      text: 'Elimina',
+                      style: 'destructive',
+                      onPress: async () => {
+                        setDeleting(true);
+                        try {
+                          await ApiService.post('emergency-contact-remove', {
+                            id_emergency_contact: params.contactId,
+                            id_plan: params.planId,
+                          });
+                          await reloadProfile();
+                          router.back();
+                        } catch {
+                          Alert.alert('Errore', 'Impossibile eliminare il contatto.');
+                        } finally {
+                          setDeleting(false);
+                        }
+                      },
+                    },
+                  ]
+                );
+              }}
+              disabled={deleting || saving}>
+              {deleting ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <>
+                  <Ionicons name="trash-outline" size={20} color="#fff" />
+                  <ThemedText style={styles.saveButtonText}>Elimina contatto</ThemedText>
+                </>
+              )}
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
             onPress={handleSave}
-            disabled={saving}>
+            disabled={saving || deleting}>
             {saving ? (
               <ActivityIndicator color="#fff" />
             ) : (
@@ -301,6 +336,16 @@ const styles = StyleSheet.create({
   },
   saveButtonDisabled: {
     opacity: 0.6,
+  },
+  deleteButton: {
+    marginTop: 12,
+    height: 52,
+    borderRadius: 12,
+    backgroundColor: BaseColors.danger,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
   saveButtonText: {
     color: '#fff',

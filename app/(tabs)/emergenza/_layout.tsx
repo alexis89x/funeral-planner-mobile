@@ -31,7 +31,7 @@ export default function EmergenzaLayout() {
       <Stack.Screen
         name="contatti"
         options={{
-          title: 'Contatti di Emergenza',
+          title: 'Contatti di emergenza',
           headerBackTitle: 'Indietro',
         }}
       />
