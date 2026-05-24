@@ -122,10 +122,7 @@ function AttachmentRow({
 
   return (
     <Swipeable ref={swipeRef} renderRightActions={renderRightActions} overshootRight={false}>
-      <TouchableOpacity
-        style={styles.fileRow}
-        onPress={() => onOpen(attachment)}
-        activeOpacity={0.7}>
+      <View style={styles.fileRow}>
         <View style={[styles.fileIconContainer, { backgroundColor: getFileIcon(attachment.type).bg }]}>
           <IconSymbol
             name={getFileIcon(attachment.type).name as any}
@@ -142,15 +139,14 @@ function AttachmentRow({
           )}
           <ThemedText style={styles.fileDate}>{formatDate(attachment.created)}</ThemedText>
         </View>
-        <View style={styles.fileRowRight}>
-          {attachment.encrypted === 1 && (
-            <IconSymbol name="lock.fill" size={14} color={BaseColors.greyMedium} />
-          )}
+        <View style={styles.actions}>
           {canPreview(attachment) && (
-            <IconSymbol name="eye.fill" size={16} color={BaseColors.greyMedium} />
+            <TouchableOpacity style={styles.actionButton} onPress={() => onOpen(attachment)}>
+              <IconSymbol name="eye.fill" size={18} color={BaseColors.main} />
+            </TouchableOpacity>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
     </Swipeable>
   );
 }
@@ -361,7 +357,12 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   fileInfo: { flex: 1 },
-  fileRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  actions: { flexDirection: 'row', gap: 8 },
+  actionButton: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: BaseColors.mainLightest,
+    alignItems: 'center', justifyContent: 'center',
+  },
   fileName: { fontSize: 14, fontWeight: '600', marginBottom: 2 },
   fileType: { fontSize: 12, color: BaseColors.main, marginBottom: 2 },
   fileDate: { fontSize: 11, color: BaseColors.grey },
