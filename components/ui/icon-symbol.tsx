@@ -65,6 +65,15 @@ const MAPPING = {
   'chevron.down': 'keyboard-arrow-down',
   'checkmark': 'check',
   'person.2.fill': 'group',
+
+  // File / uploads
+  'photo.fill': 'image',
+  'doc.richtext.fill': 'picture-as-pdf',
+  'film.fill': 'videocam',
+  'music.note': 'music-note',
+  'doc.zipper': 'folder-zip',
+  'lock.fill': 'lock',
+  'eye.fill': 'visibility',
 } as IconMapping;
 
 /**

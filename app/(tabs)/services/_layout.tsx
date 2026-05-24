@@ -42,6 +42,20 @@ export default function ServicesLayout() {
           headerBackTitle: 'Indietro',
         }}
       />
+      <Stack.Screen
+        name="uploads"
+        options={{
+          title: 'Documenti caricati',
+          headerBackTitle: 'Indietro',
+        }}
+      />
+      <Stack.Screen
+        name="upload-form"
+        options={{
+          title: 'Carica documento',
+          headerBackTitle: 'Indietro',
+        }}
+      />
     </Stack>
   );
 }

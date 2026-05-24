@@ -200,6 +200,26 @@ export default function ServicesScreen() {
               </ThemedView>
             </TouchableOpacity>
           ))}
+
+          <TouchableOpacity
+            style={[styles.serviceRow, { borderBottomColor: BaseColors.borderLight }]}
+            onPress={() => router.push('/(tabs)/services/uploads')}
+            activeOpacity={0.7}>
+            <ThemedView style={styles.serviceRowContent}>
+              <ThemedView style={[styles.iconContainer, { backgroundColor: BaseColors.mainLightest }]}>
+                <IconSymbol name="doc.fill" size={28} color={BaseColors.main} />
+              </ThemedView>
+              <ThemedView style={styles.textContainer}>
+                <ThemedText type="defaultSemiBold" style={styles.serviceTitle}>
+                  Documenti caricati
+                </ThemedText>
+                <ThemedText style={styles.serviceDescription}>
+                  Gestisci i tuoi documenti e allegati
+                </ThemedText>
+              </ThemedView>
+              <IconSymbol name="chevron.right" size={20} color={BaseColors.greyMedium} />
+            </ThemedView>
+          </TouchableOpacity>
         </ThemedView>
       </ScrollView>
     </ThemedView>
