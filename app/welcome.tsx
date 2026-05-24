@@ -245,13 +245,10 @@ export default function WelcomeScreen() {
         {/* Logo */}
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/icon.png')}
+            source={require('@/assets/images/logo-horizontal.png')}
             style={styles.logo}
             resizeMode="contain"
           />
-          <ThemedText type="title" style={styles.appName}>
-            Tramonto Sereno
-          </ThemedText>
         </View>
 
         {/* Welcome message if user exists */}
@@ -368,13 +365,9 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 280,
+    height: 72,
     marginBottom: 16,
-  },
-  appName: {
-    textAlign: 'center',
-    fontSize: 24,
   },
   welcomeSection: {
     alignItems: 'center',

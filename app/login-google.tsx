@@ -217,13 +217,10 @@ export default function LoginGoogleScreen() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/icon.png')}
+            source={require('@/assets/images/logo-horizontal.png')}
             style={styles.logo}
             resizeMode="contain"
           />
-          <ThemedText type="title" style={styles.appName}>
-            Tramonto Sereno
-          </ThemedText>
         </View>
 
         <View style={styles.infoContainer}>
@@ -294,8 +291,8 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 280,
+    height: 72,
     marginBottom: 16,
   },
   appName: {
