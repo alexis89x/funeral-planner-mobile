@@ -1,6 +1,6 @@
-import { Tabs, useRouter } from 'expo-router';
+import { Tabs, useRouter, usePathname } from 'expo-router';
 import React, { useRef } from 'react';
-import { TouchableOpacity, Alert } from 'react-native';
+import { TouchableOpacity, Alert, Text } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -17,6 +17,10 @@ export default function TabLayout() {
   const router = useRouter();
   const isSwitchingRef = useRef(false);
   const { handleNewPlan } = useNewPlanHandler();
+
+  const pathname = usePathname();
+  const isMyPlanActive = pathname === '/my-plan' || pathname === '/my-plans';
+  const tintColor = Colors[colorScheme ?? 'light'].tint;
 
   const activePlans = getActivePlans(userProfile);
   const hasMultiplePlans = !userProfile || activePlans.length !== 1;
@@ -77,8 +81,14 @@ export default function TabLayout() {
         name="my-plan"
         options={{
           title: 'Il mio piano',
-          tabBarLabel: myPlanTabTitle,
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
+          tabBarLabel: ({ color }) => (
+            <Text style={{ fontSize: 10, color: isMyPlanActive ? tintColor : color }}>
+              {myPlanTabTitle}
+            </Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="doc.text.fill" color={isMyPlanActive ? tintColor : color} />
+          ),
           headerShown: true,
           headerRight: () => (
             <React.Fragment>
