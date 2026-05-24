@@ -77,7 +77,9 @@ function DocumentTypePicker({
 export default function UploadFormScreen() {
   const { userProfile } = useAuth();
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
-  const [documentType, setDocumentType] = useState<DocumentType | null>(null);
+  const [documentType, setDocumentType] = useState<DocumentType>(
+    DocumentTypes.find(d => d.id === 'generic')!
+  );
   const [notes, setNotes] = useState('');
   const [uploading, setUploading] = useState(false);
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -124,12 +126,12 @@ export default function UploadFormScreen() {
       });
       const data = await response.json();
 
-      if (data.result === 'ok') {
+      if (data.data || data.result === 'ok') {
         Alert.alert('Documento caricato', 'Il documento è stato caricato con successo.', [
           { text: 'OK', onPress: () => router.back() },
         ]);
       } else {
-        throw new Error(data.message || 'Errore durante il caricamento');
+        throw new Error(data.message || data.error || 'Errore durante il caricamento');
       }
     } catch (err: any) {
       Alert.alert('Errore', err.message || 'Impossibile caricare il documento. Riprova.');
@@ -177,8 +179,8 @@ export default function UploadFormScreen() {
             style={styles.selectInput}
             onPress={() => setPickerVisible(true)}
             activeOpacity={0.7}>
-            <ThemedText style={[styles.selectText, !documentType && styles.selectPlaceholder]}>
-              {documentType ? documentType.name : 'Seleziona tipo...'}
+            <ThemedText style={styles.selectText}>
+              {documentType.name}
             </ThemedText>
             <Ionicons name="chevron-down" size={18} color={BaseColors.grey} />
           </TouchableOpacity>

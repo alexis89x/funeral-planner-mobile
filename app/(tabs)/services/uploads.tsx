@@ -224,8 +224,8 @@ export default function UploadsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await ApiService.post('upload-remove', {
-                id_upload: String(attachment.id),
+              await ApiService.post('upload-discard', {
+                id: String(attachment.id),
                 id_plan: String(attachment.id_plan),
               });
               setUploads(prev => prev.filter(a => a.id !== attachment.id));
