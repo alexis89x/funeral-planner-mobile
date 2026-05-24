@@ -16,6 +16,7 @@ import { useAuth, Plan } from '@/contexts/AuthContext';
 import { ApiService, API_BASE_URL } from '@/utils/api';
 import { PlanSwitcher } from '@/components/PlanSwitcher';
 import { hasMultiplePlans } from '@/utils/plans';
+import { getDocumentTypeDesc } from '@/constants/document-types';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 
@@ -137,7 +138,7 @@ function AttachmentRow({
             {attachment.original_filename}
           </ThemedText>
           {!!attachment.document_type && (
-            <ThemedText style={styles.fileType}>{attachment.document_type}</ThemedText>
+            <ThemedText style={styles.fileType}>{getDocumentTypeDesc(attachment.document_type)}</ThemedText>
           )}
           <ThemedText style={styles.fileDate}>{formatDate(attachment.created)}</ThemedText>
         </View>
