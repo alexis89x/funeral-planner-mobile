@@ -1,6 +1,5 @@
 /**
- * Tramonto Sereno - Design System Colors
- * Brand colors based on the aussie-funeral palette
+ * Studio 3A - Design System Colors
  */
 
 import { Platform } from 'react-native';
@@ -31,12 +30,12 @@ export const BaseColors = {
   white: '#FFFFFF',
   yellow: '#ffc107',
 
-  // Main brand palette (aussie-funeral)
-  main: '#bf9574',
-  mainDark: '#ab8668',
-  mainLight: '#d6b89c',
-  mainLightest: '#f6f0eb',
-  mainLightestest: '#fbf9f7',
+  // Main brand palette (Studio 3A)
+  main: '#ff7f13',
+  mainDark: '#cc6200',
+  mainLight: '#ffa040',
+  mainLightest: '#fff3e8',
+  mainLightestest: '#fff8f3',
 
   // Status colors
   success: '#28a745',
