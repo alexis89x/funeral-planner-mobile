@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import { WebView, WebViewProps } from 'react-native-webview';
 import { router } from 'expo-router';
+import Constants from 'expo-constants';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
@@ -37,8 +38,11 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
   localStorage.setItem('uinfo', JSON.stringify(user));`
       : '';
 
+    const appVersion = Constants.expoConfig?.version ?? '0.0.0';
+
     const fullInjection = `(function() {
   window.tsMobileApp = true;
+  window.tsMobileAppVersion = "${appVersion}";
   ${tokenInjection}
   ${injectedJavaScript ?? ''}
   true;
