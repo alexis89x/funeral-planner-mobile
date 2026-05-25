@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, TouchableOpacity, ScrollView, Linking, Image, View } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BaseColors } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
+const STUDIO3A_PHONE = '800 09 02 10';
 
 interface EmergenzaItem {
   id: string;
@@ -30,14 +32,14 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
     icon: 'exclamationmark.shield.fill',
     route: '/emergenza/contatti',
   },
-  {
+  /*{
     id: 'risarcimento-danni',
     title: 'Risarcimento Danni',
     desc: 'Informazioni e richieste di risarcimento',
     icon: 'doc.text.fill',
     route: '/emergenza/webview',
     url: 'https://app.tramontosereno.it',
-  },
+  },*/
 ];
 
 export default function EmergenzaScreen() {
@@ -52,17 +54,42 @@ export default function EmergenzaScreen() {
     }
   };
 
+  const handleCallStudio3A = () => {
+    Linking.openURL(`tel:${STUDIO3A_PHONE.replace(/\s/g, '')}`);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.header}>
-          <ThemedText style={styles.subtitle}>
-            Assistenza e supporto di emergenza
+        {/* Studio 3A Banner */}
+        <View style={styles.studio3aBanner}>
+          <Image
+            source={require('@/assets/images/logo-horizontal.png')}
+            style={styles.studio3aLogo}
+            resizeMode="contain"
+          />
+          <ThemedText style={styles.studio3aHeadline}>
+            Sei vittima di un danno ed hai bisogno di assistenza?
           </ThemedText>
-        </ThemedView>
+          <ThemedText style={styles.studio3aBody}>
+            Studio 3A ti garantisce una{' '}
+            <ThemedText style={styles.studio3aBold}>CONSULENZA GRATUITA</ThemedText>
+            {' '}per ottenere il giusto risarcimento
+          </ThemedText>
+          <TouchableOpacity
+            style={styles.studio3aCallButton}
+            onPress={handleCallStudio3A}
+            activeOpacity={0.8}>
+            <IconSymbol name="phone.fill" size={18} color="#fff" />
+            <ThemedText style={styles.studio3aCallButtonText}>
+              Chiamaci per un consulto gratuito!
+            </ThemedText>
+          </TouchableOpacity>
+          <ThemedText style={styles.studio3aPhone}>{STUDIO3A_PHONE}</ThemedText>
+        </View>
 
         <ThemedView style={styles.itemsContainer}>
-          {EMERGENZA_ITEMS.map((item, index) => (
+          {EMERGENZA_ITEMS.map((item) => (
             <TouchableOpacity
               key={item.id}
               style={[
@@ -112,17 +139,58 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+  studio3aBanner: {
+    backgroundColor: '#fff6ed',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5d9b8',
+    paddingHorizontal: 24,
+    paddingTop: 28,
+    paddingBottom: 24,
     alignItems: 'center',
+    gap: 12,
   },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  studio3aLogo: {
+    width: 180,
+    height: 56,
+    marginBottom: 4,
+  },
+  studio3aHeadline: {
+    color: '#1a1a1a',
+    fontSize: 16,
+    fontWeight: '700',
     textAlign: 'center',
-    opacity: 0.8,
+    lineHeight: 22,
+  },
+  studio3aBody: {
+    color: '#555',
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  studio3aBold: {
+    color: '#ef7d00',
+    fontWeight: '700',
+  },
+  studio3aCallButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#ef7d00',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 4,
+  },
+  studio3aCallButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  studio3aPhone: {
+    color: '#ef7d00',
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   itemsContainer: {
     paddingBottom: 40,
