@@ -43,7 +43,7 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
     const fullInjection = `(function() {
   window.tsMobileApp = true;
   window.tsMobileAppVersion = "${appVersion}";
-  window.tsMobileTheme = "studio3a";
+  window.tsTheme = "studio3a";
   ${tokenInjection}
   ${injectedJavaScript ?? ''}
   true;
