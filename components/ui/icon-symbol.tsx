@@ -67,6 +67,7 @@ const MAPPING = {
   'person.2.fill': 'group',
 
   // File / uploads
+  'arrow.up.doc.fill': 'upload-file',
   'photo.fill': 'image',
   'doc.richtext.fill': 'picture-as-pdf',
   'film.fill': 'videocam',
