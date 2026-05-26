@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "Tramonto Sereno",
+    "name": "Studio 3A",
     "slug": "funeral-planner-mobile",
     "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo-3a-squared-2.png",
     "scheme": "tramontosereno",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "it.nanuktechnology.tramontosereno",
+      "bundleIdentifier": "it.nanuktechnology.tramontosereno.studio",
       "buildNumber": "5",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
@@ -24,13 +24,13 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ff7f13",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "foregroundImage": "./assets/images/logo-3a-squared-2.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "it.nanuktechnology.tramontosereno",
+      "package": "it.nanuktechnology.tramontosereno.studio",
       "versionCode": 5,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
