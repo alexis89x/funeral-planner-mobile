@@ -26,7 +26,7 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
   {
     id: 'contatto-emergenza',
     title: 'Contatti di Emergenza',
-    desc: 'Assistenza immediata in caso di necessità',
+    desc: 'Definisci chi può accedere alle tue informazioni', // 'Assistenza immediata in caso di necessità',
     icon: 'exclamationmark.shield.fill',
     route: '/emergenza/contatti',
   },
@@ -52,14 +52,16 @@ export default function EmergenzaScreen() {
     }
   };
 
-  return (
-    <ThemedView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.header}>
+  /*
+  <ThemedView style={styles.header}>
           <ThemedText style={styles.subtitle}>
             Assistenza e supporto di emergenza
           </ThemedText>
         </ThemedView>
+   */
+  return (
+    <ThemedView style={styles.container}>
+      <ScrollView style={styles.scrollContainer}>
 
         <ThemedView style={styles.itemsContainer}>
           {EMERGENZA_ITEMS.map((item, index) => (

@@ -169,7 +169,7 @@ export default function ServicesScreen() {
             activeOpacity={0.7}>
             <ThemedView style={styles.serviceRowContent}>
               <ThemedView style={[styles.iconContainer, { backgroundColor: BaseColors.mainLightest }]}>
-                <IconSymbol name="doc.fill" size={28} color={BaseColors.main} />
+                <IconSymbol name="arrow.up.doc.fill" size={28} color={BaseColors.main} />
               </ThemedView>
               <ThemedView style={styles.textContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.serviceTitle}>

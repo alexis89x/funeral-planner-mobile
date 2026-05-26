@@ -129,7 +129,13 @@ export default function TabLayout() {
         name="funeral-home"
         options={{
           title: funeralHomeTitle,
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="building.2.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              size={28}
+              name={userProfile?.user?.id_partner_referral ? 'building.2.fill' : 'magnifyingglass'}
+              color={color}
+            />
+          ),
           headerShown: true,
           headerLeft: () => null,
         }}
