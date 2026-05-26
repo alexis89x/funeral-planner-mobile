@@ -68,7 +68,7 @@ export default function TabLayout() {
   console.log("USER PROFILE", userProfile);
   const funeralHomeTitle = userProfile?.user?.id_partner_referral
     ? 'La mia onoranza'
-    : 'Cerca onoranza';
+    : 'Cerca onoranze funebri';
 
   return (
     <Tabs

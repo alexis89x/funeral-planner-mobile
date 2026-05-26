@@ -30,14 +30,14 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
     icon: 'exclamationmark.shield.fill',
     route: '/emergenza/contatti',
   },
-  {
+  /*{
     id: 'risarcimento-danni',
     title: 'Risarcimento Danni',
     desc: 'Informazioni e richieste di risarcimento',
     icon: 'doc.text.fill',
     route: '/emergenza/webview',
     url: 'https://app.tramontosereno.it',
-  },
+  },*/
 ];
 
 export default function EmergenzaScreen() {
