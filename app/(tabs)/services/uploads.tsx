@@ -20,8 +20,6 @@ import { getDocumentTypeDesc } from '@/constants/document-types';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 
-const UPLOAD_MAX_BYTES = 250 * 1024 * 1024;
-
 export interface Attachment {
   id: number;
   uuid: string;
@@ -154,6 +152,7 @@ function AttachmentRow({
 export default function UploadsScreen() {
   const { userProfile } = useAuth();
   const [uploads, setUploads] = useState<Attachment[]>([]);
+  const [uploadLimit, setUploadLimit] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -165,7 +164,7 @@ export default function UploadsScreen() {
   const showSwitcher = hasMultiplePlans(userProfile);
 
   const totalBytes = uploads.reduce((sum, a) => sum + (a.size || 0), 0);
-  const usagePercent = Math.min((totalBytes / UPLOAD_MAX_BYTES) * 100, 100);
+  const usagePercent = uploadLimit > 0 ? Math.min((totalBytes / uploadLimit) * 100, 100) : 0;
   const isHighUsage = usagePercent > 70;
 
   const loadUploads = useCallback(async () => {
@@ -173,7 +172,9 @@ export default function UploadsScreen() {
     try {
       setError(null);
       const response = await ApiService.get('upload-list', { id_plan: currentPlan.id });
-      const data = (response.data as unknown as Attachment[]) || [];
+      const responseData = response.data as unknown as { uploads: Attachment[]; limit: number };
+      const data = responseData?.uploads || [];
+      setUploadLimit(responseData?.limit || 0);
       setUploads(data.sort((a, b) => parseInt(b.created, 10) - parseInt(a.created, 10)));
     } catch {
       setError('Impossibile caricare i documenti');
@@ -275,7 +276,7 @@ export default function UploadsScreen() {
             <View style={styles.storageHeader}>
               <ThemedText style={styles.storageLabel}>Spazio utilizzato</ThemedText>
               <ThemedText style={[styles.storageValue, isHighUsage && styles.storageValueWarn]}>
-                {toMB(totalBytes)} / {toMB(UPLOAD_MAX_BYTES)} MB ({usagePercent.toFixed(1)}%)
+                {toMB(totalBytes)} / {toMB(uploadLimit)} MB ({usagePercent.toFixed(1)}%)
               </ThemedText>
             </View>
             <View style={styles.progressBg}>
