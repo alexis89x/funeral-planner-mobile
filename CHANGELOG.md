@@ -1,5 +1,23 @@
 # Changelog
 
+## [Unreleased]
+
+### Aggiunto
+- Schermata contatti di emergenza nativa: lista con swipe per eliminare, azioni rapide per chiamare o inviare email al contatto
+- Form nativo per aggiungere e modificare contatti di emergenza
+- Schermata documenti allegati: lista con swipe per eliminare, anteprima inline per immagini e PDF, barra di utilizzo spazio
+- Form nativo per caricare documenti con selezione tipo documento e note
+- Componente `AppWebView` centralizzato: gestisce iniezione token, versione app, messaggi `postMessage` e indicatore di caricamento
+- Componente `PlanSwitcher` per cambiare piano attivo direttamente nelle schermate dei servizi
+- Utility `hasMultiplePlans` e costanti per i tipi di documento
+
+### Migliorato
+- Spazio di archiviazione documenti: il limite massimo viene ora letto dalla risposta API (`upload-list`) invece di essere hardcoded
+- Refactoring di tutte le WebView interne (emergenza, servizi, piano, onoranza) per usare `AppWebView`
+- Tab Emergenza: voce "Contatti di Emergenza" ora apre la schermata nativa invece di una WebView
+- Cache prodotti con TTL configurabile
+- Pulizia cache WebView disponibile dalle impostazioni
+
 ## [v2.0.0] - 2026-05-13
 
 ### Aggiunto
