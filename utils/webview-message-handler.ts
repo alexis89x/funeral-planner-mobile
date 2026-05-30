@@ -7,7 +7,7 @@ type NavRoute = string | { pathname: string; params?: Record<string, string> };
 type NavResolver = NavRoute | ((userProfile: UserProfile | null) => NavRoute);
 
 const NAVIGATION_MAP: Record<string, NavResolver> = {
-  'emergency-contact': '/emergency-contact',
+  'emergency-contacts': '/(tabs)/emergenza/contatti',
   'uploads': '/(tabs)/services/uploads',
   'user-home': (userProfile) => resolvePostLoginRoute(userProfile),
 };

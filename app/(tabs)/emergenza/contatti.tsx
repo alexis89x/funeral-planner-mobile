@@ -148,7 +148,7 @@ export default function ContattiEmergenzaScreen() {
   };
 
   const AddButton = () => (
-    <TouchableOpacity onPress={handleAdd} style={styles.headerAdd}>
+    <TouchableOpacity onPress={handleAdd}>
       <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
     </TouchableOpacity>
   );
@@ -188,7 +188,6 @@ export default function ContattiEmergenzaScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { paddingBottom: 32 },
-  headerAdd: { marginRight: 16 },
   contactRow: {
     flexDirection: 'row',
     alignItems: 'center',
