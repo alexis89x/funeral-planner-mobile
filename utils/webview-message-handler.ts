@@ -1,11 +1,23 @@
 import { downloadPDF, downloadPDFFromURL } from './pdf-downloader';
 import { APP_BASE_URL } from "@/utils/api";
+import { UserProfile } from '@/contexts/AuthContext';
+import { resolvePostLoginRoute } from './plans';
+
+type NavRoute = string | { pathname: string; params?: Record<string, string> };
+type NavResolver = NavRoute | ((userProfile: UserProfile | null) => NavRoute);
+
+const NAVIGATION_MAP: Record<string, NavResolver> = {
+  'emergency-contact': '/emergency-contact',
+  'uploads': '/(tabs)/services/uploads',
+  'user-home': (userProfile) => resolvePostLoginRoute(userProfile),
+};
 
 export interface WebViewMessageHandlers {
   onGoBack?: () => void;
-  onNavigate?: (route: string) => void;
+  onNavigate?: (route: NavRoute) => void;
   onRefreshUser?: () => Promise<void>;
-  [key: string]: ((arg?: any) => void | Promise<void>) | undefined;
+  userProfile?: UserProfile | null;
+  [key: string]: ((arg?: any) => void | Promise<void>) | undefined | UserProfile | null;
 }
 
 /**
@@ -57,8 +69,12 @@ export const handleWebViewMessage = async (
       case 'navigate':
         // console.log('🧭 Handling navigate action');
         if (data.route && handlers.onNavigate) {
-          // console.log('✅ Executing onNavigate callback with route:', data.route);
-          handlers.onNavigate(data.route);
+          const resolver = NAVIGATION_MAP[data.route];
+          const resolvedRoute = typeof resolver === 'function'
+            ? resolver(handlers.userProfile ?? null)
+            : (resolver ?? data.route);
+          // console.log('✅ Executing onNavigate callback with route:', resolvedRoute);
+          handlers.onNavigate(resolvedRoute);
         } else if (!data.route) {
           console.error('❌ Missing route in navigate message');
         } else {

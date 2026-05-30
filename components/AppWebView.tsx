@@ -22,12 +22,13 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
   ({ uri, injectToken = false, injectedJavaScript, onLoadEnd, onRefreshUser, onData, style }, ref) => {
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
-    const { token } = useAuth();
+    const { token, userProfile } = useAuth();
 
     const handleMessage = async (event: any) => {
       await handleWebViewMessage(event, {
         onGoBack: () => router.back(),
-        onNavigate: (route: string) => router.push(route as any),
+        onNavigate: (route) => router.push(route as any),
+        userProfile,
         ...(onRefreshUser && { onRefreshUser }),
         ...(onData && { onData }),
       });
