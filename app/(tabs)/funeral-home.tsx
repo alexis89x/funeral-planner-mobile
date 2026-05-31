@@ -44,7 +44,8 @@ export default function FuneralHomeScreen() {
   }, [partnerReferralId, rawUrl, coords]);
 
   const coordsInjection = coords
-    ? `localStorage.setItem('userLocation', JSON.stringify({ lat: ${coords.lat}, lng: ${coords.lng} }));`
+    // NO LOCALIZATION FOR STUDIO 3a
+    ? '' // `localStorage.setItem('userLocation', JSON.stringify({ lat: ${coords.lat}, lng: ${coords.lng} }));`
     : undefined;
 
   if (partnerReferralId) {

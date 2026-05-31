@@ -291,7 +291,7 @@ export default function WelcomeScreen() {
                   <ThemedText style={styles.loginButtonText}>Email</ThemedText>
                 </TouchableOpacity>
 
-                {!isExpoGo && (
+                {!isExpoGo && false && (
                   <TouchableOpacity
                     style={[styles.loginButton, { backgroundColor: isGoogleLoading ? `${colors.tint}80` : colors.tint }]}
                     onPress={handleGoogleSignIn}
