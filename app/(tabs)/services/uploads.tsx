@@ -237,8 +237,7 @@ export default function UploadsScreen() {
 
   const AddButton = () => (
     <TouchableOpacity
-      onPress={() => router.push('/(tabs)/services/upload-form')}
-      style={styles.headerAdd}>
+      onPress={() => router.push('/(tabs)/services/upload-form')}>
       <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
     </TouchableOpacity>
   );
@@ -386,5 +385,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 20, marginTop: 16, paddingVertical: 14, borderRadius: 12, backgroundColor: BaseColors.main,
   },
   addButtonText: { color: '#fff', fontSize: 15, fontWeight: '600' },
-  headerAdd: { marginRight: 16 },
 });
