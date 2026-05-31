@@ -9,6 +9,7 @@ import { Colors, BaseColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { api, APP_BASE_URL } from '@/utils/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const SERVICES_STORAGE_KEY = '@funeral_planner_services';
 
@@ -52,6 +53,7 @@ const iconMap: Record<string, string> = {
 
 export default function ServicesScreen() {
   const colorScheme = useColorScheme();
+  const { userProfile } = useAuth();
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -182,6 +184,27 @@ export default function ServicesScreen() {
               <IconSymbol name="chevron.right" size={20} color={BaseColors.greyMedium} />
             </ThemedView>
           </TouchableOpacity>
+          {!userProfile?.user?.id_partner_referral && (
+            <TouchableOpacity
+              style={[styles.serviceRow, { borderBottomColor: BaseColors.borderLight }]}
+              onPress={() => router.push('/cerca-onoranze')}
+              activeOpacity={0.7}>
+              <ThemedView style={styles.serviceRowContent}>
+                <ThemedView style={[styles.iconContainer, { backgroundColor: BaseColors.mainLightest }]}>
+                  <IconSymbol name="magnifyingglass" size={28} color={BaseColors.main} />
+                </ThemedView>
+                <ThemedView style={styles.textContainer}>
+                  <ThemedText type="defaultSemiBold" style={styles.serviceTitle}>
+                    Cerca onoranze funebri
+                  </ThemedText>
+                  <ThemedText style={styles.serviceDescription}>
+                    Trova un'onoranza funebre vicino a te
+                  </ThemedText>
+                </ThemedView>
+                <IconSymbol name="chevron.right" size={20} color={BaseColors.greyMedium} />
+              </ThemedView>
+            </TouchableOpacity>
+          )}
           {filteredServices.map((service, index) => (
             <TouchableOpacity
               key={service.id || index}
