@@ -65,11 +65,6 @@ export default function TabLayout() {
     }
   };
 
-  console.log("USER PROFILE", userProfile);
-  const funeralHomeTitle = userProfile?.user?.id_partner_referral
-    ? 'La mia onoranza'
-    : 'Cerca onoranze funebri';
-
   return (
     <Tabs
       screenOptions={{
@@ -128,14 +123,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="funeral-home"
         options={{
-          title: funeralHomeTitle,
+          title: 'La mia onoranza',
           tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name={userProfile?.user?.id_partner_referral ? 'building.2.fill' : 'magnifyingglass'}
-              color={color}
-            />
+            <IconSymbol size={28} name="building.2.fill" color={color} />
           ),
+          href: userProfile?.user?.id_partner_referral ? undefined : null,
           headerShown: true,
           headerLeft: () => null,
         }}

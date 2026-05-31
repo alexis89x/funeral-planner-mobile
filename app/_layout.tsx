@@ -58,6 +58,7 @@ function RootLayoutNav() {
     const inWelcome = segments[0] === 'welcome';
     const inLoginFlow = segments[0] === 'login-email' || segments[0] === 'login-google';
     const inWebview = segments[0] === 'webview';
+    const inCercaOnoranze = segments[0] === 'cerca-onoranze';
     const inEmergencyContact = segments[0] === 'emergency-contact';
     const inModal = segments[0] === 'modal';
 
@@ -71,8 +72,8 @@ function RootLayoutNav() {
       segments
     });
 
-    // Don't redirect if in webview, modal or emergency contact
-    if (inWebview || inModal || inEmergencyContact) {
+    // Don't redirect if in webview, modal, emergency contact or cerca-onoranze
+    if (inWebview || inModal || inEmergencyContact || inCercaOnoranze) {
       console.log('✅ In webview/modal/emergency-contact, no redirect');
       return;
     }
@@ -118,6 +119,7 @@ function RootLayoutNav() {
         <Stack.Screen name="login-email" options={{ headerShown: false, headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="login-google" options={{ headerShown: false, headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="webview" options={{ headerBackTitle: 'Indietro' }} />
+        <Stack.Screen name="cerca-onoranze" options={{ title: 'Cerca onoranze funebri', headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="emergency-contact" options={{ headerBackTitle: 'Indietro' }} />
         <Stack.Screen name="delete-account" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
