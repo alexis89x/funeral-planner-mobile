@@ -14,6 +14,7 @@ import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from '@/utils/security';
+import { extractApiErrorMessage } from '@/utils/api-error';
 import { DocumentTypes, getDocumentTypeDesc, DocumentType } from '@/constants/document-types';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
@@ -131,7 +132,7 @@ export default function UploadFormScreen() {
           { text: 'OK', onPress: () => router.back() },
         ]);
       } else {
-        throw new Error(data.message || data.error || 'Errore durante il caricamento');
+        throw new Error(extractApiErrorMessage(data));
       }
     } catch (err: any) {
       Alert.alert('Errore', err.message || 'Impossibile caricare il documento. Riprova.');
