@@ -50,6 +50,8 @@ const ERROR_TRANSLATIONS: Record<string, string> = {
   UPLOAD_WRONG_TYPE: 'Tipo di file non supportato.',
   UPLOAD_TOO_LARGE: 'Il file supera la dimensione massima consentita.',
   UPLOAD_FAILED: 'Caricamento fallito. Riprova.',
+  NOT_FOUND: 'Risorsa non trovata.',
+  SERVER_ERROR: 'Errore del server. Riprova più tardi.',
 };
 
 export function extractApiErrorMessage(
