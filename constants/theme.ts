@@ -133,12 +133,12 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
    */
   tramonto: {
     displayName: 'Tramonto Sereno',
-    main: '#ff7f13',
-    mainDark: '#cc6200',
-    mainLight: '#ffa040',
-    mainLightest: '#fff3e8',
-    mainLightestest: '#fff8f3',
-    splashColor: '#ff7f13',
+    main: '#bf9574',
+    mainDark: '#ab8668',
+    mainLight: '#d6b89c',
+    mainLightest: '#f6f0eb',
+    mainLightestest: '#faf7f4',
+    splashColor: '#bf9574',
     funeralHomeTab: 'always-visible',
     logo: require('@/assets/images/themes/tramonto/logo.png'),
     logoHorizontal: require('@/assets/images/themes/tramonto/logo-horizontal.png'),
