@@ -27,10 +27,11 @@
  * │  expo.android.adaptiveIcon.backgroundColor  →  ThemeConfig.splashColor
  * │  expo.plugins[expo-splash-screen].backgroundColor (light + dark)  →  idem
  * │
- * │  expo.icon / expo.splash → puntano già a assets/images/ standard;
- * │    dopo aver scelto il tema, COPIARE manualmente i file dalla cartella
- * │    assets/images/themes/{tema}/ nella cartella assets/images/
- * │    (vedi sezione Assets qui sotto)
+ * │  expo.icon / expo.splash / expo.android.adaptiveIcon
+ * │    → aggiornare i path per puntare alla cartella del tema:
+ * │      "./assets/images/themes/{tema}/icon.png"
+ * │      "./assets/images/themes/{tema}/splash-icon.png"
+ * │      "./assets/images/themes/{tema}/android-icon-*.png"
  * │
  * │  Stringhe di permesso (NSCamera…, NSPhoto…, NSMicrophone…, NSLocation…,
  * │  expo-location.locationWhenInUsePermission, expo-image-picker.*)
@@ -62,11 +63,8 @@
  * │  Prima di ogni build, copiare i file del tema attivo in assets/images/:
  * │    cp assets/images/themes/mazzini/* assets/images/
  * │
- * │  NOTA: logo.png e logo-horizontal.png vengono caricati a runtime tramite
- * │  i require() statici definiti qui sotto in THEMES. Gli altri file
- * │  (icon, splash, android-icon-*) sono referenziati in app.json e
- * │  devono essere fisicamente presenti in assets/images/ al momento del build.
- * │
+ * │  Tutti i file (logo in-app e asset di build) sono referenziati direttamente
+ * │  dalla cartella del tema — nessuna copia manuale necessaria.
  * └────────────────────────────────────────────────────────────────────────────
  */
 
