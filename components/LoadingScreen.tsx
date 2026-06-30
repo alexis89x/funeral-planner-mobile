@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
-import { BaseColors } from '@/constants/theme';
+import { BaseColors, AppLogoHorizontal } from '@/constants/theme';
 
 export type LoadingState = 
   | 'initializing'
@@ -81,7 +81,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ loadingState, error }) =>
         {/* App Logo/Icon area */}
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/logo-horizontal.png')}
+            source={AppLogoHorizontal}
             style={styles.logo}
             resizeMode="contain"
           />

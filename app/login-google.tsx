@@ -10,7 +10,7 @@ import {
 import { router, Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
+import { Colors, AppLogoHorizontal } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { isExpoGo } from "@/utils/utils";
@@ -217,7 +217,7 @@ export default function LoginGoogleScreen() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/logo-horizontal.png')}
+            source={AppLogoHorizontal}
             style={styles.logo}
             resizeMode="contain"
           />

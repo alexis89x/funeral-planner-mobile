@@ -1,16 +1,213 @@
 /**
- * Studio 3A - Design System Colors
+ * Design System — Multi-theme configuration
+ *
+ * COME CAMBIARE TEMA
+ * ──────────────────
+ * Cambia ACTIVE_THEME con uno dei valori disponibili:
+ *   'tramonto'  → Tramonto Sereno   (arancione, consumer B2C)
+ *   'studio3a'  → Studio 3A         (arancione, white-label Studio 3A)
+ *   'mazzini'   → Gruppo Mazzini    (blu navy #25346d)
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * COSA CAMBIARE PER OGNI TEMA (manuale)
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * ┌─ app.json ─────────────────────────────────────────────────────────────────
+ * │
+ * │  expo.name
+ * │    tramonto  → "Tramonto Sereno"
+ * │    studio3a  → "Studio 3A"
+ * │    mazzini   → "Gruppo Mazzini"
+ * │
+ * │  expo.ios.bundleIdentifier / expo.android.package
+ * │    tramonto  → it.nanuktechnology.tramontosereno
+ * │    studio3a  → it.nanuktechnology.tramontosereno.studio
+ * │    mazzini   → it.nanuktechnology.mazzini
+ * │
+ * │  expo.android.adaptiveIcon.backgroundColor  →  ThemeConfig.splashColor
+ * │  expo.plugins[expo-splash-screen].backgroundColor (light + dark)  →  idem
+ * │
+ * │  expo.icon / expo.splash → puntano già a assets/images/ standard;
+ * │    dopo aver scelto il tema, COPIARE manualmente i file dalla cartella
+ * │    assets/images/themes/{tema}/ nella cartella assets/images/
+ * │    (vedi sezione Assets qui sotto)
+ * │
+ * │  Stringhe di permesso (NSCamera…, NSPhoto…, NSMicrophone…, NSLocation…,
+ * │  expo-location.locationWhenInUsePermission, expo-image-picker.*)
+ * │    → sostituire il nome brand nel testo
+ * │      (es. "Tramonto Sereno" → "Gruppo Mazzini")
+ * │
+ * └────────────────────────────────────────────────────────────────────────────
+ *
+ * ┌─ eas.json ─────────────────────────────────────────────────────────────────
+ * │  Aggiungere un profilo build dedicato al nuovo cliente.
+ * │  Vedi profilo "studio" come riferimento.
+ * └────────────────────────────────────────────────────────────────────────────
+ *
+ * ┌─ Assets ───────────────────────────────────────────────────────────────────
+ * │
+ * │  Gli asset specifici per ogni tema sono in:
+ * │    assets/images/themes/{tema}/
+ * │
+ * │  File attesi in ogni cartella tema:
+ * │    logo.png                  → logo principale (usato in-app)
+ * │    logo-horizontal.png       → logo orizzontale (loading screen, login)
+ * │    icon.png                  → icona app (1024x1024 quadrata)
+ * │    splash-icon.png           → immagine splash
+ * │    favicon.png               → favicon web
+ * │    android-icon-foreground.png
+ * │    android-icon-background.png
+ * │    android-icon-monochrome.png
+ * │
+ * │  Prima di ogni build, copiare i file del tema attivo in assets/images/:
+ * │    cp assets/images/themes/mazzini/* assets/images/
+ * │
+ * │  NOTA: logo.png e logo-horizontal.png vengono caricati a runtime tramite
+ * │  i require() statici definiti qui sotto in THEMES. Gli altri file
+ * │  (icon, splash, android-icon-*) sono referenziati in app.json e
+ * │  devono essere fisicamente presenti in assets/images/ al momento del build.
+ * │
+ * └────────────────────────────────────────────────────────────────────────────
  */
 
 import { Platform } from 'react-native';
 
-// Base colors
+// ─── Tipi ────────────────────────────────────────────────────────────────────
+
+export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini';
+
+export interface ThemeConfig {
+  /** Nome visualizzato (= expo.name in app.json) */
+  displayName: string;
+  /** Colore primario brand */
+  main: string;
+  /** Variante scura del colore primario */
+  mainDark: string;
+  /** Variante chiara del colore primario */
+  mainLight: string;
+  /** Sfondo tinta primaria molto leggero */
+  mainLightest: string;
+  /** Sfondo tinta primaria quasi bianco */
+  mainLightestest: string;
+  /**
+   * Usato per splash screen e sfondo icona Android adattiva.
+   * Corrisponde a:
+   *   expo.android.adaptiveIcon.backgroundColor
+   *   expo.plugins[expo-splash-screen].backgroundColor
+   */
+  splashColor: string;
+  /**
+   * Comportamento del tab "funeral-home" nella tab bar.
+   *
+   * 'always-visible':
+   *   Il tab è sempre visibile. Il titolo e l'icona cambiano in base al
+   *   profilo utente (ha un partner referral → "La mia onoranza" con icona
+   *   edificio; altrimenti → "Cerca onoranze funebri" con lente). Usato da
+   *   Tramonto Sereno per il flusso B2C.
+   *
+   * 'hide-without-partner':
+   *   Il tab viene nascosto se l'utente non ha un partner referral.
+   *   La ricerca onoranze è accessibile tramite la sezione Servizi.
+   *   Usato da Studio 3A e Gruppo Mazzini.
+   */
+  funeralHomeTab: 'always-visible' | 'hide-without-partner';
+  /**
+   * Logo principale (require statico, risolto a build time).
+   * File: assets/images/themes/{tema}/logo.png
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  logo: any;
+  /**
+   * Logo orizzontale (require statico, risolto a build time).
+   * File: assets/images/themes/{tema}/logo-horizontal.png
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  logoHorizontal: any;
+}
+
+// ─── Definizione temi ─────────────────────────────────────────────────────────
+
+export const THEMES: Record<ThemeName, ThemeConfig> = {
+  /**
+   * Tramonto Sereno — app consumer B2C
+   * bundle: it.nanuktechnology.tramontosereno
+   * Asset: assets/images/themes/tramonto/
+   */
+  tramonto: {
+    displayName: 'Tramonto Sereno',
+    main: '#ff7f13',
+    mainDark: '#cc6200',
+    mainLight: '#ffa040',
+    mainLightest: '#fff3e8',
+    mainLightestest: '#fff8f3',
+    splashColor: '#ff7f13',
+    funeralHomeTab: 'always-visible',
+    logo: require('@/assets/images/themes/tramonto/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/tramonto/logo-horizontal.png'),
+  },
+
+  /**
+   * Studio 3A — white-label per Studio 3A
+   * bundle: it.nanuktechnology.tramontosereno.studio
+   * Asset: assets/images/themes/studio3a/
+   */
+  studio3a: {
+    displayName: 'Studio 3A',
+    main: '#ff7f13',
+    mainDark: '#cc6200',
+    mainLight: '#ffa040',
+    mainLightest: '#fff3e8',
+    mainLightestest: '#fff8f3',
+    splashColor: '#ff7f13',
+    funeralHomeTab: 'hide-without-partner',
+    logo: require('@/assets/images/themes/studio3a/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/studio3a/logo-horizontal.png'),
+  },
+
+  /**
+   * Gruppo Mazzini — Padova, https://www.gruppomazzini.it/
+   * bundle: it.nanuktechnology.mazzini
+   * Asset: assets/images/themes/mazzini/
+   * TODO: sostituire android-icon-*.png e favicon.png con versioni brandizzate Mazzini
+   */
+  mazzini: {
+    displayName: 'Gruppo Mazzini',
+    main: '#25346d',
+    mainDark: '#1a2450',
+    mainLight: '#3d4f8f',
+    mainLightest: '#e8eaf5',
+    mainLightestest: '#f3f4fa',
+    splashColor: '#25346d',
+    funeralHomeTab: 'hide-without-partner',
+    logo: require('@/assets/images/themes/mazzini/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/mazzini/logo-horizontal.png'),
+  },
+};
+
+// ─── Tema attivo ──────────────────────────────────────────────────────────────
+
+/**
+ * Cambia questo valore per switchare tema.
+ * Ricorda di aggiornare anche app.json e di copiare gli asset (vedi istruzioni).
+ */
+export const ACTIVE_THEME: ThemeName = 'mazzini';
+
+const activeTheme = THEMES[ACTIVE_THEME];
+
+/** Logo principale dell'app — usa questo nei componenti invece di require() diretto. */
+export const AppLogo = activeTheme.logo;
+
+/** Logo orizzontale dell'app — usa questo nei componenti invece di require() diretto. */
+export const AppLogoHorizontal = activeTheme.logoHorizontal;
+
+// ─── Colori base ──────────────────────────────────────────────────────────────
+
 export const BaseColors = {
   // Black shades
   blackMedium: '#292F36',
   black: '#050505',
 
-  // Brand colors
+  // Utility
   blue: '#0091ff',
   greenDark: '#005742',
   greenLight: '#e5f4f0',
@@ -30,12 +227,12 @@ export const BaseColors = {
   white: '#FFFFFF',
   yellow: '#ffc107',
 
-  // Main brand palette (Studio 3A)
-  main: '#ff7f13',
-  mainDark: '#cc6200',
-  mainLight: '#ffa040',
-  mainLightest: '#fff3e8',
-  mainLightestest: '#fff8f3',
+  // Main brand palette (dal tema attivo)
+  main: activeTheme.main,
+  mainDark: activeTheme.mainDark,
+  mainLight: activeTheme.mainLight,
+  mainLightest: activeTheme.mainLightest,
+  mainLightestest: activeTheme.mainLightestest,
 
   // Status colors
   success: '#28a745',
@@ -78,6 +275,8 @@ export const Colors = {
     warning: BaseColors.warning,
   },
 };
+
+// ─── Font ─────────────────────────────────────────────────────────────────────
 
 export const Fonts = Platform.select({
   ios: {

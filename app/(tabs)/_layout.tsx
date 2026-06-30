@@ -4,7 +4,7 @@ import { TouchableOpacity, Alert, Text } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, BaseColors } from '@/constants/theme';
+import { Colors, BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +25,23 @@ export default function TabLayout() {
   const activePlans = getActivePlans(userProfile);
   const hasMultiplePlans = !userProfile || activePlans.length !== 1;
   const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
+
+  const funeralHomeTabMode = THEMES[ACTIVE_THEME].funeralHomeTab;
+  const hasPartner = !!userProfile?.user?.id_partner_referral;
+  // 'always-visible': tab sempre presente, titolo/icona dinamici (Tramonto B2C)
+  // 'hide-without-partner': tab nascosto se l'utente non ha un partner referral
+  const funeralHomeHref =
+    funeralHomeTabMode === 'always-visible'
+      ? undefined
+      : hasPartner ? undefined : null;
+  const funeralHomeTitle =
+    funeralHomeTabMode === 'always-visible' && !hasPartner
+      ? 'Cerca onoranze funebri'
+      : 'La mia onoranza';
+  const funeralHomeIcon =
+    funeralHomeTabMode === 'always-visible' && !hasPartner
+      ? 'magnifyingglass'
+      : 'building.2.fill';
 
   const handleMyPlanTabPress = async () => {
     if (isSwitchingRef.current) return;
@@ -123,11 +140,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="funeral-home"
         options={{
-          title: 'La mia onoranza',
+          title: funeralHomeTitle,
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="building.2.fill" color={color} />
+            <IconSymbol size={28} name={funeralHomeIcon} color={color} />
           ),
-          href: userProfile?.user?.id_partner_referral ? undefined : null,
+          href: funeralHomeHref,
           headerShown: true,
           headerLeft: () => null,
         }}

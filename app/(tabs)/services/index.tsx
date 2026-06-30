@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors } from '@/constants/theme';
+import { Colors, BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { api, APP_BASE_URL } from '@/utils/api';
@@ -184,7 +184,7 @@ export default function ServicesScreen() {
               <IconSymbol name="chevron.right" size={20} color={BaseColors.greyMedium} />
             </ThemedView>
           </TouchableOpacity>
-          {!userProfile?.user?.id_partner_referral && (
+          {THEMES[ACTIVE_THEME].funeralHomeTab === 'hide-without-partner' && !userProfile?.user?.id_partner_referral && (
             <TouchableOpacity
               style={[styles.serviceRow, { borderBottomColor: BaseColors.borderLight }]}
               onPress={() => router.push('/cerca-onoranze')}

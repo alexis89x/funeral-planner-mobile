@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors } from '@/constants/theme';
+import { Colors, BaseColors, AppLogoHorizontal } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
@@ -245,7 +245,7 @@ export default function WelcomeScreen() {
         {/* Logo */}
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/logo-horizontal.png')}
+            source={AppLogoHorizontal}
             style={styles.logo}
             resizeMode="contain"
           />

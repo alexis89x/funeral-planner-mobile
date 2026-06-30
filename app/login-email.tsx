@@ -20,7 +20,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolvePostLoginRoute } from '@/utils/plans';
-import { Colors } from '@/constants/theme';
+import { Colors, AppLogoHorizontal } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { APP_BASE_URL } from "@/utils/api";
 import { AuthFooter } from '@/components/auth-footer';
@@ -148,7 +148,7 @@ export default function LoginEmailScreen() {
           {/* Logo */}
           <View style={styles.logoContainer}>
             <Image
-              source={require('@/assets/images/logo-horizontal.png')}
+              source={AppLogoHorizontal}
               style={styles.logo}
               resizeMode="contain"
             />
