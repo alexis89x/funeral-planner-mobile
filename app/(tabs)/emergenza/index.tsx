@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, ScrollView, Linking, Image, View } from '
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BaseColors } from '@/constants/theme';
+import { BaseColors, ACTIVE_THEME, AppLogoHorizontal } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const STUDIO3A_PHONE = '800 09 02 10';
@@ -61,10 +61,10 @@ export default function EmergenzaScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        {/* Studio 3A Banner */}
-        <View style={styles.studio3aBanner}>
+        {/* Studio 3A Banner — visibile solo nel tema studio3a */}
+        {ACTIVE_THEME === 'studio3a' && <View style={styles.studio3aBanner}>
           <Image
-            source={require('@/assets/images/logo-horizontal.png')}
+            source={AppLogoHorizontal}
             style={styles.studio3aLogo}
             resizeMode="contain"
           />
@@ -86,7 +86,7 @@ export default function EmergenzaScreen() {
             </ThemedText>
           </TouchableOpacity>
           <ThemedText style={styles.studio3aPhone}>{STUDIO3A_PHONE}</ThemedText>
-        </View>
+        </View>}
 
         <ThemedView style={styles.itemsContainer}>
           {EMERGENZA_ITEMS.map((item) => (

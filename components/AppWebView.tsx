@@ -3,7 +3,7 @@ import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import { WebView, WebViewProps } from 'react-native-webview';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
-import { Colors } from '@/constants/theme';
+import { Colors, ACTIVE_THEME } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { handleWebViewMessage } from '@/utils/webview-message-handler';
@@ -44,7 +44,7 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
     const fullInjection = `(function() {
   window.tsMobileApp = true;
   window.tsMobileAppVersion = "${appVersion}";
-  window.tsTheme = "studio3a";
+  window.tsTheme = "${ACTIVE_THEME}";
   ${tokenInjection}
   ${injectedJavaScript ?? ''}
   true;
