@@ -10,7 +10,7 @@ import {
 import { router, Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, AppLogoHorizontal } from '@/constants/theme';
+import { Colors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { isExpoGo } from "@/utils/utils";
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   logo: {
-    width: 280,
-    height: 72,
+    width: AppLogoHorizontalWidth,
+    height: AppLogoHorizontalHeight,
     marginBottom: 16,
   },
   appName: {

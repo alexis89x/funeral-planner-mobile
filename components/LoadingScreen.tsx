@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
-import { BaseColors, AppLogoHorizontal } from '@/constants/theme';
+import { BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight } from '@/constants/theme';
 
 export type LoadingState = 
   | 'initializing'
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 240,
-    height: 62,
+    width: AppLogoHorizontalWidth,
+    height: AppLogoHorizontalHeight,
   },
   loadingContainer: {
     alignItems: 'center',

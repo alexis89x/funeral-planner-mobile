@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors, AppLogoHorizontal } from '@/constants/theme';
+import { Colors, BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleLoginEnabled } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
@@ -291,7 +291,7 @@ export default function WelcomeScreen() {
                   <ThemedText style={styles.loginButtonText}>Email</ThemedText>
                 </TouchableOpacity>
 
-                {!isExpoGo && false && (
+                {!isExpoGo && AppGoogleLoginEnabled && (
                   <TouchableOpacity
                     style={[styles.loginButton, { backgroundColor: isGoogleLoading ? `${colors.tint}80` : colors.tint }]}
                     onPress={handleGoogleSignIn}
@@ -365,8 +365,8 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   logo: {
-    width: 280,
-    height: 72,
+    width: AppLogoHorizontalWidth,
+    height: AppLogoHorizontalHeight,
     marginBottom: 16,
   },
   welcomeSection: {

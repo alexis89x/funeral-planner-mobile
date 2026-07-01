@@ -121,6 +121,15 @@ export interface ThemeConfig {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logoHorizontal: any;
+  /** Larghezza del logo orizzontale in px (usata nei componenti login/welcome/loading) */
+  logoHorizontalWidth: number;
+  /**
+   * Rapporto height/width del logo orizzontale (dalle dimensioni naturali dell'immagine).
+   * L'altezza viene calcolata automaticamente: logoHorizontalWidth × logoHorizontalAspectRatio.
+   */
+  logoHorizontalAspectRatio: number;
+  /** Se true, il pulsante "Accedi con Google" è visibile nella schermata di login */
+  googleLoginEnabled: boolean;
 }
 
 // ─── Definizione temi ─────────────────────────────────────────────────────────
@@ -142,6 +151,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     funeralHomeTab: 'always-visible',
     logo: require('@/assets/images/themes/tramonto/logo.png'),
     logoHorizontal: require('@/assets/images/themes/tramonto/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467
+    googleLoginEnabled: true,
   },
 
   /**
@@ -160,6 +172,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     funeralHomeTab: 'hide-without-partner',
     logo: require('@/assets/images/themes/studio3a/logo.png'),
     logoHorizontal: require('@/assets/images/themes/studio3a/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 205 / 800, // ~0.2563
+    googleLoginEnabled: false,
   },
 
   /**
@@ -179,6 +194,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     funeralHomeTab: 'hide-without-partner',
     logo: require('@/assets/images/themes/mazzini/logo.png'),
     logoHorizontal: require('@/assets/images/themes/mazzini/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 166 / 500, // 0.332
+    googleLoginEnabled: false,
   },
 };
 
@@ -188,7 +206,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
  * Cambia questo valore per switchare tema.
  * Ricorda di aggiornare anche app.json e di copiare gli asset (vedi istruzioni).
  */
-export const ACTIVE_THEME: ThemeName = 'mazzini';
+export const ACTIVE_THEME: ThemeName = 'tramonto';
 
 const activeTheme = THEMES[ACTIVE_THEME];
 
@@ -197,6 +215,9 @@ export const AppLogo = activeTheme.logo;
 
 /** Logo orizzontale dell'app — usa questo nei componenti invece di require() diretto. */
 export const AppLogoHorizontal = activeTheme.logoHorizontal;
+export const AppLogoHorizontalWidth = activeTheme.logoHorizontalWidth;
+export const AppLogoHorizontalHeight = Math.round(activeTheme.logoHorizontalWidth * activeTheme.logoHorizontalAspectRatio);
+export const AppGoogleLoginEnabled = activeTheme.googleLoginEnabled;
 
 // ─── Colori base ──────────────────────────────────────────────────────────────
 
