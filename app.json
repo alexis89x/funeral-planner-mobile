@@ -1,36 +1,36 @@
 {
   "expo": {
-    "name": "Tramonto Sereno",
+    "name": "Studio 3A",
     "slug": "funeral-planner-mobile",
     "version": "3.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/themes/tramonto/icon.png",
+    "icon": "./assets/images/themes/studio3a/icon.png",
     "scheme": "tramontosereno",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "it.nanuktechnology.tramontosereno",
+      "bundleIdentifier": "it.nanuktechnology.tramontosereno.studio",
       "buildNumber": "6",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "Tramonto Sereno ha bisogno di accedere alla fotocamera per permetterti di scattare e caricare la tua foto profilo personale, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
-        "NSPhotoLibraryUsageDescription": "Tramonto Sereno ha bisogno di accedere alla galleria per permetterti di selezionare una foto profilo personale esistente dal tuo dispositivo, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
-        "NSMicrophoneUsageDescription": "Tramonto Sereno ha bisogno di accedere al microfono per permetterti di registrare messaggi audio o video personali che verranno inclusi nella tua pianificazione funebre e condivisi con l'onoranza funebre selezionata per rispettare le tue volontà.",
-        "NSLocationWhenInUseUsageDescription": "Tramonto Sereno ha bisogno di accedere alla tua posizione per trovare i servizi più vicini a te."
+        "NSCameraUsageDescription": "Studio 3A ha bisogno di accedere alla fotocamera per permetterti di scattare e caricare la tua foto profilo personale, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
+        "NSPhotoLibraryUsageDescription": "Studio 3A ha bisogno di accedere alla galleria per permetterti di selezionare una foto profilo personale esistente dal tuo dispositivo, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
+        "NSMicrophoneUsageDescription": "Studio 3A ha bisogno di accedere al microfono per permetterti di registrare messaggi audio o video personali che verranno inclusi nella tua pianificazione funebre e condivisi con l'onoranza funebre selezionata per rispettare le tue volontà.",
+        "NSLocationWhenInUseUsageDescription": "Studio 3A ha bisogno di accedere alla tua posizione per trovare i servizi più vicini a te."
       },
       "appleTeamId": "KPS27RWESX"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff",
-        "foregroundImage": "./assets/images/themes/tramonto/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/themes/tramonto/android-icon-background.png",
-        "monochromeImage": "./assets/images/themes/tramonto/android-icon-monochrome.png"
+        "backgroundColor": "#ff7f13",
+        "foregroundImage": "./assets/images/themes/studio3a/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/themes/studio3a/android-icon-background.png",
+        "monochromeImage": "./assets/images/themes/studio3a/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "it.nanuktechnology.tramontosereno",
+      "package": "it.nanuktechnology.tramontosereno.studio",
       "versionCode": 6,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
@@ -40,14 +40,14 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/themes/tramonto/favicon.png"
+      "favicon": "./assets/images/themes/studio3a/favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Tramonto Sereno ha bisogno di accedere alla tua posizione per trovare le onoranze funebri più vicine a te."
+          "locationWhenInUsePermission": "Studio 3A ha bisogno di accedere alla tua posizione per trovare le onoranze funebri più vicine a te."
         }
       ],
       [
@@ -59,19 +59,19 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Tramonto Sereno ha bisogno di accedere alla galleria per selezionare foto profilo da utilizzare nella pianificazione funebre.",
-          "cameraPermission": "Tramonto Sereno ha bisogno di accedere alla fotocamera per scattare foto profilo da utilizzare nella pianificazione funebre."
+          "photosPermission": "Studio 3A ha bisogno di accedere alla galleria per selezionare foto profilo da utilizzare nella pianificazione funebre.",
+          "cameraPermission": "Studio 3A ha bisogno di accedere alla fotocamera per scattare foto profilo da utilizzare nella pianificazione funebre."
         }
       ],
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/themes/tramonto/splash-icon.png",
+          "image": "./assets/images/themes/studio3a/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#ff7f13",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#ff7f13"
           }
         }
       ],
