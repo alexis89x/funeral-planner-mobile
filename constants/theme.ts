@@ -4,9 +4,10 @@
  * COME CAMBIARE TEMA
  * ──────────────────
  * Cambia ACTIVE_THEME con uno dei valori disponibili:
- *   'tramonto'  → Tramonto Sereno   (arancione, consumer B2C)
- *   'studio3a'  → Studio 3A         (arancione, white-label Studio 3A)
- *   'mazzini'   → Gruppo Mazzini    (blu navy #25346d)
+ *   'tramonto'    → Tramonto Sereno   (arancione, consumer B2C)
+ *   'studio3a'    → Studio 3A         (arancione, white-label Studio 3A)
+ *   'mazzini'     → Gruppo Mazzini    (blu navy #25346d)
+ *   'taddiagroup' → Taddia Group      (bordeaux #a40046)
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * COSA CAMBIARE PER OGNI TEMA (manuale)
@@ -72,7 +73,7 @@ import { Platform } from 'react-native';
 
 // ─── Tipi ────────────────────────────────────────────────────────────────────
 
-export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini';
+export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup';
 
 export interface ThemeConfig {
   /** Nome visualizzato (= expo.name in app.json) */
@@ -198,6 +199,28 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalAspectRatio: 166 / 500, // 0.332
     googleLoginEnabled: false,
   },
+
+  /**
+   * Taddia Group
+   * bundle: it.nanuktechnology.taddiagroup
+   * Asset: assets/images/themes/taddiagroup/
+   * TODO: sostituire icone e loghi placeholder (copiati da Mazzini) con quelli brandizzati Taddia Group
+   */
+  taddiagroup: {
+    displayName: 'Taddia Group',
+    main: '#a40046',
+    mainDark: '#7b0034',
+    mainLight: '#bf4d7d',
+    mainLightest: '#f6e6ed',
+    mainLightestest: '#fbf5f8',
+    splashColor: '#a40046',
+    funeralHomeTab: 'hide-without-partner',
+    logo: require('@/assets/images/themes/taddiagroup/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/taddiagroup/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 166 / 500, // 0.332
+    googleLoginEnabled: false,
+  },
 };
 
 // ─── Tema attivo ──────────────────────────────────────────────────────────────
@@ -206,7 +229,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
  * Cambia questo valore per switchare tema.
  * Ricorda di aggiornare anche app.json e di copiare gli asset (vedi istruzioni).
  */
-export const ACTIVE_THEME: ThemeName = 'tramonto';
+export const ACTIVE_THEME: ThemeName = 'taddiagroup';
 
 const activeTheme = THEMES[ACTIVE_THEME];
 
