@@ -31,6 +31,17 @@
         "image": "latest"
       }
     },
+    "mazzini": {
+      "distribution": "internal",
+      "channel": "mazzini-anteprima",
+      "android": {
+        "image": "latest",
+        "buildType": "apk"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "main",
