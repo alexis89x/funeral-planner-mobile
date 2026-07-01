@@ -226,7 +226,8 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
    * Testamento Biologico — Associazione Luca Coscioni
    * bundle: TODO (da definire prima del build)
    * Asset: assets/images/themes/alc/
-   * NB: logo/icone sono PLACEHOLDER (copiati da taddiagroup) in attesa del logo definitivo.
+   * NB: icon/logo (quadrati) generati dal marchio "alc-no-text.svg" (solo simbolo, senza wordmark).
+   * logo-horizontal.png generato da "Logo_Coscioni_scelto (3).svg" (simbolo + wordmark "Associazione Luca Coscioni").
    */
   alc: {
     displayName: 'Testamento Biologico',
@@ -240,7 +241,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logo: require('@/assets/images/themes/alc/logo.png'),
     logoHorizontal: require('@/assets/images/themes/alc/logo-horizontal.png'),
     logoHorizontalWidth: 280,
-    logoHorizontalAspectRatio: 120 / 300, // 0.4 — TODO: aggiornare con le proporzioni del logo definitivo
+    logoHorizontalAspectRatio: 554 / 1886, // ~0.2937
     googleLoginEnabled: false,
   },
 };
