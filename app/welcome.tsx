@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors } from '@/constants/theme';
+import { Colors, BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleLoginEnabled } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
@@ -245,13 +245,10 @@ export default function WelcomeScreen() {
         {/* Logo */}
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/icon.png')}
+            source={AppLogoHorizontal}
             style={styles.logo}
             resizeMode="contain"
           />
-          <ThemedText type="title" style={styles.appName}>
-            Tramonto Sereno
-          </ThemedText>
         </View>
 
         {/* Welcome message if user exists */}
@@ -294,7 +291,7 @@ export default function WelcomeScreen() {
                   <ThemedText style={styles.loginButtonText}>Email</ThemedText>
                 </TouchableOpacity>
 
-                {!isExpoGo && (
+                {!isExpoGo && AppGoogleLoginEnabled && (
                   <TouchableOpacity
                     style={[styles.loginButton, { backgroundColor: isGoogleLoading ? `${colors.tint}80` : colors.tint }]}
                     onPress={handleGoogleSignIn}
@@ -368,13 +365,9 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: AppLogoHorizontalWidth,
+    height: AppLogoHorizontalHeight,
     marginBottom: 16,
-  },
-  appName: {
-    textAlign: 'center',
-    fontSize: 24,
   },
   welcomeSection: {
     alignItems: 'center',

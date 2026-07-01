@@ -10,7 +10,7 @@ import {
 import { router, Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
+import { Colors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { isExpoGo } from "@/utils/utils";
@@ -217,13 +217,10 @@ export default function LoginGoogleScreen() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/icon.png')}
+            source={AppLogoHorizontal}
             style={styles.logo}
             resizeMode="contain"
           />
-          <ThemedText type="title" style={styles.appName}>
-            Tramonto Sereno
-          </ThemedText>
         </View>
 
         <View style={styles.infoContainer}>
@@ -294,8 +291,8 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: AppLogoHorizontalWidth,
+    height: AppLogoHorizontalHeight,
     marginBottom: 16,
   },
   appName: {

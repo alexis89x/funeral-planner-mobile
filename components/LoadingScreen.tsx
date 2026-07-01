@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { BaseColors } from '@/constants/theme';
+import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight } from '@/constants/theme';
 
 export type LoadingState = 
   | 'initializing'
@@ -80,7 +80,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ loadingState, error }) =>
       <View style={styles.content}>
         {/* App Logo/Icon area */}
         <View style={styles.logoContainer}>
-          <Text style={styles.appName}>Tramonto Sereno</Text>
+          <Image
+            source={AppLogoHorizontal}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Loading content */}
@@ -158,11 +162,9 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     alignItems: 'center',
   },
-  appName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: BaseColors.main, // Colore principale del brand
-    textAlign: 'center',
+  logo: {
+    width: AppLogoHorizontalWidth,
+    height: AppLogoHorizontalHeight,
   },
   loadingContainer: {
     alignItems: 'center',

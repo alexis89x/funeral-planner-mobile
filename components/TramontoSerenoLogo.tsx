@@ -10,7 +10,7 @@ interface LogoProps {
 export const TramontoSerenoLogo: React.FC<LogoProps> = ({
   width = 150,
   height,
-  color = '#BF9574',
+  color = '#bf9574',
 }) => {
   // Calculate height based on aspect ratio if not provided
   const aspectRatio = 685.1 / 748.5;

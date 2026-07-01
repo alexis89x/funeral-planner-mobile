@@ -20,6 +20,17 @@
         "simulator": true
       }
     },
+    "studio": {
+      "distribution": "internal",
+      "channel": "studio-anteprima",
+      "android": {
+        "image": "latest",
+        "buildType": "apk"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "main",

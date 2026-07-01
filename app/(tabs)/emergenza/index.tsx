@@ -3,8 +3,9 @@ import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BaseColors } from '@/constants/theme';
+import { BaseColors, ACTIVE_THEME } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Studio3ABanner } from '@/components/Studio3ABanner';
 
 interface EmergenzaItem {
   id: string;
@@ -26,18 +27,10 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
   {
     id: 'contatto-emergenza',
     title: 'Contatti di Emergenza',
-    desc: 'Definisci chi può accedere alle tue informazioni', // 'Assistenza immediata in caso di necessità',
+    desc: 'Definisci chi può accedere alle tue informazioni',
     icon: 'exclamationmark.shield.fill',
     route: '/emergenza/contatti',
   },
-  /*{
-    id: 'risarcimento-danni',
-    title: 'Risarcimento Danni',
-    desc: 'Informazioni e richieste di risarcimento',
-    icon: 'doc.text.fill',
-    route: '/emergenza/webview',
-    url: 'https://app.tramontosereno.it',
-  },*/
 ];
 
 export default function EmergenzaScreen() {
@@ -52,38 +45,21 @@ export default function EmergenzaScreen() {
     }
   };
 
-  /*
-  <ThemedView style={styles.header}>
-          <ThemedText style={styles.subtitle}>
-            Assistenza e supporto di emergenza
-          </ThemedText>
-        </ThemedView>
-   */
   return (
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
+        {ACTIVE_THEME === 'studio3a' && <Studio3ABanner />}
 
         <ThemedView style={styles.itemsContainer}>
-          {EMERGENZA_ITEMS.map((item, index) => (
+          {EMERGENZA_ITEMS.map((item) => (
             <TouchableOpacity
               key={item.id}
-              style={[
-                styles.itemRow,
-                { borderBottomColor: BaseColors.borderLight },
-              ]}
+              style={[styles.itemRow, { borderBottomColor: BaseColors.borderLight }]}
               onPress={() => handleItemPress(item)}
               activeOpacity={0.7}>
               <ThemedView style={styles.itemRowContent}>
-                <ThemedView
-                  style={[
-                    styles.iconContainer,
-                    { backgroundColor: BaseColors.mainLightest },
-                  ]}>
-                  <IconSymbol
-                    name={item.icon as any}
-                    size={28}
-                    color={BaseColors.main}
-                  />
+                <ThemedView style={[styles.iconContainer, { backgroundColor: BaseColors.mainLightest }]}>
+                  <IconSymbol name={item.icon as any} size={28} color={BaseColors.main} />
                 </ThemedView>
                 <ThemedView style={styles.textContainer}>
                   <ThemedText type="defaultSemiBold" style={styles.itemTitle}>
@@ -93,11 +69,7 @@ export default function EmergenzaScreen() {
                     {item.desc}
                   </ThemedText>
                 </ThemedView>
-                <IconSymbol
-                  name="chevron.right"
-                  size={20}
-                  color={BaseColors.greyMedium}
-                />
+                <IconSymbol name="chevron.right" size={20} color={BaseColors.greyMedium} />
               </ThemedView>
             </TouchableOpacity>
           ))}
@@ -113,18 +85,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
-    alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    opacity: 0.8,
   },
   itemsContainer: {
     paddingBottom: 40,
