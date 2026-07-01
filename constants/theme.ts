@@ -204,7 +204,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
    * Taddia Group
    * bundle: it.nanuktechnology.taddiagroup
    * Asset: assets/images/themes/taddiagroup/
-   * TODO: sostituire icone e loghi placeholder (copiati da Mazzini) con quelli brandizzati Taddia Group
    */
   taddiagroup: {
     displayName: 'Taddia Group',
@@ -218,7 +217,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logo: require('@/assets/images/themes/taddiagroup/logo.png'),
     logoHorizontal: require('@/assets/images/themes/taddiagroup/logo-horizontal.png'),
     logoHorizontalWidth: 280,
-    logoHorizontalAspectRatio: 166 / 500, // 0.332
+    logoHorizontalAspectRatio: 120 / 300, // 0.4
     googleLoginEnabled: false,
   },
 };
