@@ -31,6 +31,17 @@
         "image": "latest"
       }
     },
+    "taddiagroup": {
+      "distribution": "internal",
+      "channel": "taddiagroup-anteprima",
+      "android": {
+        "image": "latest",
+        "buildType": "apk"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "main",
