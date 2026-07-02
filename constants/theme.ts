@@ -4,11 +4,15 @@
  * COME CAMBIARE TEMA
  * ──────────────────
  * Cambia ACTIVE_THEME con uno dei valori disponibili:
- *   'tramonto'    → Tramonto Sereno   (arancione, consumer B2C)
- *   'studio3a'    → Studio 3A         (arancione, white-label Studio 3A)
- *   'mazzini'     → Gruppo Mazzini    (blu navy #25346d)
- *   'taddiagroup' → Taddia Group      (bordeaux #a40046)
- *   'alc'         → Testamento Biologico (Associazione Luca Coscioni, blu #1495e4)
+ *   'tramonto'      → Tramonto Sereno   (arancione, consumer B2C)
+ *   'studio3a'      → Studio 3A         (arancione, white-label Studio 3A)
+ *   'mazzini'       → Gruppo Mazzini    (blu navy #25346d)
+ *   'taddiagroup'   → Taddia Group      (bordeaux #a40046)
+ *   'alc'           → Testamento Biologico (Associazione Luca Coscioni, blu #1495e4)
+ *   'domani-sicuro' → Domani Sicuro     (documenti + contatti di emergenza, tab ridotte)
+ *
+ * NB: 'domani-sicuro' non è solo un brand diverso: ha anche `tabLayout: 'documenti-contatti'`,
+ * che riduce la tab bar a sole 2 tab (vedi app/(tabs)/_layout.tsx e AGENTS.md § "Progetto Domani Sicuro").
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * COSA CAMBIARE PER OGNI TEMA (manuale)
@@ -17,14 +21,16 @@
  * ┌─ app.json ─────────────────────────────────────────────────────────────────
  * │
  * │  expo.name
- * │    tramonto  → "Tramonto Sereno"
- * │    studio3a  → "Studio 3A"
- * │    mazzini   → "Gruppo Mazzini"
+ * │    tramonto      → "Tramonto Sereno"
+ * │    studio3a      → "Studio 3A"
+ * │    mazzini       → "Gruppo Mazzini"
+ * │    domani-sicuro → "Domani Sicuro"
  * │
  * │  expo.ios.bundleIdentifier / expo.android.package
- * │    tramonto  → it.nanuktechnology.tramontosereno
- * │    studio3a  → it.nanuktechnology.tramontosereno.studio
- * │    mazzini   → it.nanuktechnology.mazzini
+ * │    tramonto      → it.nanuktechnology.tramontosereno
+ * │    studio3a      → it.nanuktechnology.tramontosereno.studio
+ * │    mazzini       → it.nanuktechnology.mazzini
+ * │    domani-sicuro → it.nanuktechnology.domanisicuro (TODO: da confermare prima del build)
  * │
  * │  expo.android.adaptiveIcon.backgroundColor  →  ThemeConfig.splashColor
  * │  expo.plugins[expo-splash-screen].backgroundColor (light + dark)  →  idem
@@ -74,7 +80,23 @@ import { Platform } from 'react-native';
 
 // ─── Tipi ────────────────────────────────────────────────────────────────────
 
-export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup' | 'alc';
+export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup' | 'alc' | 'domani-sicuro';
+
+/**
+ * Layout della tab bar principale (vedi app/(tabs)/_layout.tsx).
+ *
+ * 'full':
+ *   Set completo di tab (Il mio piano, La mia onoranza, Servizi, Emergenza, Altro).
+ *   Usato da tutti i brand "Tramonto Sereno white-label".
+ *
+ * 'documenti-contatti':
+ *   Solo 2 tab: "Documenti caricati" (apre direttamente l'upload documenti) e
+ *   "Contatti di emergenza e altro" (contatti di emergenza + profilo/account).
+ *   Usato da "Domani Sicuro". Il concetto di Piano resta invariato lato dati
+ *   (è sempre un piano Tramonto Sereno dietro le quinte), semplicemente non è
+ *   esposto nella UI.
+ */
+export type TabLayout = 'full' | 'documenti-contatti';
 
 export interface ThemeConfig {
   /** Nome visualizzato (= expo.name in app.json) */
@@ -111,6 +133,8 @@ export interface ThemeConfig {
    *   Usato da Studio 3A e Gruppo Mazzini.
    */
   funeralHomeTab: 'always-visible' | 'hide-without-partner';
+  /** Layout della tab bar principale. Vedi tipo `TabLayout`. */
+  tabLayout: TabLayout;
   /**
    * Logo principale (require statico, risolto a build time).
    * File: assets/images/themes/{tema}/logo.png
@@ -151,6 +175,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#faf7f4',
     splashColor: '#bf9574',
     funeralHomeTab: 'always-visible',
+    tabLayout: 'full',
     logo: require('@/assets/images/themes/tramonto/logo.png'),
     logoHorizontal: require('@/assets/images/themes/tramonto/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -172,6 +197,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#fff8f3',
     splashColor: '#ff7f13',
     funeralHomeTab: 'hide-without-partner',
+    tabLayout: 'full',
     logo: require('@/assets/images/themes/studio3a/logo.png'),
     logoHorizontal: require('@/assets/images/themes/studio3a/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -194,6 +220,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#f3f4fa',
     splashColor: '#25346d',
     funeralHomeTab: 'hide-without-partner',
+    tabLayout: 'full',
     logo: require('@/assets/images/themes/mazzini/logo.png'),
     logoHorizontal: require('@/assets/images/themes/mazzini/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -215,6 +242,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#fbf5f8',
     splashColor: '#a40046',
     funeralHomeTab: 'hide-without-partner',
+    tabLayout: 'full',
     logo: require('@/assets/images/themes/taddiagroup/logo.png'),
     logoHorizontal: require('@/assets/images/themes/taddiagroup/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -238,11 +266,38 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#f1f9fe',
     splashColor: '#1495e4',
     funeralHomeTab: 'hide-without-partner',
+    tabLayout: 'full',
     logo: require('@/assets/images/themes/alc/logo.png'),
     logoHorizontal: require('@/assets/images/themes/alc/logo-horizontal.png'),
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 554 / 1886, // ~0.2937
     googleLoginEnabled: false,
+  },
+
+  /**
+   * Domani Sicuro — app separata, stesso codice/backend di Tramonto Sereno
+   * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con
+   * tabLayout ridotto a "documenti-contatti" (vedi tipo TabLayout) e branding
+   * proprio. bundle: TODO (da definire prima del build).
+   * Asset: assets/images/themes/domani-sicuro/
+   * NB: asset attualmente copiati da tramonto/ come placeholder — da sostituire
+   * con la grafica definitiva del brand prima del build di produzione.
+   */
+  'domani-sicuro': {
+    displayName: 'Domani Sicuro',
+    main: '#bf9574',
+    mainDark: '#ab8668',
+    mainLight: '#d6b89c',
+    mainLightest: '#f6f0eb',
+    mainLightestest: '#faf7f4',
+    splashColor: '#bf9574',
+    funeralHomeTab: 'hide-without-partner',
+    tabLayout: 'documenti-contatti',
+    logo: require('@/assets/images/themes/domani-sicuro/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/domani-sicuro/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467 (placeholder, uguale a tramonto)
+    googleLoginEnabled: true,
   },
 };
 
@@ -252,7 +307,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
  * Cambia questo valore per switchare tema.
  * Ricorda di aggiornare anche app.json e di copiare gli asset (vedi istruzioni).
  */
-export const ACTIVE_THEME: ThemeName = 'taddiagroup';
+export const ACTIVE_THEME: ThemeName = 'domani-sicuro';
 
 const activeTheme = THEMES[ACTIVE_THEME];
 

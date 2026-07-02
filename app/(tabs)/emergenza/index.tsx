@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { router } from 'expo-router';
+import { router, Redirect } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BaseColors, ACTIVE_THEME } from '@/constants/theme';
+import { BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Studio3ABanner } from '@/components/Studio3ABanner';
 
@@ -34,6 +34,11 @@ const EMERGENZA_ITEMS: EmergenzaItem[] = [
 ];
 
 export default function EmergenzaScreen() {
+  // Domani Sicuro: la tab "Emergenza" apre direttamente i contatti di emergenza.
+  if (THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti') {
+    return <Redirect href="/(tabs)/emergenza/contatti" />;
+  }
+
   const handleItemPress = (item: EmergenzaItem) => {
     if (item.url) {
       router.push({

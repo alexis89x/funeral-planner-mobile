@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { router } from 'expo-router';
+import { router, Redirect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
@@ -52,6 +52,11 @@ const iconMap: Record<string, string> = {
 };
 
 export default function ServicesScreen() {
+  // Domani Sicuro: la tab "Servizi" apre direttamente i documenti caricati.
+  if (THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti') {
+    return <Redirect href="/(tabs)/services/uploads" />;
+  }
+
   const colorScheme = useColorScheme();
   const { userProfile } = useAuth();
   const [services, setServices] = useState<ServiceItem[]>([]);

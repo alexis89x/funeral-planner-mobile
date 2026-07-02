@@ -142,6 +142,43 @@ When working with EAS Workflows, **always refer to**:
 - **preview**: Internal distribution preview builds
 - **production**: Production builds with auto-increment
 
+## Progetto "Domani Sicuro" (multi-app: stesso codice, feature-set diverso)
+
+> Sezione in italiano perché nasce da una conversazione in italiano con il product owner (branch `domani-sicuro`). Quando in conversazione si parla di "Domani Sicuro" o di "un'altra app oltre a Tramonto", ci si riferisce a quanto descritto qui.
+
+### Concetto
+
+Oggi il repo gestisce un multi-brand a livello di **branding** (vedi `constants/theme.ts`, `THEMES` / `ACTIVE_THEME`): tramonto, studio3a, mazzini, taddiagroup, alc condividono tutti lo stesso set di tab/feature e cambiano solo colori, loghi e nome.
+
+"Domani Sicuro" è una **nuova voce di `THEMES`**, non un asse separato: riusa lo stesso codice/backend di Tramonto Sereno (stesso login, stesso concetto di "Piano" dietro le quinte — l'utente ha sempre un piano Tramonto Sereno anche se in quest'app non lo vede mai), ma con **branding proprio** (nome app, bundle id, icone/splash, colori) **e un layout di tab ridotto**, esposto come app installabile a sé stante (build EAS dedicata, come già avviene per studio3a/mazzini).
+
+**Implementato**: `ThemeConfig` in `constants/theme.ts` ha un campo `tabLayout: 'full' | 'documenti-contatti'` (tipo `TabLayout`), letto da `app/(tabs)/_layout.tsx` per decidere quali `Tabs.Screen` mostrare (`href: null` su quelle nascoste) e da `services/index.tsx` / `emergenza/index.tsx` per fare `<Redirect>` diretto alla schermata utile. Ogni tema/app resta un'unica voce di `THEMES` che porta insieme branding + layout, così è immediato aggiungere altre app in futuro allo stesso modo. Tema attivo su questo branch: `ACTIVE_THEME = 'domani-sicuro'`.
+
+### Tab bar di Domani Sicuro (solo queste tre, nient'altro)
+
+1. **Documenti caricati** — tab `services`; `app/(tabs)/services/index.tsx` fa `<Redirect href="/(tabs)/services/uploads" />`, quindi si apre direttamente la lista/upload documenti (`uploads.tsx` / `upload-form.tsx`), senza passare dall'indice "Servizi".
+2. **Contatti di emergenza** — tab `emergenza`; `app/(tabs)/emergenza/index.tsx` fa `<Redirect href="/(tabs)/emergenza/contatti" />`, quindi si apre direttamente `contatti.tsx`, senza passare dal menu "Numeri utili / Contatti".
+3. **Altro** — tab `altro` invariata (`app/(tabs)/altro/index.tsx`: Profilo, FAQ, Guide, Elimina account, Logout), tranne la voce "I miei piani" che viene filtrata via (`MENU_ITEMS`) perché Domani Sicuro non espone mai il concetto di Piano in UI.
+
+Le tre tab **non sono unite/mergiate** in un'unica schermata: restano tre `Tabs.Screen` distinte. Nessun'altra tab visibile (niente "Il mio piano", "La mia onoranza", "Servizi" come lista prodotti, "Cerca") — nascoste con `href: null` in `app/(tabs)/_layout.tsx` quando `tabLayout === 'documenti-contatti'`.
+
+### Assegnazione documenti ai contatti di emergenza
+
+**Questa feature esiste già**, non va costruita da zero: in `upload-form.tsx` il campo "Visibile a" (componente `ContactsPicker` da `@/components/document-pickers`) permette di scegliere se un documento è visibile a tutti i contatti di emergenza del piano o solo ad alcuni (`selectedContactIds`, inviato come `visibility` nel form-data di `upload-item`). Per Domani Sicuro va solo resa più esplicita/prominente nel flusso, non progettata ex novo.
+
+### Piano
+
+Il concetto di "Piano" (`id_plan`, `PlanSwitcher`, `owned_plans`) resta invariato lato dati: Domani Sicuro è sempre, dietro le quinte, un piano Tramonto Sereno. La UI semplicemente non mostra mai piano/onoranza/servizi all'utente — i documenti restano scoped su `currentPlan` come oggi.
+
+### App installabile separata
+
+Domani Sicuro va trattato come le altre voci "cliente" di `THEMES` (vedi `studio3a`, `mazzini`): proprio `expo.name`, `bundleIdentifier`/`package`, `scheme`, icone/splash, e un proprio profilo di build in `eas.json` (profilo `domani-sicuro`, creato sul modello del profilo `studio`).
+
+Stato attuale:
+- `assets/images/themes/domani-sicuro/` esiste già ma contiene **una copia identica degli asset di Tramonto Sereno** (placeholder temporaneo, richiesto esplicitamente per poter buildare/testare da subito). Vanno sostituiti con la grafica definitiva del brand prima di un build di produzione.
+- `bundleIdentifier`/`package`/`scheme` definitivi **non ancora decisi** (placeholder in `constants/theme.ts`: `it.nanuktechnology.domanisicuro`).
+- `app.json` **non è stato modificato**: come per gli altri temi, va aggiornato manualmente (nome, bundle id, path icone) solo al momento di fare un build per questo brand specifico — segue lo stesso processo manuale già in uso per studio3a/mazzini (vedi commento in testa a `constants/theme.ts`).
+
 ## Troubleshooting
 
 ### Expo Go Errors & Development Builds

@@ -26,12 +26,16 @@ export default function TabLayout() {
   const hasMultiplePlans = !userProfile || activePlans.length !== 1;
   const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
 
+  const tabLayout = THEMES[ACTIVE_THEME].tabLayout;
+  const isReducedLayout = tabLayout === 'documenti-contatti';
+
   const funeralHomeTabMode = THEMES[ACTIVE_THEME].funeralHomeTab;
   const hasPartner = !!userProfile?.user?.id_partner_referral;
   // 'always-visible': tab sempre presente, titolo/icona dinamici (Tramonto B2C)
   // 'hide-without-partner': tab nascosto se l'utente non ha un partner referral
-  const funeralHomeHref =
-    funeralHomeTabMode === 'always-visible'
+  const funeralHomeHref = isReducedLayout
+    ? null
+    : funeralHomeTabMode === 'always-visible'
       ? undefined
       : hasPartner ? undefined : null;
   const funeralHomeTitle =
@@ -84,6 +88,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName={isReducedLayout ? 'services' : undefined}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
@@ -92,6 +97,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-plan"
         options={{
+          href: isReducedLayout ? null : undefined,
           title: 'Il mio piano',
           tabBarLabel: ({ color }) => (
             <Text style={{ fontSize: 10, color: isMyPlanActive ? tintColor : color }}>
@@ -152,15 +158,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="services"
         options={{
-          title: 'Servizi',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+          title: isReducedLayout ? 'Documenti caricati' : 'Servizi',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name={isReducedLayout ? 'doc.fill' : 'list.bullet'} color={color} />
+          ),
           headerShown: false,
         }}
       />
       <Tabs.Screen
         name="emergenza"
         options={{
-          title: 'Emergenza',
+          title: isReducedLayout ? 'Contatti di emergenza' : 'Emergenza',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="exclamationmark.shield.fill" color={color} />,
           headerShown: false,
         }}
