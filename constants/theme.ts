@@ -224,7 +224,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
 
   /**
    * Testamento Biologico — Associazione Luca Coscioni
-   * bundle: TODO (da definire prima del build)
+   * bundle: it.nanuktechnology.alc
    * Asset: assets/images/themes/alc/
    * NB: icon/logo (quadrati) generati dal marchio "alc-no-text.svg" (solo simbolo, senza wordmark).
    * logo-horizontal.png generato da "Logo_Coscioni_scelto (3).svg" (simbolo + wordmark "Associazione Luca Coscioni").
