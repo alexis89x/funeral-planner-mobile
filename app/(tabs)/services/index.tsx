@@ -51,12 +51,9 @@ const iconMap: Record<string, string> = {
   'home': 'house.fill'
 };
 
-export default function ServicesScreen() {
-  // Domani Sicuro: la tab "Servizi" apre direttamente i documenti caricati.
-  if (THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti') {
-    return <Redirect href="/(tabs)/services/uploads" />;
-  }
+const isReducedLayout = THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti';
 
+export default function ServicesScreen() {
   const colorScheme = useColorScheme();
   const { userProfile } = useAuth();
   const [services, setServices] = useState<ServiceItem[]>([]);
@@ -68,8 +65,15 @@ export default function ServicesScreen() {
   const appMajorVersion = parseInt(appVersion.split('.')[0], 10);
 
   useEffect(() => {
-    loadServices();
+    // Domani Sicuro: la tab "Servizi" apre direttamente i documenti caricati,
+    // niente da caricare/mostrare qui.
+    if (!isReducedLayout) loadServices();
   }, []);
+
+  // Domani Sicuro: la tab "Servizi" apre direttamente i documenti caricati.
+  if (isReducedLayout) {
+    return <Redirect href="/(tabs)/services/uploads" />;
+  }
 
   const loadServices = async () => {
     try {

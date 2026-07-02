@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { isWebviewCacheStale, markWebviewLoaded } from '@/utils/webview.utils';
 import AppWebView from '@/components/AppWebView';
+import { THEMES, ACTIVE_THEME } from '@/constants/theme';
 
 export default function WebViewScreen() {
   const params = useLocalSearchParams<{ url: string; title?: string; injectToken?: string }>();
@@ -33,7 +34,11 @@ export default function WebViewScreen() {
           onLoadEnd={() => markWebviewLoaded(rawUrl)}
           onRefreshUser={async () => {
             await reloadProfile();
-            router.push('/(tabs)/my-plans');
+            router.push(
+              THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti'
+                ? '/(tabs)/services'
+                : '/(tabs)/my-plans'
+            );
           }}
           onData={(data) => console.log('Dati ricevuti:', data)}
         />
