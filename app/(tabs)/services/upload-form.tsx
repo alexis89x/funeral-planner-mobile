@@ -11,7 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BaseColors } from '@/constants/theme';
-import { useAuth, Plan } from '@/contexts/AuthContext';
+import { useAuth, Plan, EmergencyContact } from '@/contexts/AuthContext';
 import { API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from '@/utils/security';
 import { extractApiErrorMessage } from '@/utils/api-error';
@@ -75,6 +75,82 @@ function DocumentTypePicker({
   );
 }
 
+function ContactsPicker({
+  visible,
+  contacts,
+  selectedIds,
+  visibleToAll,
+  onToggle,
+  onSelectAll,
+  onClose,
+}: {
+  visible: boolean;
+  contacts: EmergencyContact[];
+  selectedIds: number[];
+  visibleToAll: boolean;
+  onToggle: (id: number) => void;
+  onSelectAll: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <SafeAreaView style={pickerStyles.container}>
+        <View style={pickerStyles.header}>
+          <ThemedText style={pickerStyles.title}>Visibile a</ThemedText>
+          <TouchableOpacity onPress={onClose} style={pickerStyles.closeBtn}>
+            <Ionicons name="close" size={24} color={BaseColors.greyMedium} />
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={contacts}
+          keyExtractor={item => String(item.id)}
+          ItemSeparatorComponent={() => <View style={pickerStyles.divider} />}
+          ListHeaderComponent={
+            <>
+              <TouchableOpacity
+                style={pickerStyles.contactItem}
+                onPress={onSelectAll}
+                activeOpacity={0.6}>
+                <View style={pickerStyles.contactInfo}>
+                  <ThemedText style={pickerStyles.itemText}>Tutti i contatti</ThemedText>
+                  <ThemedText style={pickerStyles.contactSub}>Opzione predefinita</ThemedText>
+                </View>
+                <Ionicons
+                  name={visibleToAll ? 'checkbox' : 'square-outline'}
+                  size={22}
+                  color={visibleToAll ? BaseColors.main : BaseColors.grey}
+                />
+              </TouchableOpacity>
+              <View style={pickerStyles.divider} />
+            </>
+          }
+          renderItem={({ item }) => {
+            const selected = !visibleToAll && selectedIds.includes(item.id);
+            return (
+              <TouchableOpacity
+                style={pickerStyles.contactItem}
+                onPress={() => onToggle(item.id)}
+                activeOpacity={0.6}>
+                <View style={pickerStyles.contactInfo}>
+                  <ThemedText style={pickerStyles.itemText}>{item.name}</ThemedText>
+                  {!!item.relationship && (
+                    <ThemedText style={pickerStyles.contactSub}>{item.relationship}</ThemedText>
+                  )}
+                </View>
+                <Ionicons
+                  name={selected ? 'checkbox' : 'square-outline'}
+                  size={22}
+                  color={selected ? BaseColors.main : BaseColors.grey}
+                />
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </SafeAreaView>
+    </Modal>
+  );
+}
+
 export default function UploadFormScreen() {
   const { userProfile } = useAuth();
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
@@ -84,10 +160,27 @@ export default function UploadFormScreen() {
   const [notes, setNotes] = useState('');
   const [uploading, setUploading] = useState(false);
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [selectedContactIds, setSelectedContactIds] = useState<number[]>([]);
+  const [visibleToAll, setVisibleToAll] = useState(true);
+  const [contactsPickerVisible, setContactsPickerVisible] = useState(false);
 
   const currentPlan = (userProfile?.owned_plans ?? []).find(
     (p: Plan) => p.id === userProfile?.user?.id_current_plan
   ) ?? userProfile?.owned_plans?.[0] ?? null;
+
+  const emergencyContacts: EmergencyContact[] = currentPlan?.emergencyContacts ?? [];
+
+  const toggleContact = (id: number) => {
+    setVisibleToAll(false);
+    setSelectedContactIds(prev =>
+      prev.includes(id) ? prev.filter(cid => cid !== id) : [...prev, id]
+    );
+  };
+
+  const selectAllContacts = () => {
+    setVisibleToAll(true);
+    setSelectedContactIds([]);
+  };
 
   const handlePick = async () => {
     const result = await DocumentPicker.getDocumentAsync({
@@ -113,6 +206,7 @@ export default function UploadFormScreen() {
       formData.append('id_plan', String(currentPlan.id));
       if (documentType) formData.append('documentType', documentType.id);
       if (notes) formData.append('notes', notes);
+      formData.append('visibility', visibleToAll ? '' : selectedContactIds.join(';;;'));
       formData.append('attachment', {
         uri: selectedFile.uri,
         type: selectedFile.mimeType || 'application/octet-stream',
@@ -202,6 +296,27 @@ export default function UploadFormScreen() {
           />
         </View>
 
+        {/* Visibility */}
+        {emergencyContacts.length > 0 && (
+          <View style={styles.fieldGroup}>
+            <ThemedText style={styles.label}>Visibile a</ThemedText>
+            <TouchableOpacity
+              style={styles.selectInput}
+              onPress={() => setContactsPickerVisible(true)}
+              activeOpacity={0.7}>
+              <ThemedText style={styles.selectText} numberOfLines={1}>
+                {visibleToAll
+                  ? 'Tutti i contatti'
+                  : emergencyContacts
+                      .filter(c => selectedContactIds.includes(c.id))
+                      .map(c => c.name)
+                      .join(', ') || 'Nessun contatto selezionato'}
+              </ThemedText>
+              <Ionicons name="chevron-down" size={18} color={BaseColors.grey} />
+            </TouchableOpacity>
+          </View>
+        )}
+
         <TouchableOpacity
           style={[styles.uploadButton, (!selectedFile || uploading) && styles.uploadButtonDisabled]}
           onPress={handleUpload}
@@ -226,6 +341,16 @@ export default function UploadFormScreen() {
           setPickerVisible(false);
         }}
         onClose={() => setPickerVisible(false)}
+      />
+
+      <ContactsPicker
+        visible={contactsPickerVisible}
+        contacts={emergencyContacts}
+        selectedIds={selectedContactIds}
+        visibleToAll={visibleToAll}
+        onToggle={toggleContact}
+        onSelectAll={selectAllContacts}
+        onClose={() => setContactsPickerVisible(false)}
       />
     </ThemedView>
   );
@@ -285,4 +410,10 @@ const pickerStyles = StyleSheet.create({
   item: { paddingHorizontal: 20, paddingVertical: 15 },
   itemText: { fontSize: 15 },
   divider: { height: 1, backgroundColor: BaseColors.borderLight, marginHorizontal: 20 },
+  contactItem: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 20, paddingVertical: 15,
+  },
+  contactInfo: { flex: 1, marginRight: 12 },
+  contactSub: { fontSize: 13, color: BaseColors.grey, marginTop: 2 },
 });
