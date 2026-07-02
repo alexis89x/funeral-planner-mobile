@@ -170,6 +170,25 @@ Le tre tab **non sono unite/mergiate** in un'unica schermata: restano tre `Tabs.
 
 Il concetto di "Piano" (`id_plan`, `PlanSwitcher`, `owned_plans`) resta invariato lato dati: Domani Sicuro è sempre, dietro le quinte, un piano Tramonto Sereno. La UI semplicemente non mostra mai piano/onoranza/servizi all'utente — i documenti restano scoped su `currentPlan` come oggi.
 
+Nota: se un account Domani Sicuro avesse più piani attivi (`hasMultiplePlans`), `PlanSwitcher` verrebbe comunque mostrato (in `contatti.tsx` e `uploads.tsx`) e permetterebbe di navigare verso `/(tabs)/my-plans` — un caso limite non ancora gestito esplicitamente, da rivedere se capita in pratica.
+
+### Redirect post-login e fallback verso "Documenti caricati"
+
+Tutti i punti che di default portavano l'utente sulla tab "Il mio piano"/"I miei piani" sono stati aggiornati per portare invece su "Documenti caricati" quando `tabLayout === 'documenti-contatti'`:
+- `utils/plans.ts` → `resolvePostLoginRoute()`: primo controllo è sul `tabLayout`, se ridotto ritorna `/(tabs)/services` a prescindere dal numero di piani. Usata da `app/_layout.tsx` (redirect post-login generico) e `app/login-email.tsx`.
+- `app/login-google.tsx`: il redirect esplicito nel success-callback di `googleLogin` ora usa `resolvePostLoginRoute(null)` invece di `router.replace('/(tabs)/my-plans')` hardcoded.
+- `app/webview.tsx` (`onRefreshUser`): dopo il refresh del profilo da una webview generica, va su `/(tabs)/services` invece che su `/(tabs)/my-plans` quando il layout è ridotto.
+
+Punti **non toccati** perché raggiungibili solo tramite UI di piano ormai non esposta in Domani Sicuro (tab "Il mio piano"/"I miei piani" nascoste, quindi questi flussi sono di fatto irraggiungibili): `hooks/use-new-plan-handler.ts`, `components/PlanSwitcher.tsx`, gli header-button in `app/(tabs)/_layout.tsx` per `my-plan`/`my-plans`.
+
+### Tutorial al primo accesso
+
+`components/DomaniSicuroTutorial.tsx`: modal fullscreen a 2 step (documenti caricati → contatti di emergenza), mostrato una sola volta grazie al flag AsyncStorage `@domani_sicuro_tutorial_seen`. Montato in `app/(tabs)/_layout.tsx` solo quando `isReducedLayout` è vero. Pulsante "Salta" sempre disponibile.
+
+### Banner upgrade spazio ("Hai bisogno di più spazio?")
+
+`components/UpgradeSpaceBanner.tsx`: mostrato in cima a `services/uploads.tsx` quando `tabLayout === 'documenti-contatti'` e il piano corrente non è di tipo `free` (`currentPlan?.type !== 'free'`, in `uploads.tsx`). Al tap apre `https://app.tramontosereno.it` nella webview esistente (`/(tabs)/services/webview`). Pattern ricalcato da `components/Studio3ABanner.tsx` (banner condizionale già esistente per il tema studio3a in `emergenza/index.tsx`).
+
 ### App installabile separata
 
 Domani Sicuro va trattato come le altre voci "cliente" di `THEMES` (vedi `studio3a`, `mazzini`): proprio `expo.name`, `bundleIdentifier`/`package`, `scheme`, icone/splash, e un proprio profilo di build in `eas.json` (profilo `domani-sicuro`, creato sul modello del profilo `studio`).

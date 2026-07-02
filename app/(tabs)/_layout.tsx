@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { switchPlan, getActivePlans } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
+import { DomaniSicuroTutorial } from '@/components/DomaniSicuroTutorial';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -87,7 +88,9 @@ export default function TabLayout() {
   };
 
   return (
-    <Tabs
+    <>
+      {isReducedLayout && <DomaniSicuroTutorial />}
+      <Tabs
       initialRouteName={isReducedLayout ? 'services' : undefined}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -199,7 +202,8 @@ export default function TabLayout() {
           href: null, // Hide from tab bar
         }}
       />
-    </Tabs>
+      </Tabs>
+    </>
   );
 }
 

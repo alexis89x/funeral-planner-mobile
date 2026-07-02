@@ -75,6 +75,9 @@ const MAPPING = {
   'doc.zipper': 'folder-zip',
   'lock.fill': 'lock',
   'eye.fill': 'visibility',
+
+  // Upgrade / storage
+  'externaldrive.fill.badge.plus': 'storage',
 } as IconMapping;
 
 /**

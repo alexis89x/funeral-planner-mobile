@@ -11,12 +11,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BaseColors } from '@/constants/theme';
+import { BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { ApiService, API_BASE_URL } from '@/utils/api';
 import { PlanSwitcher } from '@/components/PlanSwitcher';
 import { hasMultiplePlans } from '@/utils/plans';
 import { getDocumentTypeDesc } from '@/constants/document-types';
+import { UpgradeSpaceBanner } from '@/components/UpgradeSpaceBanner';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 
@@ -168,6 +169,8 @@ export default function UploadsScreen() {
   ) ?? userProfile?.owned_plans?.[0] ?? null;
 
   const showSwitcher = hasMultiplePlans(userProfile);
+  const showUpgradeBanner =
+    THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti' && currentPlan?.type !== 'advanced';
 
   const totalBytes = uploads.reduce((sum, a) => sum + (a.size || 0), 0);
   const usagePercent = uploadLimit > 0 ? Math.min((totalBytes / uploadLimit) * 100, 100) : 0;
@@ -277,6 +280,7 @@ export default function UploadsScreen() {
       <Stack.Screen options={{ headerRight: () => <AddButton /> }} />
 
       {showSwitcher && currentPlan && <PlanSwitcher plan={currentPlan} />}
+      {showUpgradeBanner && <UpgradeSpaceBanner />}
 
       {error ? (
         <View style={styles.centered}>
