@@ -76,6 +76,10 @@ Chiedi a Claude di farti delle brevi note di rilascio per la versione
 
 Review: 1-3 giorni (a volte anche poche ore per update)
 
+## 6. Aggiorna API LATEST_APP_VERSION 
+
+const LATEST_APP_VERSION = '2.0.0'; in api
+
 ---
 
 ## Opzionale: Rollout graduale
