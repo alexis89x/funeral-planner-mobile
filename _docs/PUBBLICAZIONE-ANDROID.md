@@ -81,6 +81,8 @@ Review: 1-3 giorni (a volte anche poche ore per update)
 
 ---
 
+### 11. Aggiorna const LATEST_APP_VERSION = '2.0.0'; in api
+
 ## Opzionale: Rollout graduale
 
 Se vuoi pubblicare gradualmente (consigliato per aggiornamenti importanti):

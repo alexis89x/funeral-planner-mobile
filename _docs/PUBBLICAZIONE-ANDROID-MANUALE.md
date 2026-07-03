@@ -51,6 +51,8 @@ https://play.google.com/console
 
 ### 4.5. Compila note di rilascio
 
+Chiedi a Claude di farti delle brevi note di rilascio per la versione
+
 **Note sulla release (italiano):**
 ```
 - Aggiunto login con Google per un accesso più rapido e sicuro
