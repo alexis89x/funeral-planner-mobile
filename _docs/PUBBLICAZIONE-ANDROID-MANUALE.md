@@ -6,7 +6,7 @@
   "expo": {
     "version": "1.1.0",  // <- Incrementa versione
     "android": {
-      "versionCode": 2  // <- Incrementa version code
+      "versionCode": 2  // <- Incrementa version code. IN REALTA' LO FA LUI AUTOMATICAMENTE
     }
   }
 }
@@ -32,7 +32,7 @@ Trova la build più recente e scarica l'AAB.
 
 ### 4.1. Vai su Google Play Console
 
-https://play.google.com/console
+https://play.google.com/console (Plain Data Services)
 
 ### 4.2. Seleziona l'app
 
