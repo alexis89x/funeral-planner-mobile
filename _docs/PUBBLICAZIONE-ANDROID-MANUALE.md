@@ -6,7 +6,7 @@
   "expo": {
     "version": "1.1.0",  // <- Incrementa versione
     "android": {
-      "versionCode": 2  // <- Incrementa version code
+      "versionCode": 2  // <- Incrementa version code. IN REALTA' LO FA LUI AUTOMATICAMENTE
     }
   }
 }
@@ -32,7 +32,7 @@ Trova la build più recente e scarica l'AAB.
 
 ### 4.1. Vai su Google Play Console
 
-https://play.google.com/console
+https://play.google.com/console (Plain Data Services)
 
 ### 4.2. Seleziona l'app
 
@@ -50,6 +50,8 @@ https://play.google.com/console
 - Aspetta che venga processato (1-3 minuti)
 
 ### 4.5. Compila note di rilascio
+
+Chiedi a Claude di farti delle brevi note di rilascio per la versione
 
 **Note sulla release (italiano):**
 ```
@@ -73,6 +75,10 @@ https://play.google.com/console
 ## 5. Aspetta review
 
 Review: 1-3 giorni (a volte anche poche ore per update)
+
+## 6. Aggiorna API LATEST_APP_VERSION 
+
+const LATEST_APP_VERSION = '2.0.0'; in api
 
 ---
 
