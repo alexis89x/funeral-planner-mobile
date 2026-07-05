@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v3.0.0] - 2026-07-03
+
 ### Aggiunto
 - Schermata contatti di emergenza nativa: lista con swipe per eliminare, azioni rapide per chiamare o inviare email al contatto
 - Form nativo per aggiungere e modificare contatti di emergenza
@@ -10,6 +12,10 @@
 - Componente `AppWebView` centralizzato: gestisce iniezione token, versione app, messaggi `postMessage` e indicatore di caricamento
 - Componente `PlanSwitcher` per cambiare piano attivo direttamente nelle schermate dei servizi
 - Utility `hasMultiplePlans` e costanti per i tipi di documento
+- Supporto multi-tema per i diversi brand partner (Studio 3A, Tramonto Sereno, ALC, Mazzini, Taddia Group): loghi, icone app, splash screen e colori dedicati per ciascun tema
+- Selezione dei contatti a cui rendere visibile un documento caricato ("Visibile a"), con opzione "Tutti i contatti" o selezione puntuale tra i contatti di emergenza
+- Schermata dedicata per modificare un documento già caricato (tipo documento, note, visibilità) con possibilità di eliminarlo
+- Schermata "Cerca onoranza funebre" spostata dentro il tab Servizi
 
 ### Migliorato
 - Spazio di archiviazione documenti: il limite massimo viene ora letto dalla risposta API (`upload-list`) invece di essere hardcoded
@@ -17,6 +23,12 @@
 - Tab Emergenza: voce "Contatti di Emergenza" ora apre la schermata nativa invece di una WebView
 - Cache prodotti con TTL configurabile
 - Pulizia cache WebView disponibile dalle impostazioni
+- Estrazione dei componenti di selezione documento/contatti (`document-pickers.tsx`) per riuso tra form di caricamento e modifica
+- Messaggi di errore delle API più descrittivi tramite `extractApiErrorMessage`
+- Loading screen della sezione Emergenza
+- Layout di login, logo e proporzioni; fix del pulsante di accesso Google
+- Nascoste le funzionalità non ancora disponibili per il tema Studio3a
+- Pulizia del progetto: rimossi file e asset inutilizzati, corretta configurazione Metro/EAS, aggiornamento dipendenze
 
 ## [v2.0.0] - 2026-05-13
 
