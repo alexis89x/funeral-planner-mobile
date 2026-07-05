@@ -56,6 +56,13 @@ export default function ServicesLayout() {
           headerBackTitle: 'Indietro',
         }}
       />
+      <Stack.Screen
+        name="upload-item-edit"
+        options={{
+          title: 'Modifica documento',
+          headerBackTitle: 'Indietro',
+        }}
+      />
     </Stack>
   );
 }
