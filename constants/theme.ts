@@ -4,9 +4,11 @@
  * COME CAMBIARE TEMA
  * ──────────────────
  * Cambia ACTIVE_THEME con uno dei valori disponibili:
- *   'tramonto'  → Tramonto Sereno   (arancione, consumer B2C)
- *   'studio3a'  → Studio 3A         (arancione, white-label Studio 3A)
- *   'mazzini'   → Gruppo Mazzini    (blu navy #25346d)
+ *   'tramonto'    → Tramonto Sereno   (arancione, consumer B2C)
+ *   'studio3a'    → Studio 3A         (arancione, white-label Studio 3A)
+ *   'mazzini'     → Gruppo Mazzini    (blu navy #25346d)
+ *   'taddiagroup' → Taddia Group      (bordeaux #a40046)
+ *   'alc'         → Testamento Biologico (Associazione Luca Coscioni, blu #1495e4)
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * COSA CAMBIARE PER OGNI TEMA (manuale)
@@ -72,7 +74,7 @@ import { Platform } from 'react-native';
 
 // ─── Tipi ────────────────────────────────────────────────────────────────────
 
-export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini';
+export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup' | 'alc';
 
 export interface ThemeConfig {
   /** Nome visualizzato (= expo.name in app.json) */
@@ -196,6 +198,50 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontal: require('@/assets/images/themes/mazzini/logo-horizontal.png'),
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 166 / 500, // 0.332
+    googleLoginEnabled: false,
+  },
+
+  /**
+   * Taddia Group
+   * bundle: it.nanuktechnology.taddiagroup
+   * Asset: assets/images/themes/taddiagroup/
+   */
+  taddiagroup: {
+    displayName: 'Taddia Group',
+    main: '#a40046',
+    mainDark: '#7b0034',
+    mainLight: '#bf4d7d',
+    mainLightest: '#f6e6ed',
+    mainLightestest: '#fbf5f8',
+    splashColor: '#a40046',
+    funeralHomeTab: 'hide-without-partner',
+    logo: require('@/assets/images/themes/taddiagroup/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/taddiagroup/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 120 / 300, // 0.4
+    googleLoginEnabled: false,
+  },
+
+  /**
+   * Testamento Biologico — Associazione Luca Coscioni
+   * bundle: TODO (da definire prima del build)
+   * Asset: assets/images/themes/alc/
+   * NB: icon/logo (quadrati) generati dal marchio "alc-no-text.svg" (solo simbolo, senza wordmark).
+   * logo-horizontal.png generato da "Logo_Coscioni_scelto (3).svg" (simbolo + wordmark "Associazione Luca Coscioni").
+   */
+  alc: {
+    displayName: 'Testamento Biologico',
+    main: '#1495e4',
+    mainDark: '#0e6ba4',
+    mainLight: '#56b5f0',
+    mainLightest: '#e3f3fd',
+    mainLightestest: '#f1f9fe',
+    splashColor: '#1495e4',
+    funeralHomeTab: 'hide-without-partner',
+    logo: require('@/assets/images/themes/alc/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/alc/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 554 / 1886, // ~0.2937
     googleLoginEnabled: false,
   },
 };

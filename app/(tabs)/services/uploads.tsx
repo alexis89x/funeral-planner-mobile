@@ -33,6 +33,7 @@ export interface Attachment {
   original_filename: string;
   document_type: string;
   notes: string;
+  visibility?: string;
   status: number;
   encrypted: number;
   size: number;
@@ -91,10 +92,12 @@ function AttachmentRow({
   attachment,
   onDelete,
   onOpen,
+  onEdit,
 }: {
   attachment: Attachment;
   onDelete: (a: Attachment) => void;
   onOpen: (a: Attachment) => void;
+  onEdit: (a: Attachment) => void;
 }) {
   const swipeRef = useRef<Swipeable>(null);
 
@@ -143,6 +146,9 @@ function AttachmentRow({
               <IconSymbol name="eye.fill" size={18} color={BaseColors.main} />
             </TouchableOpacity>
           )}
+          <TouchableOpacity style={styles.actionButton} onPress={() => onEdit(attachment)}>
+            <IconSymbol name="pencil" size={18} color={BaseColors.grey} />
+          </TouchableOpacity>
         </View>
       </View>
     </Swipeable>
@@ -208,6 +214,19 @@ export default function UploadsScreen() {
     } catch {
       Alert.alert('Errore', 'Impossibile aprire il documento.');
     }
+  };
+
+  const handleEdit = (attachment: Attachment) => {
+    router.push({
+      pathname: '/(tabs)/services/upload-item-edit',
+      params: {
+        id: String(attachment.id),
+        id_plan: String(attachment.id_plan),
+        document_type: attachment.document_type,
+        notes: attachment.notes,
+        visibility: attachment.visibility ?? '',
+      },
+    });
   };
 
   const handleDelete = (attachment: Attachment) => {
@@ -305,7 +324,7 @@ export default function UploadsScreen() {
             <View style={styles.list}>
               {uploads.map((a, i) => (
                 <React.Fragment key={a.id}>
-                  <AttachmentRow attachment={a} onDelete={handleDelete} onOpen={handleOpen} />
+                  <AttachmentRow attachment={a} onDelete={handleDelete} onOpen={handleOpen} onEdit={handleEdit} />
                   {i < uploads.length - 1 && <View style={styles.divider} />}
                 </React.Fragment>
               ))}
