@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   StyleSheet, TouchableOpacity, View, TextInput, Alert,
-  ScrollView, ActivityIndicator, Modal, FlatList, SafeAreaView,
+  ScrollView, ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
@@ -15,7 +15,8 @@ import { useAuth, Plan, EmergencyContact } from '@/contexts/AuthContext';
 import { API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from '@/utils/security';
 import { extractApiErrorMessage } from '@/utils/api-error';
-import { DocumentTypes, getDocumentTypeDesc, DocumentType } from '@/constants/document-types';
+import { DocumentTypes, DocumentType } from '@/constants/document-types';
+import { DocumentTypePicker, ContactsPicker } from '@/components/document-pickers';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 
@@ -38,118 +39,6 @@ const formatSize = (bytes?: number): string => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 };
-
-function DocumentTypePicker({
-  visible,
-  onSelect,
-  onClose,
-}: {
-  visible: boolean;
-  onSelect: (type: DocumentType) => void;
-  onClose: () => void;
-}) {
-  return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <SafeAreaView style={pickerStyles.container}>
-        <View style={pickerStyles.header}>
-          <ThemedText style={pickerStyles.title}>Tipo documento</ThemedText>
-          <TouchableOpacity onPress={onClose} style={pickerStyles.closeBtn}>
-            <Ionicons name="close" size={24} color={BaseColors.greyMedium} />
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={DocumentTypes}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={() => <View style={pickerStyles.divider} />}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={pickerStyles.item}
-              onPress={() => onSelect(item)}
-              activeOpacity={0.6}>
-              <ThemedText style={pickerStyles.itemText}>{item.name}</ThemedText>
-            </TouchableOpacity>
-          )}
-        />
-      </SafeAreaView>
-    </Modal>
-  );
-}
-
-function ContactsPicker({
-  visible,
-  contacts,
-  selectedIds,
-  visibleToAll,
-  onToggle,
-  onSelectAll,
-  onClose,
-}: {
-  visible: boolean;
-  contacts: EmergencyContact[];
-  selectedIds: number[];
-  visibleToAll: boolean;
-  onToggle: (id: number) => void;
-  onSelectAll: () => void;
-  onClose: () => void;
-}) {
-  return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <SafeAreaView style={pickerStyles.container}>
-        <View style={pickerStyles.header}>
-          <ThemedText style={pickerStyles.title}>Visibile a</ThemedText>
-          <TouchableOpacity onPress={onClose} style={pickerStyles.closeBtn}>
-            <Ionicons name="close" size={24} color={BaseColors.greyMedium} />
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={contacts}
-          keyExtractor={item => String(item.id)}
-          ItemSeparatorComponent={() => <View style={pickerStyles.divider} />}
-          ListHeaderComponent={
-            <>
-              <TouchableOpacity
-                style={pickerStyles.contactItem}
-                onPress={onSelectAll}
-                activeOpacity={0.6}>
-                <View style={pickerStyles.contactInfo}>
-                  <ThemedText style={pickerStyles.itemText}>Tutti i contatti</ThemedText>
-                  <ThemedText style={pickerStyles.contactSub}>Opzione predefinita</ThemedText>
-                </View>
-                <Ionicons
-                  name={visibleToAll ? 'checkbox' : 'square-outline'}
-                  size={22}
-                  color={visibleToAll ? BaseColors.main : BaseColors.grey}
-                />
-              </TouchableOpacity>
-              <View style={pickerStyles.divider} />
-            </>
-          }
-          renderItem={({ item }) => {
-            const selected = !visibleToAll && selectedIds.includes(item.id);
-            return (
-              <TouchableOpacity
-                style={pickerStyles.contactItem}
-                onPress={() => onToggle(item.id)}
-                activeOpacity={0.6}>
-                <View style={pickerStyles.contactInfo}>
-                  <ThemedText style={pickerStyles.itemText}>{item.name}</ThemedText>
-                  {!!item.relationship && (
-                    <ThemedText style={pickerStyles.contactSub}>{item.relationship}</ThemedText>
-                  )}
-                </View>
-                <Ionicons
-                  name={selected ? 'checkbox' : 'square-outline'}
-                  size={22}
-                  color={selected ? BaseColors.main : BaseColors.grey}
-                />
-              </TouchableOpacity>
-            );
-          }}
-        />
-      </SafeAreaView>
-    </Modal>
-  );
-}
 
 export default function UploadFormScreen() {
   const { userProfile } = useAuth();
@@ -396,24 +285,4 @@ const styles = StyleSheet.create({
   },
   uploadButtonDisabled: { opacity: 0.4 },
   uploadButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-});
-
-const pickerStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 20, paddingVertical: 16,
-    borderBottomWidth: 1, borderBottomColor: BaseColors.borderLight,
-  },
-  title: { fontSize: 17, fontWeight: '700' },
-  closeBtn: { padding: 4 },
-  item: { paddingHorizontal: 20, paddingVertical: 15 },
-  itemText: { fontSize: 15 },
-  divider: { height: 1, backgroundColor: BaseColors.borderLight, marginHorizontal: 20 },
-  contactItem: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 20, paddingVertical: 15,
-  },
-  contactInfo: { flex: 1, marginRight: 12 },
-  contactSub: { fontSize: 13, color: BaseColors.grey, marginTop: 2 },
 });
