@@ -171,7 +171,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="emergenza"
         options={{
-          title: isReducedLayout ? 'Contatti di emergenza' : 'Emergenza',
+          title: 'Emergenza',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="exclamationmark.shield.fill" color={color} />,
           headerShown: false,
         }}

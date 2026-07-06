@@ -67,6 +67,8 @@ export interface Plan {
   created: string;
   modified: string;
   emergencyContacts: EmergencyContact[];
+  /** Timestamp Unix (ms) fino a cui i contatti di emergenza possono accedere ai documenti caricati. */
+  allow_access_until: number | null;
 }
 
 export interface Partner {

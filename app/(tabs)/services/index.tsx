@@ -184,7 +184,7 @@ export default function ServicesScreen() {
               </ThemedView>
               <ThemedView style={styles.textContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.serviceTitle}>
-                  Documenti digitali
+                  Documenti caricati
                 </ThemedText>
                 <ThemedText style={styles.serviceDescription}>
                   Gestisci i tuoi documenti e allegati

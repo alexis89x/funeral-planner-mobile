@@ -18,9 +18,14 @@ const STEPS = [
     title: 'Contatti di emergenza',
     body: 'Aggiungi le persone di fiducia a cui vuoi rendere accessibili i tuoi documenti in caso di bisogno.',
   },
+  {
+    icon: 'lock.open.fill' as const,
+    title: 'Sblocco temporaneo',
+    body: 'Dal tab Emergenza puoi attivare lo sblocco temporaneo per dare accesso ai documenti ai tuoi contatti di emergenza, e cercare rapidamente un\'onoranza funebre vicino a te.',
+  },
 ];
 
-/** Tutorial a 2 step mostrato una sola volta al primo accesso a Domani Sicuro. */
+/** Tutorial a 3 step mostrato una sola volta al primo accesso a Domani Sicuro. */
 export function DomaniSicuroTutorial() {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
