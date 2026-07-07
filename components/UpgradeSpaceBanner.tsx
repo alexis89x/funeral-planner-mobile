@@ -4,18 +4,17 @@ import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BaseColors } from '@/constants/theme';
-
-const UPGRADE_URL = 'https://app.tramontosereno.it';
+import { APP_BASE_URL } from '@/utils/api';
 
 /**
  * Banner mostrato ai piani non-advanced per proporre l'upgrade a più spazio di archiviazione.
- * Apre app.tramontosereno.it in webview.
+ * Apre la pagina di upgrade del piano in webview.
  */
-export function UpgradeSpaceBanner() {
+export function UpgradeSpaceBanner({ planId }: { planId: number }) {
   const handlePress = () => {
     router.push({
       pathname: '/(tabs)/services/webview',
-      params: { url: UPGRADE_URL, title: 'Più spazio' },
+      params: { url: `${APP_BASE_URL}/plan/upgrade/${planId}?forceMode=mobile`, title: 'Più spazio' },
     });
   };
 

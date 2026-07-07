@@ -13,13 +13,14 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
-import { ApiService, API_BASE_URL } from '@/utils/api';
+import { ApiService, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
 import { PlanSwitcher } from '@/components/PlanSwitcher';
 import { hasMultiplePlans } from '@/utils/plans';
 import { getDocumentTypeDesc } from '@/constants/document-types';
 import { UpgradeSpaceBanner } from '@/components/UpgradeSpaceBanner';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
+const USER_STATUS_FORCE_PSW_CHANGE = 350;
 
 export interface Attachment {
   id: number;
@@ -170,11 +171,13 @@ export default function UploadsScreen() {
 
   const showSwitcher = hasMultiplePlans(userProfile);
   const showUpgradeBanner =
-    THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti' && currentPlan?.type !== 'advanced';
+    THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti' && !!currentPlan && currentPlan.type !== 'advanced';
 
   const totalBytes = uploads.reduce((sum, a) => sum + (a.size || 0), 0);
   const usagePercent = uploadLimit > 0 ? Math.min((totalBytes / uploadLimit) * 100, 100) : 0;
   const isHighUsage = usagePercent > 70;
+  const usageColor =
+    usagePercent >= 90 ? BaseColors.danger : usagePercent >= 70 ? BaseColors.warning : BaseColors.main;
 
   const loadUploads = useCallback(async () => {
     if (!currentPlan) return;
@@ -202,6 +205,21 @@ export default function UploadsScreen() {
     useCallback(() => {
       if (!loading) loadUploads();
     }, [loading, loadUploads])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (userProfile?.user.status === USER_STATUS_FORCE_PSW_CHANGE) {
+        router.replace({
+          pathname: '/webview',
+          params: {
+            url: `${APP_BASE_URL}/user/profile?forceMode=mobile`,
+            title: 'Cambia password',
+            injectToken: 'true',
+          },
+        });
+      }
+    }, [userProfile])
   );
 
   const handleRefresh = async () => {
@@ -280,7 +298,7 @@ export default function UploadsScreen() {
       <Stack.Screen options={{ headerRight: () => <AddButton /> }} />
 
       {showSwitcher && currentPlan && <PlanSwitcher plan={currentPlan} />}
-      {showUpgradeBanner && <UpgradeSpaceBanner />}
+      {showUpgradeBanner && <UpgradeSpaceBanner planId={currentPlan!.id} />}
 
       {error ? (
         <View style={styles.centered}>
@@ -307,7 +325,7 @@ export default function UploadsScreen() {
                   styles.progressFill,
                   {
                     width: `${usagePercent}%` as any,
-                    backgroundColor: isHighUsage ? BaseColors.warning : BaseColors.main,
+                    backgroundColor: usageColor,
                   },
                 ]}
               />
