@@ -65,12 +65,12 @@ export default function ServicesScreen() {
   const appMajorVersion = parseInt(appVersion.split('.')[0], 10);
 
   useEffect(() => {
-    // Domani Sicuro: la tab "Servizi" apre direttamente i documenti caricati,
+    // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati,
     // niente da caricare/mostrare qui.
     if (!isReducedLayout) loadServices();
   }, []);
 
-  // Domani Sicuro: la tab "Servizi" apre direttamente i documenti caricati.
+  // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati.
   if (isReducedLayout) {
     return <Redirect href="/(tabs)/services/uploads" />;
   }

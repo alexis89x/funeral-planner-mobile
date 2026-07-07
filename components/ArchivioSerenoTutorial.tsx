@@ -25,8 +25,8 @@ const STEPS = [
   },
 ];
 
-/** Tutorial a 3 step mostrato una sola volta al primo accesso a Domani Sicuro. */
-export function DomaniSicuroTutorial() {
+/** Tutorial a 3 step mostrato una sola volta al primo accesso a Archivio Sereno. */
+export function ArchivioSerenoTutorial() {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
 

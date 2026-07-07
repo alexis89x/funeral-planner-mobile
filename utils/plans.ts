@@ -27,7 +27,7 @@ export const getCurrentPlanId = (profile: UserProfile | null): string => {
 };
 
 export const resolvePostLoginRoute = (profile: UserProfile | null) => {
-  // Domani Sicuro non mostra mai la UI dei piani: si atterra sempre sulla tab
+  // Archivio Sereno non mostra mai la UI dei piani: si atterra sempre sulla tab
   // "Documenti caricati" (che a sua volta reindirizza a services/uploads).
   if (THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti') {
     return { pathname: '/(tabs)/services' as const };

@@ -57,7 +57,7 @@ export default function EmergenzaScreen() {
 
   const hasPartner = !!userProfile?.user?.id_partner_referral;
   const showCercaOnoranze = THEMES[ACTIVE_THEME].funeralHomeTab === 'hide-without-partner' && !hasPartner;
-  // Lo sblocco temporaneo dei documenti è una feature esclusiva di Domani Sicuro.
+  // Lo sblocco temporaneo dei documenti è una feature esclusiva di Archivio Sereno.
   const showUnlock = THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti';
 
   const currentPlan = (userProfile?.owned_plans ?? []).find(

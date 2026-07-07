@@ -31,9 +31,9 @@
         "image": "latest"
       }
     },
-    "domani-sicuro": {
+    "archivio-sereno": {
       "distribution": "internal",
-      "channel": "domani-sicuro-anteprima",
+      "channel": "archivio-sereno-anteprima",
       "android": {
         "image": "latest",
         "buildType": "apk"

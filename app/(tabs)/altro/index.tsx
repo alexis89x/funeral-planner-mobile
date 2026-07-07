@@ -17,7 +17,7 @@ const ALL_MENU_ITEMS = [
   { label: 'Guide video', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
 ];
 
-// Domani Sicuro non espone mai il concetto di "Piano" né le guide video in UI.
+// Archivio Sereno non espone mai il concetto di "Piano" né le guide video in UI.
 const MENU_ITEMS = THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti'
   ? ALL_MENU_ITEMS.filter(item => item.route !== '/(tabs)/my-plans' && item.route !== '/altro/tutorials')
   : ALL_MENU_ITEMS;
