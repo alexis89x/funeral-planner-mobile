@@ -29,7 +29,7 @@ export const getCurrentPlanId = (profile: UserProfile | null): string => {
 export const resolvePostLoginRoute = (profile: UserProfile | null) => {
   // Archivio Sereno non mostra mai la UI dei piani: si atterra sempre sulla tab
   // "Documenti caricati" (che a sua volta reindirizza a services/uploads).
-  if (THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti') {
+  if (ACTIVE_THEME === 'archivio-sereno') {
     return { pathname: '/(tabs)/services' as const };
   }
 

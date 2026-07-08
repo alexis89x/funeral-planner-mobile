@@ -18,7 +18,7 @@ const ALL_MENU_ITEMS = [
 ];
 
 // Archivio Sereno non espone mai il concetto di "Piano" né le guide video in UI.
-const MENU_ITEMS = THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti'
+const MENU_ITEMS = ACTIVE_THEME === 'archivio-sereno'
   ? ALL_MENU_ITEMS.filter(item => item.route !== '/(tabs)/my-plans' && item.route !== '/altro/tutorials')
   : ALL_MENU_ITEMS;
 

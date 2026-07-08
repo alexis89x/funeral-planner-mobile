@@ -27,14 +27,13 @@ export default function TabLayout() {
   const hasMultiplePlans = !userProfile || activePlans.length !== 1;
   const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
 
-  const tabLayout = THEMES[ACTIVE_THEME].tabLayout;
-  const isReducedLayout = tabLayout === 'documenti-contatti';
+  const isArchivioSereno = ACTIVE_THEME === 'archivio-sereno';
 
   const funeralHomeTabMode = THEMES[ACTIVE_THEME].funeralHomeTab;
   const hasPartner = !!userProfile?.user?.id_partner_referral;
   // 'always-visible': tab sempre presente, titolo/icona dinamici (Tramonto B2C)
   // 'hide-without-partner': tab nascosto se l'utente non ha un partner referral
-  const funeralHomeHref = isReducedLayout
+  const funeralHomeHref = isArchivioSereno
     ? null
     : funeralHomeTabMode === 'always-visible'
       ? undefined
@@ -89,9 +88,9 @@ export default function TabLayout() {
 
   return (
     <>
-      {isReducedLayout && <ArchivioSerenoTutorial />}
+      {isArchivioSereno && <ArchivioSerenoTutorial />}
       <Tabs
-      initialRouteName={isReducedLayout ? 'services' : undefined}
+      initialRouteName={isArchivioSereno ? 'services' : undefined}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
@@ -100,7 +99,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-plan"
         options={{
-          href: isReducedLayout ? null : undefined,
+          href: isArchivioSereno ? null : undefined,
           title: 'Il mio piano',
           tabBarLabel: ({ color }) => (
             <Text style={{ fontSize: 10, color: isMyPlanActive ? tintColor : color }}>
@@ -161,9 +160,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="services"
         options={{
-          title: isReducedLayout ? 'Documenti caricati' : 'Servizi',
+          title: isArchivioSereno ? 'Documenti caricati' : 'Servizi',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name={isReducedLayout ? 'doc.fill' : 'list.bullet'} color={color} />
+            <IconSymbol size={28} name={isArchivioSereno ? 'doc.fill' : 'list.bullet'} color={color} />
           ),
           headerShown: false,
         }}

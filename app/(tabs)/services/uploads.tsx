@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
+import { BaseColors, ACTIVE_THEME } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { ApiService, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
 import { PlanSwitcher } from '@/components/PlanSwitcher';
@@ -170,8 +170,7 @@ export default function UploadsScreen() {
   ) ?? userProfile?.owned_plans?.[0] ?? null;
 
   const showSwitcher = hasMultiplePlans(userProfile);
-  const showUpgradeBanner =
-    THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti' && !!currentPlan && currentPlan.type !== 'advanced';
+  const showUpgradeBanner = ACTIVE_THEME === 'archivio-sereno' && !!currentPlan && currentPlan.type !== 'advanced';
 
   const totalBytes = uploads.reduce((sum, a) => sum + (a.size || 0), 0);
   const usagePercent = uploadLimit > 0 ? Math.min((totalBytes / uploadLimit) * 100, 100) : 0;

@@ -152,7 +152,7 @@ Oggi il repo gestisce un multi-brand a livello di **branding** (vedi `constants/
 
 "Archivio Sereno" è una **nuova voce di `THEMES`**, non un asse separato: riusa lo stesso codice/backend di Tramonto Sereno (stesso login, stesso concetto di "Piano" dietro le quinte — l'utente ha sempre un piano Tramonto Sereno anche se in quest'app non lo vede mai), ma con **branding proprio** (nome app, bundle id, icone/splash, colori) **e un layout di tab ridotto**, esposto come app installabile a sé stante (build EAS dedicata, come già avviene per studio3a/mazzini).
 
-**Implementato**: `ThemeConfig` in `constants/theme.ts` ha un campo `tabLayout: 'full' | 'documenti-contatti'` (tipo `TabLayout`), letto da `app/(tabs)/_layout.tsx` per decidere quali `Tabs.Screen` mostrare (`href: null` su quelle nascoste) e da `services/index.tsx` / `emergenza/index.tsx` per fare `<Redirect>` diretto alla schermata utile. Ogni tema/app resta un'unica voce di `THEMES` che porta insieme branding + layout, così è immediato aggiungere altre app in futuro allo stesso modo. Tema attivo su questo branch: `ACTIVE_THEME = 'archivio-sereno'`.
+**Implementato**: niente campo dedicato in `ThemeConfig` — i punti che devono comportarsi diversamente per Archivio Sereno verificano direttamente `ACTIVE_THEME === 'archivio-sereno'` (es. `app/(tabs)/_layout.tsx` per decidere quali `Tabs.Screen` mostrare con `href: null` su quelle nascoste, `services/index.tsx` / `emergenza/index.tsx` per fare `<Redirect>` diretto alla schermata utile). Ogni tema/app resta un'unica voce di `THEMES` che porta insieme branding + layout, così è immediato aggiungere altre app in futuro allo stesso modo. Tema attivo su questo branch: `ACTIVE_THEME = 'archivio-sereno'`.
 
 ### Tab bar di Archivio Sereno (solo queste tre, nient'altro)
 
@@ -160,7 +160,7 @@ Oggi il repo gestisce un multi-brand a livello di **branding** (vedi `constants/
 2. **Contatti di emergenza** — tab `emergenza`; `app/(tabs)/emergenza/index.tsx` fa `<Redirect href="/(tabs)/emergenza/contatti" />`, quindi si apre direttamente `contatti.tsx`, senza passare dal menu "Numeri utili / Contatti".
 3. **Altro** — tab `altro` invariata (`app/(tabs)/altro/index.tsx`: Profilo, FAQ, Guide, Elimina account, Logout), tranne la voce "I miei piani" che viene filtrata via (`MENU_ITEMS`) perché Archivio Sereno non espone mai il concetto di Piano in UI.
 
-Le tre tab **non sono unite/mergiate** in un'unica schermata: restano tre `Tabs.Screen` distinte. Nessun'altra tab visibile (niente "Il mio piano", "La mia onoranza", "Servizi" come lista prodotti, "Cerca") — nascoste con `href: null` in `app/(tabs)/_layout.tsx` quando `tabLayout === 'documenti-contatti'`.
+Le tre tab **non sono unite/mergiate** in un'unica schermata: restano tre `Tabs.Screen` distinte. Nessun'altra tab visibile (niente "Il mio piano", "La mia onoranza", "Servizi" come lista prodotti, "Cerca") — nascoste con `href: null` in `app/(tabs)/_layout.tsx` quando `ACTIVE_THEME === 'archivio-sereno'`.
 
 ### Assegnazione documenti ai contatti di emergenza
 

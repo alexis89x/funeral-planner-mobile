@@ -51,7 +51,7 @@ const iconMap: Record<string, string> = {
   'home': 'house.fill'
 };
 
-const isReducedLayout = THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti';
+const isArchivioSereno = ACTIVE_THEME === 'archivio-sereno';
 
 export default function ServicesScreen() {
   const colorScheme = useColorScheme();
@@ -67,11 +67,11 @@ export default function ServicesScreen() {
   useEffect(() => {
     // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati,
     // niente da caricare/mostrare qui.
-    if (!isReducedLayout) loadServices();
+    if (!isArchivioSereno) loadServices();
   }, []);
 
   // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati.
-  if (isReducedLayout) {
+  if (isArchivioSereno) {
     return <Redirect href="/(tabs)/services/uploads" />;
   }
 

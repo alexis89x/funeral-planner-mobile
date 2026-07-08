@@ -11,7 +11,7 @@
  *   'alc'           → Testamento Biologico (Associazione Luca Coscioni, blu #1495e4)
  *   'archivio-sereno' → Archivio Sereno     (documenti + contatti di emergenza, tab ridotte)
  *
- * NB: 'archivio-sereno' non è solo un brand diverso: ha anche `tabLayout: 'documenti-contatti'`,
+ * NB: 'archivio-sereno' non è solo un brand diverso: ha anche un diverso layout dei tab,
  * che riduce la tab bar a sole 2 tab (vedi app/(tabs)/_layout.tsx e AGENTS.md § "Progetto Archivio Sereno").
  *
  * ─────────────────────────────────────────────────────────────────────────────
@@ -82,22 +82,6 @@ import { Platform } from 'react-native';
 
 export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup' | 'alc' | 'archivio-sereno';
 
-/**
- * Layout della tab bar principale (vedi app/(tabs)/_layout.tsx).
- *
- * 'full':
- *   Set completo di tab (Il mio piano, La mia onoranza, Servizi, Emergenza, Altro).
- *   Usato da tutti i brand "Tramonto Sereno white-label".
- *
- * 'documenti-contatti':
- *   Solo 2 tab: "Documenti caricati" (apre direttamente l'upload documenti) e
- *   "Contatti di emergenza e altro" (contatti di emergenza + profilo/account).
- *   Usato da "Archivio Sereno". Il concetto di Piano resta invariato lato dati
- *   (è sempre un piano Tramonto Sereno dietro le quinte), semplicemente non è
- *   esposto nella UI.
- */
-export type TabLayout = 'full' | 'documenti-contatti';
-
 export interface ThemeConfig {
   /** Nome visualizzato (= expo.name in app.json) */
   displayName: string;
@@ -133,8 +117,6 @@ export interface ThemeConfig {
    *   Usato da Studio 3A e Gruppo Mazzini.
    */
   funeralHomeTab: 'always-visible' | 'hide-without-partner';
-  /** Layout della tab bar principale. Vedi tipo `TabLayout`. */
-  tabLayout: TabLayout;
   /**
    * Logo principale (require statico, risolto a build time).
    * File: assets/images/themes/{tema}/logo.png
@@ -175,7 +157,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#faf7f4',
     splashColor: '#bf9574',
     funeralHomeTab: 'always-visible',
-    tabLayout: 'full',
     logo: require('@/assets/images/themes/tramonto/logo.png'),
     logoHorizontal: require('@/assets/images/themes/tramonto/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -197,7 +178,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#fff8f3',
     splashColor: '#ff7f13',
     funeralHomeTab: 'hide-without-partner',
-    tabLayout: 'full',
     logo: require('@/assets/images/themes/studio3a/logo.png'),
     logoHorizontal: require('@/assets/images/themes/studio3a/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -220,7 +200,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#f3f4fa',
     splashColor: '#25346d',
     funeralHomeTab: 'hide-without-partner',
-    tabLayout: 'full',
     logo: require('@/assets/images/themes/mazzini/logo.png'),
     logoHorizontal: require('@/assets/images/themes/mazzini/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -242,7 +221,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#fbf5f8',
     splashColor: '#a40046',
     funeralHomeTab: 'hide-without-partner',
-    tabLayout: 'full',
     logo: require('@/assets/images/themes/taddiagroup/logo.png'),
     logoHorizontal: require('@/assets/images/themes/taddiagroup/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -266,7 +244,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#f1f9fe',
     splashColor: '#1495e4',
     funeralHomeTab: 'hide-without-partner',
-    tabLayout: 'full',
     logo: require('@/assets/images/themes/alc/logo.png'),
     logoHorizontal: require('@/assets/images/themes/alc/logo-horizontal.png'),
     logoHorizontalWidth: 280,
@@ -276,9 +253,8 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
 
   /**
    * Archivio Sereno — app separata, stesso codice/backend di Tramonto Sereno
-   * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con
-   * tabLayout ridotto a "documenti-contatti" (vedi tipo TabLayout) e branding
-   * proprio. bundle: TODO (da definire prima del build).
+   * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con un layout diverso
+   * bundle: TODO (da definire prima del build).
    * Asset: assets/images/themes/archivio-sereno/
    * NB: asset attualmente copiati da tramonto/ come placeholder — da sostituire
    * con la grafica definitiva del brand prima del build di produzione.
@@ -292,7 +268,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     mainLightestest: '#F5FBFF',
     splashColor: '#5FA8D3',
     funeralHomeTab: 'hide-without-partner',
-    tabLayout: 'documenti-contatti',
     logo: require('@/assets/images/themes/archivio-sereno/logo.png'),
     logoHorizontal: require('@/assets/images/themes/archivio-sereno/logo-horizontal.png'),
     logoHorizontalWidth: 280,

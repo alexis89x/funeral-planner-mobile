@@ -58,7 +58,7 @@ export default function EmergenzaScreen() {
   const hasPartner = !!userProfile?.user?.id_partner_referral;
   const showCercaOnoranze = THEMES[ACTIVE_THEME].funeralHomeTab === 'hide-without-partner' && !hasPartner;
   // Lo sblocco temporaneo dei documenti è una feature esclusiva di Archivio Sereno.
-  const showUnlock = THEMES[ACTIVE_THEME].tabLayout === 'documenti-contatti';
+  const showUnlock = ACTIVE_THEME === 'archivio-sereno';
 
   const currentPlan = (userProfile?.owned_plans ?? []).find(
     (p: Plan) => p.id === userProfile?.user?.id_current_plan
@@ -132,7 +132,7 @@ export default function EmergenzaScreen() {
     setUnlocking(true);
     try {
       await ApiService.post(
-        'temporary-unlock-documents',
+        'upload-temporary-unlock',
         { plan_id: currentPlan.id, duration: durationKey },
         { manualErrorManagement: true }
       );
@@ -150,8 +150,8 @@ export default function EmergenzaScreen() {
     setUnlocking(true);
     try {
       await ApiService.post(
-        'temporary-unlock-documents',
-        { plan_id: currentPlan.id, lock: true },
+        'upload-lock',
+        { plan_id: currentPlan.id },
         { manualErrorManagement: true }
       );
       await reloadProfile();
