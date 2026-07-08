@@ -253,11 +253,11 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
 
   /**
    * Archivio Sereno — app separata, stesso codice/backend di Tramonto Sereno
-   * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con un layout diverso
-   * bundle: TODO (da definire prima del build).
-   * Asset: assets/images/themes/archivio-sereno/
-   * NB: asset attualmente copiati da tramonto/ come placeholder — da sostituire
-   * con la grafica definitiva del brand prima del build di produzione.
+   * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con un layout diverso.
+   * bundle: it.nanuktechnology.archiviosereno (impostato anche in app.json).
+   * Asset: assets/images/themes/archivio-sereno/ — grafica definitiva del brand.
+   * NB: manca ancora un client OAuth Google dedicato al bundle id di Archivio Sereno
+   * (il plugin google-signin in app.json usa ancora l'iosUrlScheme di Tramonto Sereno).
    */
   'archivio-sereno': {
     displayName: 'Archivio sereno',
@@ -271,7 +271,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logo: require('@/assets/images/themes/archivio-sereno/logo.png'),
     logoHorizontal: require('@/assets/images/themes/archivio-sereno/logo-horizontal.png'),
     logoHorizontalWidth: 280,
-    logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467 (placeholder, uguale a tramonto)
+    logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467
     googleLoginEnabled: true,
   },
 };

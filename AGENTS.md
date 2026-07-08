@@ -194,9 +194,10 @@ Punti **non toccati** perché raggiungibili solo tramite UI di piano ormai non e
 Archivio Sereno va trattato come le altre voci "cliente" di `THEMES` (vedi `studio3a`, `mazzini`): proprio `expo.name`, `bundleIdentifier`/`package`, `scheme`, icone/splash, e un proprio profilo di build in `eas.json` (profilo `archivio-sereno`, creato sul modello del profilo `studio`).
 
 Stato attuale:
-- `assets/images/themes/archivio-sereno/` esiste già ma contiene **una copia identica degli asset di Tramonto Sereno** (placeholder temporaneo, richiesto esplicitamente per poter buildare/testare da subito). Vanno sostituiti con la grafica definitiva del brand prima di un build di produzione.
-- `bundleIdentifier`/`package`/`scheme` definitivi **non ancora decisi** (placeholder in `constants/theme.ts`: `it.nanuktechnology.archiviosereno`).
-- `app.json` **non è stato modificato**: come per gli altri temi, va aggiornato manualmente (nome, bundle id, path icone) solo al momento di fare un build per questo brand specifico — segue lo stesso processo manuale già in uso per studio3a/mazzini (vedi commento in testa a `constants/theme.ts`).
+- `assets/images/themes/archivio-sereno/` contiene la grafica definitiva del brand (icona, logo, splash), non più placeholder di Tramonto Sereno.
+- `bundleIdentifier`/`package`/`scheme`: `it.nanuktechnology.archiviosereno` / `archiviosereno`, impostati sia in `constants/theme.ts` che in `app.json`.
+- `app.json` **è stato aggiornato** per il tema Archivio Sereno (nome, bundle id/package, scheme, path icone/splash, testi permessi) per poter fare una build di prova — segue lo stesso processo manuale già in uso per studio3a/mazzini (vedi commento in testa a `constants/theme.ts`). Prima di una build per un **altro** tema, va risettato di conseguenza.
+- **Manca ancora** un client OAuth Google dedicato al bundle id di Archivio Sereno: il plugin `google-signin` in `app.json` usa ancora l'`iosUrlScheme` di Tramonto Sereno, quindi il login Google non funzionerà correttamente finché non viene creato un client OAuth apposito.
 
 ## Troubleshooting
 
