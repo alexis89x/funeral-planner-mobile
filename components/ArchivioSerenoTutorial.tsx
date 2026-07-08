@@ -25,16 +25,22 @@ const STEPS = [
   },
 ];
 
-/** Tutorial a 3 step mostrato una sola volta al primo accesso a Archivio Sereno. */
-export function ArchivioSerenoTutorial() {
+interface ArchivioSerenoTutorialProps {
+  /** Mostra il tutorial solo quando true (login confermato, profilo caricato). */
+  enabled: boolean;
+}
+
+/** Tutorial a 3 step mostrato una sola volta al primo accesso a Archivio Sereno, dopo il login. */
+export function ArchivioSerenoTutorial({ enabled }: ArchivioSerenoTutorialProps) {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
     AsyncStorage.getItem(TUTORIAL_SEEN_KEY).then(seen => {
       if (!seen) setVisible(true);
     });
-  }, []);
+  }, [enabled]);
 
   const handleClose = () => {
     setVisible(false);

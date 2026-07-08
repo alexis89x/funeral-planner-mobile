@@ -88,7 +88,7 @@ export default function TabLayout() {
 
   return (
     <>
-      {isArchivioSereno && <ArchivioSerenoTutorial />}
+      {isArchivioSereno && <ArchivioSerenoTutorial enabled={!!userProfile} />}
       <Tabs
       initialRouteName={isArchivioSereno ? 'services' : undefined}
       screenOptions={{

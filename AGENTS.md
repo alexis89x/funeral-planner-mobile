@@ -183,7 +183,7 @@ Punti **non toccati** perché raggiungibili solo tramite UI di piano ormai non e
 
 ### Tutorial al primo accesso
 
-`components/ArchivioSerenoTutorial.tsx`: modal fullscreen a 2 step (documenti caricati → contatti di emergenza), mostrato una sola volta grazie al flag AsyncStorage `@domani_sicuro_tutorial_seen`. Montato in `app/(tabs)/_layout.tsx` solo quando `ACTIVE_THEME === 'archivio-sereno'` (`isArchivioSereno`). Pulsante "Salta" sempre disponibile.
+`components/ArchivioSerenoTutorial.tsx`: modal fullscreen a 3 step (documenti caricati → contatti di emergenza → sblocco temporaneo), mostrato una sola volta grazie al flag AsyncStorage `@domani_sicuro_tutorial_seen`. Montato in `app/(tabs)/_layout.tsx` solo quando `ACTIVE_THEME === 'archivio-sereno'` (`isArchivioSereno`), con prop `enabled={!!userProfile}`: il controllo del flag/comparsa del modal parte solo a login confermato (profilo caricato), non al semplice mount del layout — evita che parta prima del login per via del pre-mount di `(tabs)` come `anchor` in `app/_layout.tsx`. Pulsante "Salta" sempre disponibile.
 
 ### Banner upgrade spazio ("Hai bisogno di più spazio?")
 
