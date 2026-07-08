@@ -174,20 +174,20 @@ Nota: se un account Archivio Sereno avesse più piani attivi (`hasMultiplePlans`
 
 ### Redirect post-login e fallback verso "Documenti caricati"
 
-Tutti i punti che di default portavano l'utente sulla tab "Il mio piano"/"I miei piani" sono stati aggiornati per portare invece su "Documenti caricati" quando `tabLayout === 'documenti-contatti'`:
-- `utils/plans.ts` → `resolvePostLoginRoute()`: primo controllo è sul `tabLayout`, se ridotto ritorna `/(tabs)/services` a prescindere dal numero di piani. Usata da `app/_layout.tsx` (redirect post-login generico) e `app/login-email.tsx`.
+Tutti i punti che di default portavano l'utente sulla tab "Il mio piano"/"I miei piani" sono stati aggiornati per portare invece su "Documenti caricati" quando `ACTIVE_THEME === 'archivio-sereno'`:
+- `utils/plans.ts` → `resolvePostLoginRoute()`: primo controllo è su `ACTIVE_THEME === 'archivio-sereno'`, in tal caso ritorna `/(tabs)/services` a prescindere dal numero di piani. Usata da `app/_layout.tsx` (redirect post-login generico) e `app/login-email.tsx`.
 - `app/login-google.tsx`: il redirect esplicito nel success-callback di `googleLogin` ora usa `resolvePostLoginRoute(null)` invece di `router.replace('/(tabs)/my-plans')` hardcoded.
-- `app/webview.tsx` (`onRefreshUser`): dopo il refresh del profilo da una webview generica, va su `/(tabs)/services` invece che su `/(tabs)/my-plans` quando il layout è ridotto.
+- `app/webview.tsx` (`onRefreshUser`): dopo il refresh del profilo da una webview generica, va su `/(tabs)/services` invece che su `/(tabs)/my-plans` quando `ACTIVE_THEME === 'archivio-sereno'`.
 
 Punti **non toccati** perché raggiungibili solo tramite UI di piano ormai non esposta in Archivio Sereno (tab "Il mio piano"/"I miei piani" nascoste, quindi questi flussi sono di fatto irraggiungibili): `hooks/use-new-plan-handler.ts`, `components/PlanSwitcher.tsx`, gli header-button in `app/(tabs)/_layout.tsx` per `my-plan`/`my-plans`.
 
 ### Tutorial al primo accesso
 
-`components/ArchivioSerenoTutorial.tsx`: modal fullscreen a 2 step (documenti caricati → contatti di emergenza), mostrato una sola volta grazie al flag AsyncStorage `@domani_sicuro_tutorial_seen`. Montato in `app/(tabs)/_layout.tsx` solo quando `isReducedLayout` è vero. Pulsante "Salta" sempre disponibile.
+`components/ArchivioSerenoTutorial.tsx`: modal fullscreen a 2 step (documenti caricati → contatti di emergenza), mostrato una sola volta grazie al flag AsyncStorage `@domani_sicuro_tutorial_seen`. Montato in `app/(tabs)/_layout.tsx` solo quando `ACTIVE_THEME === 'archivio-sereno'` (`isArchivioSereno`). Pulsante "Salta" sempre disponibile.
 
 ### Banner upgrade spazio ("Hai bisogno di più spazio?")
 
-`components/UpgradeSpaceBanner.tsx`: mostrato in cima a `services/uploads.tsx` quando `tabLayout === 'documenti-contatti'` e il piano corrente non è di tipo `free` (`currentPlan?.type !== 'free'`, in `uploads.tsx`). Al tap apre `https://app.tramontosereno.it` nella webview esistente (`/(tabs)/services/webview`). Pattern ricalcato da `components/Studio3ABanner.tsx` (banner condizionale già esistente per il tema studio3a in `emergenza/index.tsx`).
+`components/UpgradeSpaceBanner.tsx`: mostrato in cima a `services/uploads.tsx` quando `ACTIVE_THEME === 'archivio-sereno'` e il piano corrente non è di tipo `advanced` (`currentPlan.type !== 'advanced'`, in `uploads.tsx`). Al tap apre `https://app.tramontosereno.it` nella webview esistente (`/(tabs)/services/webview`). Pattern ricalcato da `components/Studio3ABanner.tsx` (banner condizionale già esistente per il tema studio3a in `emergenza/index.tsx`).
 
 ### App installabile separata
 
