@@ -133,7 +133,7 @@ export default function EmergenzaScreen() {
     try {
       await ApiService.post(
         'upload-temporary-unlock',
-        { plan_id: currentPlan.id, duration: durationKey },
+        { id_plan: currentPlan.id, duration: durationKey },
         { manualErrorManagement: true }
       );
       await reloadProfile();
@@ -151,7 +151,7 @@ export default function EmergenzaScreen() {
     try {
       await ApiService.post(
         'upload-lock',
-        { plan_id: currentPlan.id },
+        { id_plan: currentPlan.id },
         { manualErrorManagement: true }
       );
       await reloadProfile();

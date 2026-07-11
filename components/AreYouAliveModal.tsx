@@ -26,7 +26,7 @@ export function AreYouAliveModal() {
     try {
       await ApiService.post(
         'i-am-alive',
-        { plan_id: currentPlan.id },
+        { id_plan: currentPlan.id },
         { manualErrorManagement: true }
       );
       await reloadProfile();

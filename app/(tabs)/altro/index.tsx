@@ -15,6 +15,7 @@ const ALL_MENU_ITEMS = [
   { label: 'I miei piani', icon: 'list.bullet' as const, route: '/(tabs)/my-plans' },
   { label: 'FAQ', icon: 'questionmark.circle.fill' as const, route: '/altro/faq-categories' },
   { label: 'Guide video', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
+  { label: 'Impostazioni', icon: 'gearshape.fill' as const, route: '/altro/impostazioni' },
 ];
 
 // Archivio Sereno non espone mai il concetto di "Piano" né le guide video in UI.

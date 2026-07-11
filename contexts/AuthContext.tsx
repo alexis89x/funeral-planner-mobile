@@ -129,7 +129,8 @@ export interface UserProfile {
     thirdServicesTransfer: number;
   };
   cfg: {
-    language: string;
+    lang: string;
+    buffer_death_time_min: number;
   };
 }
 
@@ -630,7 +631,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             thirdServicesEnrichment: 0,
             thirdServicesTransfer: 0,
           },
-          cfg: response.data.cfg || { language: 'it' },
+          cfg: response.data.cfg || { lang: 'it', buffer_death_time_min: 720 },
         };
 
         setUserProfile(profile);
