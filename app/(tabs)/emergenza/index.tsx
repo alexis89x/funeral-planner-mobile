@@ -9,6 +9,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Studio3ABanner } from '@/components/Studio3ABanner';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 
 interface EmergenzaItem {
   id: string;
@@ -138,8 +139,8 @@ export default function EmergenzaScreen() {
       );
       await reloadProfile();
       Alert.alert('Sblocco attivato', 'I tuoi contatti di emergenza possono ora accedere ai documenti caricati.');
-    } catch {
-      Alert.alert('Errore', 'Impossibile attivare lo sblocco temporaneo. Riprova più tardi.');
+    } catch (err: any) {
+      Alert.alert('Errore', extractApiErrorMessage(err?.responseData, 'Impossibile attivare lo sblocco temporaneo. Riprova più tardi.'));
     } finally {
       setUnlocking(false);
     }
@@ -156,8 +157,8 @@ export default function EmergenzaScreen() {
       );
       await reloadProfile();
       Alert.alert('Sblocco rimosso', 'I tuoi contatti di emergenza non possono più accedere ai documenti caricati.');
-    } catch {
-      Alert.alert('Errore', 'Impossibile rimuovere lo sblocco temporaneo. Riprova più tardi.');
+    } catch (err: any) {
+      Alert.alert('Errore', extractApiErrorMessage(err?.responseData, 'Impossibile rimuovere lo sblocco temporaneo. Riprova più tardi.'));
     } finally {
       setUnlocking(false);
     }

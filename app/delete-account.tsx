@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { api } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 
 export default function DeleteAccountScreen() {
   const [password, setPassword] = useState('');
@@ -54,11 +55,11 @@ export default function DeleteAccountScreen() {
           );
         }, 500);
       } else {
-        setError(response.message || response.error || 'Errore durante l\'eliminazione dell\'account');
+        setError(extractApiErrorMessage(response, 'Errore durante l\'eliminazione dell\'account'));
       }
     } catch (err: any) {
       console.error('Delete account error:', err);
-      setError('Password non corretta o errore di connessione'); // err.message
+      setError(extractApiErrorMessage(err?.responseData, 'Password non corretta o errore di connessione'));
     } finally {
       setIsLoading(false);
     }

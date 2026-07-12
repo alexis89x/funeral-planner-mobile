@@ -8,6 +8,7 @@ import { Colors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 import { clearWebviewCache } from '@/utils/webview.utils';
 
 const ALL_MENU_ITEMS = [
@@ -65,8 +66,8 @@ export default function AltroScreen() {
                 'Richiesta inviata',
                 'Abbiamo ricevuto la richiesta di cambio onoranza funebre, verrai contattato il prima possibile tramite email o telefono.'
               );
-            } catch {
-              Alert.alert('Errore', "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi.");
+            } catch (err: any) {
+              Alert.alert('Errore', extractApiErrorMessage(err?.responseData, "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi."));
             } finally {
               setUnlinkLoading(false);
             }

@@ -5,11 +5,12 @@ import { BaseColors } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 
 export function AreYouAliveModal() {
   const { userProfile, reloadProfile } = useAuth();
   const [blocking, setBlocking] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const currentPlan = userProfile?.current_plan
     ?? (userProfile?.owned_plans ?? []).find((p) => p.id === userProfile?.user?.id_current_plan)
@@ -22,7 +23,7 @@ export function AreYouAliveModal() {
   const handleBlock = async () => {
     if (!currentPlan) return;
     setBlocking(true);
-    setError(false);
+    setError(null);
     try {
       await ApiService.post(
         'i-am-alive',
@@ -30,8 +31,8 @@ export function AreYouAliveModal() {
         { manualErrorManagement: true }
       );
       await reloadProfile();
-    } catch {
-      setError(true);
+    } catch (err: any) {
+      setError(extractApiErrorMessage(err?.responseData, "Impossibile completare l'operazione. Riprova."));
     } finally {
       setBlocking(false);
     }
@@ -54,7 +55,7 @@ export function AreYouAliveModal() {
           </ThemedText>
           {error && (
             <ThemedText style={styles.errorText}>
-              Impossibile completare l'operazione. Riprova.
+              {error}
             </ThemedText>
           )}
           <TouchableOpacity

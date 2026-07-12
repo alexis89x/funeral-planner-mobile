@@ -5,6 +5,7 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { getDeviceInfo } from '@/utils/device';
 import { api, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 import { getSecurityHeaders } from "@/utils/security";
 import { logRequest, logResponse, logError, logFormData } from '@/utils/http-logger';
 import { isExpoGo } from "@/utils/utils";
@@ -478,10 +479,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         console.error('\n❌ Login Failed - API returned error');
         console.error('Full error response:', JSON.stringify(data, null, 2));
-        const errorMsg = data.message ||
-          (typeof data.error === 'string' ? data.error : data.error?.message) ||
-          'Login failed';
-        throw new Error(errorMsg);
+        throw new Error(extractApiErrorMessage(data, 'Login failed'));
       }
     } catch (error: any) {
       console.error('\n💥 ===== LOGIN ERROR =====');
