@@ -4,18 +4,25 @@ import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 import { clearWebviewCache } from '@/utils/webview.utils';
 
-const MENU_ITEMS = [
+const ALL_MENU_ITEMS = [
   { label: 'Profilo', icon: 'person.fill' as const, route: '/altro/account' },
   { label: 'I miei piani', icon: 'list.bullet' as const, route: '/(tabs)/my-plans' },
   { label: 'FAQ', icon: 'questionmark.circle.fill' as const, route: '/altro/faq-categories' },
   { label: 'Guide video', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
+  { label: 'Impostazioni', icon: 'gearshape.fill' as const, route: '/altro/impostazioni' },
 ];
+
+// Archivio Sereno non espone mai il concetto di "Piano" né le guide video in UI.
+const MENU_ITEMS = ACTIVE_THEME === 'archivio-sereno'
+  ? ALL_MENU_ITEMS.filter(item => item.route !== '/(tabs)/my-plans' && item.route !== '/altro/tutorials')
+  : ALL_MENU_ITEMS;
 
 export default function AltroScreen() {
   const colorScheme = useColorScheme();
@@ -59,8 +66,8 @@ export default function AltroScreen() {
                 'Richiesta inviata',
                 'Abbiamo ricevuto la richiesta di cambio onoranza funebre, verrai contattato il prima possibile tramite email o telefono.'
               );
-            } catch {
-              Alert.alert('Errore', "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi.");
+            } catch (err: any) {
+              Alert.alert('Errore', extractApiErrorMessage(err?.responseData, "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi."));
             } finally {
               setUnlinkLoading(false);
             }

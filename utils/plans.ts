@@ -5,6 +5,7 @@
 import { api } from './api';
 import { Plan, UserProfile } from '@/contexts/AuthContext';
 import { PLAN_STATUS } from '@/models/data.models';
+import { THEMES, ACTIVE_THEME } from '@/constants/theme';
 
 /**
  * Switch to a specific plan and reload user profile
@@ -26,6 +27,12 @@ export const getCurrentPlanId = (profile: UserProfile | null): string => {
 };
 
 export const resolvePostLoginRoute = (profile: UserProfile | null) => {
+  // Archivio Sereno non mostra mai la UI dei piani: si atterra sempre sulla tab
+  // "Documenti caricati" (che a sua volta reindirizza a services/uploads).
+  if (ACTIVE_THEME === 'archivio-sereno') {
+    return { pathname: '/(tabs)/services' as const };
+  }
+
   const activePlans = getActivePlans(profile);
   if (activePlans.length === 1) {
     const plan = activePlans[0];

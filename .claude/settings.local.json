@@ -8,7 +8,9 @@
       "Bash(magick compare *)",
       "Bash(rm -f diff.png)",
       "Bash(magick android-icon-monochrome.png -format \"%@\\\\n\" info:)",
-      "Bash(magick logo_horizontal.png -format \"corner:%[pixel:p{2,2}] type:%[type]\\\\n\" info:)"
+      "Bash(magick logo_horizontal.png -format \"corner:%[pixel:p{2,2}] type:%[type]\\\\n\" info:)",
+      "Read(//Applications/XAMPP/xamppfiles/htdocs/projects/funeral-planner-api/v1/**)",
+      "Read(//Applications/XAMPP/xamppfiles/htdocs/projects/funeral-planner-api/**)"
     ],
     "deny": [],
     "ask": []

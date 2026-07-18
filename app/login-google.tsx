@@ -14,6 +14,7 @@ import { Colors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHei
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { isExpoGo } from "@/utils/utils";
+import { resolvePostLoginRoute } from '@/utils/plans';
 
 // Conditional import for Google Sign-In (only for device builds)
 let GoogleSignin: any = null;
@@ -148,7 +149,7 @@ export default function LoginGoogleScreen() {
           idToken,
           (email: string) => {
             // Success callback
-            router.replace('/(tabs)/my-plans');
+            router.replace(resolvePostLoginRoute(null));
             /*
               Alert.alert(
               'Accesso effettuato!',
