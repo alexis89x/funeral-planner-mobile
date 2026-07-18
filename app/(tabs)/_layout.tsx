@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { switchPlan, getActivePlans } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
+import { ArchivioSerenoTutorial } from '@/components/ArchivioSerenoTutorial';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -26,12 +27,15 @@ export default function TabLayout() {
   const hasMultiplePlans = !userProfile || activePlans.length !== 1;
   const myPlanTabTitle = hasMultiplePlans ? 'I miei piani' : 'Il mio piano';
 
+  const isArchivioSereno = ACTIVE_THEME === 'archivio-sereno';
+
   const funeralHomeTabMode = THEMES[ACTIVE_THEME].funeralHomeTab;
   const hasPartner = !!userProfile?.user?.id_partner_referral;
   // 'always-visible': tab sempre presente, titolo/icona dinamici (Tramonto B2C)
   // 'hide-without-partner': tab nascosto se l'utente non ha un partner referral
-  const funeralHomeHref =
-    funeralHomeTabMode === 'always-visible'
+  const funeralHomeHref = isArchivioSereno
+    ? null
+    : funeralHomeTabMode === 'always-visible'
       ? undefined
       : hasPartner ? undefined : null;
   const funeralHomeTitle =
@@ -83,7 +87,10 @@ export default function TabLayout() {
   };
 
   return (
-    <Tabs
+    <>
+      {isArchivioSereno && <ArchivioSerenoTutorial enabled={!!userProfile} />}
+      <Tabs
+      initialRouteName={isArchivioSereno ? 'services' : undefined}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
@@ -92,6 +99,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-plan"
         options={{
+          href: isArchivioSereno ? null : undefined,
           title: 'Il mio piano',
           tabBarLabel: ({ color }) => (
             <Text style={{ fontSize: 10, color: isMyPlanActive ? tintColor : color }}>
@@ -152,8 +160,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="services"
         options={{
-          title: 'Servizi',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+          title: isArchivioSereno ? 'Documenti caricati' : 'Servizi',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name={isArchivioSereno ? 'doc.fill' : 'list.bullet'} color={color} />
+          ),
           headerShown: false,
         }}
       />
@@ -191,7 +201,8 @@ export default function TabLayout() {
           href: null, // Hide from tab bar
         }}
       />
-    </Tabs>
+      </Tabs>
+    </>
   );
 }
 

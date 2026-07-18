@@ -10,7 +10,7 @@ import { hasMultiplePlans } from '@/utils/plans';
 export default function ServiceWebViewScreen() {
   const params = useLocalSearchParams<{ url: string; title?: string; showPlanSwitcher?: string }>();
   const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
-  const { userProfile } = useAuth();
+  const { userProfile, reloadProfile } = useAuth();
 
   const rawUrl = params.url || '';
   const title = params.title || 'Servizio';
@@ -33,6 +33,7 @@ export default function ServiceWebViewScreen() {
         uri={effectiveUrl}
         injectToken
         onLoadEnd={() => markWebviewLoaded(rawUrl)}
+        onRefreshUser={reloadProfile}
       />
     </ThemedView>
   );

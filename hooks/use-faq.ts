@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApiService } from '@/utils/api';
+import { ACTIVE_THEME } from '@/constants/theme';
 import localFaqData from '@/assets/faq.json';
 
-const CACHE_KEY = '@faq_cache';
+const CACHE_KEY = `@faq_cache_${ACTIVE_THEME}`;
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 1 day in ms
 
 export interface FaqItem {
@@ -48,7 +49,7 @@ export function useFaq() {
       }
 
       try {
-        const response = await ApiService.get<FaqData>('faq-get', undefined, {
+        const response = await ApiService.get<FaqData>('faq-get', { theme: ACTIVE_THEME }, {
           manualErrorManagement: true,
         });
         if (response?.data?.categories?.length) {

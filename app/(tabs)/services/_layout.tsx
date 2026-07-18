@@ -45,7 +45,7 @@ export default function ServicesLayout() {
       <Stack.Screen
         name="uploads"
         options={{
-          title: 'Documenti digitali',
+          title: 'Documenti caricati',
           headerBackTitle: 'Indietro',
         }}
       />
