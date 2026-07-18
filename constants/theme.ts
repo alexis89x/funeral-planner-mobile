@@ -282,7 +282,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
  * Cambia questo valore per switchare tema.
  * Ricorda di aggiornare anche app.json e di copiare gli asset (vedi istruzioni).
  */
-export const ACTIVE_THEME: ThemeName = 'archivio-sereno';
+export const ACTIVE_THEME: ThemeName = 'tramonto';
 
 const activeTheme = THEMES[ACTIVE_THEME];
 
