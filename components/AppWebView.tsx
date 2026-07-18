@@ -34,7 +34,7 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
       });
     };
 
-    const tokenInjection = injectToken
+    const tokenInjection = injectToken && token
       ? `const user = { token: "${token}", role: 150, status: 310 };
   localStorage.setItem('uinfo', JSON.stringify(user));`
       : '';
