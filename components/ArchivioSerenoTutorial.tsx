@@ -7,6 +7,12 @@ import { BaseColors } from '@/constants/theme';
 
 const TUTORIAL_SEEN_KEY = '@domani_sicuro_tutorial_seen';
 
+// Guardia in-memory: impedisce che il tutorial compaia più volte nella stessa sessione
+// se il componente si rimonta (es. per il pre-mount di "(tabs)" come anchor route) prima
+// che AsyncStorage abbia registrato la chiusura del primo mount.
+let tutorialCheckInFlight = false;
+let tutorialShownThisSession = false;
+
 const STEPS = [
   {
     icon: 'doc.fill' as const,
@@ -36,9 +42,14 @@ export function ArchivioSerenoTutorial({ enabled }: ArchivioSerenoTutorialProps)
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || tutorialShownThisSession || tutorialCheckInFlight) return;
+    tutorialCheckInFlight = true;
     AsyncStorage.getItem(TUTORIAL_SEEN_KEY).then(seen => {
-      if (!seen) setVisible(true);
+      tutorialCheckInFlight = false;
+      if (!seen && !tutorialShownThisSession) {
+        tutorialShownThisSession = true;
+        setVisible(true);
+      }
     });
   }, [enabled]);
 
