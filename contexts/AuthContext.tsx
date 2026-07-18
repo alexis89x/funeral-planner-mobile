@@ -140,7 +140,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   setCurrentUser: (user: LoggedUser | null) => void;
   token: string | undefined;
-  login: (username: string, password: string, role?: string) => Promise<void>;
+  login: (username: string, password: string, role?: string) => Promise<UserProfile | null>;
   googleLogin: (idToken: string, onSuccess?: (email: string, profile: UserProfile | null) => void, onRegistrationRequired?: (registrationUrl: string) => void) => Promise<void>;
   logout: () => Promise<void>;
   validateToken: () => Promise<boolean>;

@@ -81,7 +81,7 @@ export default function LoginGoogleScreen() {
       // Initiate sign-in process
       const userInfo = await GoogleSignin.signIn();
       return userInfo;
-    } catch (error) {
+    } catch (error: any) {
       if (isErrorWithCode && isErrorWithCode(error)) {
         switch (error.code) {
           case statusCodes?.SIGN_IN_CANCELLED:

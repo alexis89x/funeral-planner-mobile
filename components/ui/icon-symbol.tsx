@@ -6,7 +6,7 @@ import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
 type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
+type IconSymbolName = keyof IconMapping;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -79,7 +79,10 @@ const MAPPING = {
 
   // Upgrade / storage
   'externaldrive.fill.badge.plus': 'storage',
-} as IconMapping;
+  'arrow.triangle.2.circlepath': 'swap-horiz',
+  'exclamationmark.triangle.fill': 'warning',
+  'square.and.arrow.up': 'share',
+} as unknown as IconMapping;
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
