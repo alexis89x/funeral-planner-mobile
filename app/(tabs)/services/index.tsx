@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { router } from 'expo-router';
+import { router, Redirect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
@@ -51,6 +51,8 @@ const iconMap: Record<string, string> = {
   'home': 'house.fill'
 };
 
+const isArchivioSereno = ACTIVE_THEME === 'archivio-sereno';
+
 export default function ServicesScreen() {
   const colorScheme = useColorScheme();
   const { userProfile } = useAuth();
@@ -63,8 +65,15 @@ export default function ServicesScreen() {
   const appMajorVersion = parseInt(appVersion.split('.')[0], 10);
 
   useEffect(() => {
-    loadServices();
+    // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati,
+    // niente da caricare/mostrare qui.
+    if (!isArchivioSereno) loadServices();
   }, []);
+
+  // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati.
+  if (isArchivioSereno) {
+    return <Redirect href="/(tabs)/services/uploads" />;
+  }
 
   const loadServices = async () => {
     try {
@@ -175,7 +184,7 @@ export default function ServicesScreen() {
               </ThemedView>
               <ThemedView style={styles.textContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.serviceTitle}>
-                  Documenti digitali
+                  Documenti caricati
                 </ThemedText>
                 <ThemedText style={styles.serviceDescription}>
                   Gestisci i tuoi documenti e allegati

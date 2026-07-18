@@ -2,6 +2,8 @@
  * Security utility functions for API requests
  */
 
+import { ACTIVE_THEME } from '@/constants/theme';
+
 interface ChecksumResult {
   ts: string;
   cs: string;
@@ -47,6 +49,7 @@ export const getSecurityHeaders = (token?: string): Record<string, string> => {
 
   return {
     'X-apmb': 'version', // Tell that we're on our mobile app
+    'X-apth': ACTIVE_THEME,
     'X-ipac': token || '',
     'X-iptc': csm.cs,
     'X-ipts': csm.ts,

@@ -142,6 +142,63 @@ When working with EAS Workflows, **always refer to**:
 - **preview**: Internal distribution preview builds
 - **production**: Production builds with auto-increment
 
+## Progetto "Archivio Sereno" (multi-app: stesso codice, feature-set diverso)
+
+> Sezione in italiano perché nasce da una conversazione in italiano con il product owner (branch `archivio-sereno`). Quando in conversazione si parla di "Archivio Sereno" o di "un'altra app oltre a Tramonto", ci si riferisce a quanto descritto qui.
+
+### Concetto
+
+Oggi il repo gestisce un multi-brand a livello di **branding** (vedi `constants/theme.ts`, `THEMES` / `ACTIVE_THEME`): tramonto, studio3a, mazzini, taddiagroup, alc condividono tutti lo stesso set di tab/feature e cambiano solo colori, loghi e nome.
+
+"Archivio Sereno" è una **nuova voce di `THEMES`**, non un asse separato: riusa lo stesso codice/backend di Tramonto Sereno (stesso login, stesso concetto di "Piano" dietro le quinte — l'utente ha sempre un piano Tramonto Sereno anche se in quest'app non lo vede mai), ma con **branding proprio** (nome app, bundle id, icone/splash, colori) **e un layout di tab ridotto**, esposto come app installabile a sé stante (build EAS dedicata, come già avviene per studio3a/mazzini).
+
+**Implementato**: niente campo dedicato in `ThemeConfig` — i punti che devono comportarsi diversamente per Archivio Sereno verificano direttamente `ACTIVE_THEME === 'archivio-sereno'` (es. `app/(tabs)/_layout.tsx` per decidere quali `Tabs.Screen` mostrare con `href: null` su quelle nascoste, `services/index.tsx` / `emergenza/index.tsx` per fare `<Redirect>` diretto alla schermata utile). Ogni tema/app resta un'unica voce di `THEMES` che porta insieme branding + layout, così è immediato aggiungere altre app in futuro allo stesso modo. Tema attivo su questo branch: `ACTIVE_THEME = 'archivio-sereno'`.
+
+### Tab bar di Archivio Sereno (solo queste tre, nient'altro)
+
+1. **Documenti caricati** — tab `services`; `app/(tabs)/services/index.tsx` fa `<Redirect href="/(tabs)/services/uploads" />`, quindi si apre direttamente la lista/upload documenti (`uploads.tsx` / `upload-form.tsx`), senza passare dall'indice "Servizi".
+2. **Contatti di emergenza** — tab `emergenza`; `app/(tabs)/emergenza/index.tsx` fa `<Redirect href="/(tabs)/emergenza/contatti" />`, quindi si apre direttamente `contatti.tsx`, senza passare dal menu "Numeri utili / Contatti".
+3. **Altro** — tab `altro` invariata (`app/(tabs)/altro/index.tsx`: Profilo, FAQ, Guide, Elimina account, Logout), tranne la voce "I miei piani" che viene filtrata via (`MENU_ITEMS`) perché Archivio Sereno non espone mai il concetto di Piano in UI.
+
+Le tre tab **non sono unite/mergiate** in un'unica schermata: restano tre `Tabs.Screen` distinte. Nessun'altra tab visibile (niente "Il mio piano", "La mia onoranza", "Servizi" come lista prodotti, "Cerca") — nascoste con `href: null` in `app/(tabs)/_layout.tsx` quando `ACTIVE_THEME === 'archivio-sereno'`.
+
+### Assegnazione documenti ai contatti di emergenza
+
+**Questa feature esiste già**, non va costruita da zero: in `upload-form.tsx` il campo "Visibile a" (componente `ContactsPicker` da `@/components/document-pickers`) permette di scegliere se un documento è visibile a tutti i contatti di emergenza del piano o solo ad alcuni (`selectedContactIds`, inviato come `visibility` nel form-data di `upload-item`). Per Archivio Sereno va solo resa più esplicita/prominente nel flusso, non progettata ex novo.
+
+### Piano
+
+Il concetto di "Piano" (`id_plan`, `PlanSwitcher`, `owned_plans`) resta invariato lato dati: Archivio Sereno è sempre, dietro le quinte, un piano Tramonto Sereno. La UI semplicemente non mostra mai piano/onoranza/servizi all'utente — i documenti restano scoped su `currentPlan` come oggi.
+
+Nota: se un account Archivio Sereno avesse più piani attivi (`hasMultiplePlans`), `PlanSwitcher` verrebbe comunque mostrato (in `contatti.tsx` e `uploads.tsx`) e permetterebbe di navigare verso `/(tabs)/my-plans` — un caso limite non ancora gestito esplicitamente, da rivedere se capita in pratica.
+
+### Redirect post-login e fallback verso "Documenti caricati"
+
+Tutti i punti che di default portavano l'utente sulla tab "Il mio piano"/"I miei piani" sono stati aggiornati per portare invece su "Documenti caricati" quando `ACTIVE_THEME === 'archivio-sereno'`:
+- `utils/plans.ts` → `resolvePostLoginRoute()`: primo controllo è su `ACTIVE_THEME === 'archivio-sereno'`, in tal caso ritorna `/(tabs)/services` a prescindere dal numero di piani. Usata da `app/_layout.tsx` (redirect post-login generico) e `app/login-email.tsx`.
+- `app/login-google.tsx`: il redirect esplicito nel success-callback di `googleLogin` ora usa `resolvePostLoginRoute(null)` invece di `router.replace('/(tabs)/my-plans')` hardcoded.
+- `app/webview.tsx` (`onRefreshUser`): dopo il refresh del profilo da una webview generica, va su `/(tabs)/services` invece che su `/(tabs)/my-plans` quando `ACTIVE_THEME === 'archivio-sereno'`.
+
+Punti **non toccati** perché raggiungibili solo tramite UI di piano ormai non esposta in Archivio Sereno (tab "Il mio piano"/"I miei piani" nascoste, quindi questi flussi sono di fatto irraggiungibili): `hooks/use-new-plan-handler.ts`, `components/PlanSwitcher.tsx`, gli header-button in `app/(tabs)/_layout.tsx` per `my-plan`/`my-plans`.
+
+### Tutorial al primo accesso
+
+`components/ArchivioSerenoTutorial.tsx`: modal fullscreen a 3 step (documenti caricati → contatti di emergenza → sblocco temporaneo), mostrato una sola volta grazie al flag AsyncStorage `@domani_sicuro_tutorial_seen`. Montato in `app/(tabs)/_layout.tsx` solo quando `ACTIVE_THEME === 'archivio-sereno'` (`isArchivioSereno`), con prop `enabled={!!userProfile}`: il controllo del flag/comparsa del modal parte solo a login confermato (profilo caricato), non al semplice mount del layout — evita che parta prima del login per via del pre-mount di `(tabs)` come `anchor` in `app/_layout.tsx`. Pulsante "Salta" sempre disponibile.
+
+### Banner upgrade spazio ("Hai bisogno di più spazio?")
+
+`components/UpgradeSpaceBanner.tsx`: mostrato in cima a `services/uploads.tsx` quando `ACTIVE_THEME === 'archivio-sereno'` e il piano corrente non è di tipo `advanced` (`currentPlan.type !== 'advanced'`, in `uploads.tsx`). Al tap apre `https://app.tramontosereno.it` nella webview esistente (`/(tabs)/services/webview`). Pattern ricalcato da `components/Studio3ABanner.tsx` (banner condizionale già esistente per il tema studio3a in `emergenza/index.tsx`).
+
+### App installabile separata
+
+Archivio Sereno va trattato come le altre voci "cliente" di `THEMES` (vedi `studio3a`, `mazzini`): proprio `expo.name`, `bundleIdentifier`/`package`, `scheme`, icone/splash, e un proprio profilo di build in `eas.json` (profilo `archivio-sereno`, creato sul modello del profilo `studio`).
+
+Stato attuale:
+- `assets/images/themes/archivio-sereno/` contiene la grafica definitiva del brand (icona, logo, splash), non più placeholder di Tramonto Sereno.
+- `bundleIdentifier`/`package`/`scheme`: `it.nanuktechnology.archiviosereno` / `archiviosereno`, impostati sia in `constants/theme.ts` che in `app.json`.
+- `app.json` **è stato aggiornato** per il tema Archivio Sereno (nome, bundle id/package, scheme, path icone/splash, testi permessi) per poter fare una build di prova — segue lo stesso processo manuale già in uso per studio3a/mazzini (vedi commento in testa a `constants/theme.ts`). Prima di una build per un **altro** tema, va risettato di conseguenza.
+- **Manca ancora** un client OAuth Google dedicato al bundle id di Archivio Sereno: il plugin `google-signin` in `app.json` usa ancora l'`iosUrlScheme` di Tramonto Sereno, quindi il login Google non funzionerà correttamente finché non viene creato un client OAuth apposito.
+
 ## Troubleshooting
 
 ### Expo Go Errors & Development Builds

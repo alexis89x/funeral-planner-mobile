@@ -52,6 +52,8 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
 
     if (!uri) return null;
 
+    console.log('[AppWebView] loading URL:', uri);
+
     return (
       <WebView
         ref={ref}

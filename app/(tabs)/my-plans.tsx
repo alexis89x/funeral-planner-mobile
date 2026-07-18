@@ -15,6 +15,7 @@ import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
 import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
+import { APP_BASE_URL } from '@/utils/api';
 import { switchPlan, formatPlanType, formatDate, getStatusColor } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
