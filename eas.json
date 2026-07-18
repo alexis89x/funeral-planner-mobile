@@ -31,6 +31,17 @@
         "image": "latest"
       }
     },
+    "archivio-sereno": {
+      "distribution": "internal",
+      "channel": "archivio-sereno-anteprima",
+      "android": {
+        "image": "latest",
+        "buildType": "apk"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "main",

@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { resolvePostLoginRoute } from '@/utils/plans';
 import LoadingScreen from '@/components/LoadingScreen';
 import { UpdateBanner } from '@/components/UpdateBanner';
+import { AreYouAliveModal } from '@/components/AreYouAliveModal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -126,6 +127,7 @@ function RootLayoutNav() {
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <UpdateBanner />
+      <AreYouAliveModal />
       <StatusBar style="auto" />
     </ThemeProvider>
   );
