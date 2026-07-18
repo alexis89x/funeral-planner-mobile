@@ -27,8 +27,8 @@ export function UpdateBanner() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await ApiService.get<string>('latest-app-update', undefined, { manualErrorManagement: true });
-        const remote = res.data;
+        const res = await ApiService.get('latest-app-update', undefined, { manualErrorManagement: true }) as { version?: string };
+        const remote = res.version;
         if (!remote) return;
 
         const current = Constants.expoConfig?.version ?? '0.0.0';

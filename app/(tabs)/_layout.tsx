@@ -10,7 +10,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { switchPlan, getActivePlans } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
-import { ArchivioSerenoTutorial } from '@/components/ArchivioSerenoTutorial';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -88,7 +87,6 @@ export default function TabLayout() {
 
   return (
     <>
-      {isArchivioSereno && <ArchivioSerenoTutorial enabled={!!userProfile} />}
       <Tabs
       initialRouteName={isArchivioSereno ? 'services' : undefined}
       screenOptions={{

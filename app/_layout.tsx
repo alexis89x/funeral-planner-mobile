@@ -14,6 +14,8 @@ import { resolvePostLoginRoute } from '@/utils/plans';
 import LoadingScreen from '@/components/LoadingScreen';
 import { UpdateBanner } from '@/components/UpdateBanner';
 import { AreYouAliveModal } from '@/components/AreYouAliveModal';
+import { ArchivioSerenoTutorial } from '@/components/ArchivioSerenoTutorial';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,6 +31,8 @@ function RootLayoutNav() {
   const segments = useSegments();
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const isArchivioSereno = ACTIVE_THEME === 'archivio-sereno';
+  const isInTabs = segments[0] === '(tabs)';
 
   console.log('🚀 RootLayoutNav render', { isLoading, loadingState, hasUser: !!currentUser, segments });
 
@@ -128,6 +132,7 @@ function RootLayoutNav() {
       </Stack>
       <UpdateBanner />
       <AreYouAliveModal />
+      {isArchivioSereno && <ArchivioSerenoTutorial enabled={!!userProfile && isInTabs} />}
       <StatusBar style="auto" />
     </ThemeProvider>
   );
