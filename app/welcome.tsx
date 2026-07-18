@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleLoginEnabled } from '@/constants/theme';
+import { Colors, BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleLoginEnabled, AppGoogleWebClientId, AppGoogleIosClientId } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth, UserProfile } from '@/contexts/AuthContext';
@@ -37,11 +37,11 @@ if (!isExpoGo) {
 
     // Configure Google Sign-In only for device builds
     GoogleSignin.configure({
-      webClientId: process.env.EXPO_PUBLIC_WEB_ID,
+      webClientId: AppGoogleWebClientId,
       scopes: ['profile', 'email'],
       offlineAccess: true,
       forceCodeForRefreshToken: false,
-      iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+      iosClientId: AppGoogleIosClientId,
     });
   } catch (error) {
     console.warn('Google Sign-In module not available:', error);

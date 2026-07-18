@@ -48,6 +48,16 @@
  * │
  * └────────────────────────────────────────────────────────────────────────────
  *
+ * ┌─ .env (solo se googleLoginEnabled: true) ────────────────────────────────────
+ * │  Client OAuth Google dedicati al tema, in un progetto Google Cloud separato
+ * │  (necessario perché il nome mostrato nella schermata di consenso è per-progetto):
+ * │    EXPO_PUBLIC_WEB_ID_<TEMA>
+ * │    EXPO_PUBLIC_IOS_ID_<TEMA>
+ * │    EXPO_PUBLIC_ANDROID_ID_<TEMA>  (non letto in JS, ma richiesto su Google Cloud:
+ * │                                    package name + SHA-1 del keystore del tema)
+ * │  → referenziati in THEMES[tema].googleWebClientId / googleIosClientId / googleAndroidClientId
+ * └────────────────────────────────────────────────────────────────────────────
+ *
  * ┌─ eas.json ─────────────────────────────────────────────────────────────────
  * │  Aggiungere un profilo build dedicato al nuovo cliente.
  * │  Vedi profilo "studio" come riferimento.
@@ -138,6 +148,16 @@ export interface ThemeConfig {
   logoHorizontalAspectRatio: number;
   /** Se true, il pulsante "Accedi con Google" è visibile nella schermata di login */
   googleLoginEnabled: boolean;
+  /** OAuth Client ID (tipo Web) — usato da GoogleSignin.configure() e per la verifica lato backend. Vuoto se googleLoginEnabled è false. */
+  googleWebClientId: string;
+  /** OAuth Client ID (tipo iOS) — usato da GoogleSignin.configure(). Vuoto se googleLoginEnabled è false. */
+  googleIosClientId: string;
+  /**
+   * OAuth Client ID (tipo Android). Non viene passato a GoogleSignin.configure() (Android si autentica
+   * solo tramite package name + SHA-1 registrati su Google Cloud), ma va comunque creato in console e
+   * tracciato qui per riferimento. Vuoto se googleLoginEnabled è false.
+   */
+  googleAndroidClientId: string;
 }
 
 // ─── Definizione temi ─────────────────────────────────────────────────────────
@@ -162,6 +182,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467
     googleLoginEnabled: true,
+    googleWebClientId: process.env.EXPO_PUBLIC_WEB_ID ?? '',
+    googleIosClientId: process.env.EXPO_PUBLIC_IOS_ID ?? '',
+    googleAndroidClientId: process.env.EXPO_PUBLIC_ANDROID_ID ?? '',
   },
 
   /**
@@ -183,6 +206,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 205 / 800, // ~0.2563
     googleLoginEnabled: false,
+    googleWebClientId: '',
+    googleIosClientId: '',
+    googleAndroidClientId: '',
   },
 
   /**
@@ -205,6 +231,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 166 / 500, // 0.332
     googleLoginEnabled: false,
+    googleWebClientId: '',
+    googleIosClientId: '',
+    googleAndroidClientId: '',
   },
 
   /**
@@ -226,6 +255,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 120 / 300, // 0.4
     googleLoginEnabled: false,
+    googleWebClientId: '',
+    googleIosClientId: '',
+    googleAndroidClientId: '',
   },
 
   /**
@@ -249,6 +281,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 554 / 1886, // ~0.2937
     googleLoginEnabled: false,
+    googleWebClientId: '',
+    googleIosClientId: '',
+    googleAndroidClientId: '',
   },
 
   /**
@@ -256,8 +291,11 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
    * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con un layout diverso.
    * bundle: it.nanuktechnology.archiviosereno (impostato anche in app.json).
    * Asset: assets/images/themes/archivio-sereno/ — grafica definitiva del brand.
-   * NB: manca ancora un client OAuth Google dedicato al bundle id di Archivio Sereno
-   * (il plugin google-signin in app.json usa ancora l'iosUrlScheme di Tramonto Sereno).
+   * NB: progetto Google Cloud dedicato (separato da Tramonto Sereno, che resta attivo)
+   * per avere una OAuth consent screen brandizzata "Archivio Sereno". Client ID in
+   * EXPO_PUBLIC_*_ID_ARCHIVIO_SERENO (.env) — WEB_ID e ANDROID_ID ancora da creare/aggiornare.
+   * Ricorda di aggiornare anche l'iosUrlScheme del plugin google-signin in app.json
+   * con il client ID iOS di Archivio Sereno prima del build.
    */
   'archivio-sereno': {
     displayName: 'Archivio sereno',
@@ -273,6 +311,9 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467
     googleLoginEnabled: true,
+    googleWebClientId: process.env.EXPO_PUBLIC_WEB_ID_ARCHIVIO_SERENO ?? '',
+    googleIosClientId: process.env.EXPO_PUBLIC_IOS_ID_ARCHIVIO_SERENO ?? '',
+    googleAndroidClientId: process.env.EXPO_PUBLIC_ANDROID_ID_ARCHIVIO_SERENO ?? '',
   },
 };
 
@@ -294,6 +335,10 @@ export const AppLogoHorizontal = activeTheme.logoHorizontal;
 export const AppLogoHorizontalWidth = activeTheme.logoHorizontalWidth;
 export const AppLogoHorizontalHeight = Math.round(activeTheme.logoHorizontalWidth * activeTheme.logoHorizontalAspectRatio);
 export const AppGoogleLoginEnabled = activeTheme.googleLoginEnabled;
+/** Client ID Google OAuth (Web) del tema attivo — passa a GoogleSignin.configure(). */
+export const AppGoogleWebClientId = activeTheme.googleWebClientId;
+/** Client ID Google OAuth (iOS) del tema attivo — passa a GoogleSignin.configure(). */
+export const AppGoogleIosClientId = activeTheme.googleIosClientId;
 
 // ─── Colori base ──────────────────────────────────────────────────────────────
 
