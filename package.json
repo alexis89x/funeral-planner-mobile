@@ -10,6 +10,7 @@
     "ios": "expo run:ios",
     "ios-device": "expo run:ios --device \"iPhone di Alessandro\"",
     "doctor": "npx expo-doctor",
+    "typecheck": "tsc --noEmit",
     "android-old": "expo start --android",
     "ios-old": "expo start --ios",
     "web": "expo start --web",

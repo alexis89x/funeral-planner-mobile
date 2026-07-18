@@ -126,7 +126,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ loadingState, error }) =>
   );
 };
 
-const getProgressWidth = (state: LoadingState): string => {
+const getProgressWidth = (state: LoadingState): `${number}%` => {
   switch (state) {
     case 'initializing':
       return '10%';
