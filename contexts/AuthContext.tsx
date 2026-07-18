@@ -717,7 +717,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return false;
       }
       const user = JSON.parse(storedAuth);
-      if (!user.token) {
+      if (!user.token || user.token == 'undefined') {
         return false;
       }
 
