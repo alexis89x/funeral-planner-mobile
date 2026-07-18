@@ -1,6 +1,7 @@
 export interface GatewayError {
   type: string;
   message: string;
+  translatedMessage?: string | null;
 }
 
 export interface GatewayResponse {
@@ -64,8 +65,10 @@ export function extractApiErrorMessage(
 
   if (error && typeof error === 'object' && !Array.isArray(error)) {
     const typed = error as GatewayError;
+    if (typed.translatedMessage) return typed.translatedMessage;
     if (typed.type && ERROR_TRANSLATIONS[typed.type]) return ERROR_TRANSLATIONS[typed.type];
-    return typed.message || fallback;
+    // typed.message is a raw ERROR_API.<TYPE>-style key, not user-facing copy — prefer fallback.
+    return fallback || typed.message;
   }
 
   if (typeof error === 'string' && error) return error;

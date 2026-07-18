@@ -4,11 +4,15 @@
  * COME CAMBIARE TEMA
  * ──────────────────
  * Cambia ACTIVE_THEME con uno dei valori disponibili:
- *   'tramonto'    → Tramonto Sereno   (arancione, consumer B2C)
- *   'studio3a'    → Studio 3A         (arancione, white-label Studio 3A)
- *   'mazzini'     → Gruppo Mazzini    (blu navy #25346d)
- *   'taddiagroup' → Taddia Group      (bordeaux #a40046)
- *   'alc'         → Testamento Biologico (Associazione Luca Coscioni, blu #1495e4)
+ *   'tramonto'      → Tramonto Sereno   (arancione, consumer B2C)
+ *   'studio3a'      → Studio 3A         (arancione, white-label Studio 3A)
+ *   'mazzini'       → Gruppo Mazzini    (blu navy #25346d)
+ *   'taddiagroup'   → Taddia Group      (bordeaux #a40046)
+ *   'alc'           → Testamento Biologico (Associazione Luca Coscioni, blu #1495e4)
+ *   'archivio-sereno' → Archivio Sereno     (documenti + contatti di emergenza, tab ridotte)
+ *
+ * NB: 'archivio-sereno' non è solo un brand diverso: ha anche un diverso layout dei tab,
+ * che riduce la tab bar a sole 2 tab (vedi app/(tabs)/_layout.tsx e AGENTS.md § "Progetto Archivio Sereno").
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * COSA CAMBIARE PER OGNI TEMA (manuale)
@@ -17,14 +21,16 @@
  * ┌─ app.json ─────────────────────────────────────────────────────────────────
  * │
  * │  expo.name
- * │    tramonto  → "Tramonto Sereno"
- * │    studio3a  → "Studio 3A"
- * │    mazzini   → "Gruppo Mazzini"
+ * │    tramonto      → "Tramonto Sereno"
+ * │    studio3a      → "Studio 3A"
+ * │    mazzini       → "Gruppo Mazzini"
+ * │    archivio-sereno → "Archivio Sereno"
  * │
  * │  expo.ios.bundleIdentifier / expo.android.package
- * │    tramonto  → it.nanuktechnology.tramontosereno
- * │    studio3a  → it.nanuktechnology.tramontosereno.studio
- * │    mazzini   → it.nanuktechnology.mazzini
+ * │    tramonto      → it.nanuktechnology.tramontosereno
+ * │    studio3a      → it.nanuktechnology.tramontosereno.studio
+ * │    mazzini       → it.nanuktechnology.mazzini
+ * │    archivio-sereno → it.nanuktechnology.archiviosereno
  * │
  * │  expo.android.adaptiveIcon.backgroundColor  →  ThemeConfig.splashColor
  * │  expo.plugins[expo-splash-screen].backgroundColor (light + dark)  →  idem
@@ -74,7 +80,7 @@ import { Platform } from 'react-native';
 
 // ─── Tipi ────────────────────────────────────────────────────────────────────
 
-export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup' | 'alc';
+export type ThemeName = 'tramonto' | 'studio3a' | 'mazzini' | 'taddiagroup' | 'alc' | 'archivio-sereno';
 
 export interface ThemeConfig {
   /** Nome visualizzato (= expo.name in app.json) */
@@ -243,6 +249,30 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     logoHorizontalWidth: 280,
     logoHorizontalAspectRatio: 554 / 1886, // ~0.2937
     googleLoginEnabled: false,
+  },
+
+  /**
+   * Archivio Sereno — app separata, stesso codice/backend di Tramonto Sereno
+   * (l'utente ha sempre un piano Tramonto Sereno dietro le quinte), ma con un layout diverso.
+   * bundle: it.nanuktechnology.archiviosereno (impostato anche in app.json).
+   * Asset: assets/images/themes/archivio-sereno/ — grafica definitiva del brand.
+   * NB: manca ancora un client OAuth Google dedicato al bundle id di Archivio Sereno
+   * (il plugin google-signin in app.json usa ancora l'iosUrlScheme di Tramonto Sereno).
+   */
+  'archivio-sereno': {
+    displayName: 'Archivio sereno',
+    main: '#5FA8D3',
+    mainDark: '#3D7FA8',
+    mainLight: '#BFE3F5',
+    mainLightest: '#EAF6FF',
+    mainLightestest: '#F5FBFF',
+    splashColor: '#5FA8D3',
+    funeralHomeTab: 'hide-without-partner',
+    logo: require('@/assets/images/themes/archivio-sereno/logo.png'),
+    logoHorizontal: require('@/assets/images/themes/archivio-sereno/logo-horizontal.png'),
+    logoHorizontalWidth: 280,
+    logoHorizontalAspectRatio: 1016 / 2931, // ~0.3467
+    googleLoginEnabled: true,
   },
 };
 

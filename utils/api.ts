@@ -6,6 +6,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSecurityHeaders } from './security';
 import { Alert } from "react-native";
+import { extractApiErrorMessage } from './api-error';
 
 const LOCAL_IP = '192.168.1.104';
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
@@ -112,11 +113,8 @@ const logAPIError = (error: APIError, method: string, endpoint: string) => {
 
   console.error(`[API ${method}] [${endpoint}] Error:`, errorInfo);
 
-  // Show alert with all error details
-  const alertTitle = `Errore API ${method}`;
-  const alertMessage = `Endpoint: ${endpoint}\n\nHTTP Status: ${error.status || 'N/A'}\n\nRisposta Completa:\n${JSON.stringify(error.responseData || {}, null, 2)}`;
-
-  Alert.alert(alertTitle, alertMessage);
+  // Show a user-facing, translated error message instead of raw debug JSON.
+  Alert.alert('Errore', extractApiErrorMessage(error.responseData));
 
   // TODO: Send to analytics service (e.g., Sentry, Firebase Analytics)
   // Example: analytics.trackError({ error, method, endpoint });

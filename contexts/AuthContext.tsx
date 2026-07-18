@@ -5,6 +5,7 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { getDeviceInfo } from '@/utils/device';
 import { api, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 import { getSecurityHeaders } from "@/utils/security";
 import { logRequest, logResponse, logError, logFormData } from '@/utils/http-logger';
 import { isExpoGo } from "@/utils/utils";
@@ -67,6 +68,8 @@ export interface Plan {
   created: string;
   modified: string;
   emergencyContacts: EmergencyContact[];
+  /** Timestamp Unix (ms) fino a cui i contatti di emergenza possono accedere ai documenti caricati. */
+  allow_access_until: number | null;
 }
 
 export interface Partner {
@@ -127,7 +130,8 @@ export interface UserProfile {
     thirdServicesTransfer: number;
   };
   cfg: {
-    language: string;
+    lang: string;
+    buffer_death_time_min: number;
   };
 }
 
@@ -475,10 +479,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         console.error('\n❌ Login Failed - API returned error');
         console.error('Full error response:', JSON.stringify(data, null, 2));
-        const errorMsg = data.message ||
-          (typeof data.error === 'string' ? data.error : data.error?.message) ||
-          'Login failed';
-        throw new Error(errorMsg);
+        throw new Error(extractApiErrorMessage(data, 'Login failed'));
       }
     } catch (error: any) {
       console.error('\n💥 ===== LOGIN ERROR =====');
@@ -628,7 +629,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             thirdServicesEnrichment: 0,
             thirdServicesTransfer: 0,
           },
-          cfg: response.data.cfg || { language: 'it' },
+          cfg: response.data.cfg || { lang: 'it', buffer_death_time_min: 720 },
         };
 
         setUserProfile(profile);

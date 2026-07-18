@@ -8,6 +8,7 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ApiService } from '@/utils/api';
+import { extractApiErrorMessage } from '@/utils/api-error';
 
 export default function AccountScreen() {
   const { userProfile, logout } = useAuth();
@@ -32,8 +33,8 @@ export default function AccountScreen() {
                 'Richiesta inviata',
                 'Abbiamo ricevuto la richiesta di cambio onoranza funebre, verrai contattato il prima possibile tramite email o telefono.'
               );
-            } catch {
-              Alert.alert('Errore', 'Si è verificato un errore durante l\'invio della richiesta. Riprova più tardi.');
+            } catch (err: any) {
+              Alert.alert('Errore', extractApiErrorMessage(err?.responseData, 'Si è verificato un errore durante l\'invio della richiesta. Riprova più tardi.'));
             } finally {
               setUnlinkLoading(false);
             }

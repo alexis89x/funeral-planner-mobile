@@ -74,7 +74,11 @@ const MAPPING = {
   'music.note': 'music-note',
   'doc.zipper': 'folder-zip',
   'lock.fill': 'lock',
+  'lock.open.fill': 'lock-open',
   'eye.fill': 'visibility',
+
+  // Upgrade / storage
+  'externaldrive.fill.badge.plus': 'storage',
 } as IconMapping;
 
 /**
