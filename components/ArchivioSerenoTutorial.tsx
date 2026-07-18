@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BaseColors } from '@/constants/theme';
 
-const TUTORIAL_SEEN_KEY = '@domani_sicuro_tutorial_seen';
+const TUTORIAL_SEEN_KEY = '@domani_sicuro_tutorial_seen_v2';
 
 // Guardia in-memory: impedisce che il tutorial compaia più volte nella stessa sessione
 // se il componente si rimonta (es. per il pre-mount di "(tabs)" come anchor route) prima
