@@ -44,6 +44,25 @@ export const resolvePostLoginRoute = (profile: UserProfile | null) => {
   return { pathname: '/(tabs)/my-plans' as const };
 };
 
+/**
+ * Destinazione dopo aver scelto/switchato un piano specifico da my-plans.
+ * Archivio Sereno non ha una schermata "Il mio piano": atterra sui documenti caricati.
+ */
+export const resolvePlanDetailRoute = (plan: Plan, opts?: { forceReload?: boolean }) => {
+  if (ACTIVE_THEME === 'archivio-sereno') {
+    return { pathname: '/(tabs)/services/uploads' as const };
+  }
+
+  return {
+    pathname: '/(tabs)/my-plan' as const,
+    params: {
+      type: plan.type,
+      planId: plan.id.toString(),
+      ...(opts?.forceReload && { forceReload: Date.now().toString() }),
+    },
+  };
+};
+
 export const switchPlan = async (planId: number | string): Promise<Plan> => {
   try {
     console.log('🔄 Switching to plan:', planId);

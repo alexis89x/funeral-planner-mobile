@@ -25,6 +25,7 @@ const AppWebView = forwardRef<WebView, AppWebViewProps>(
     const { token, userProfile } = useAuth();
 
     const handleMessage = async (event: any) => {
+      console.log('🧩 RAW onMessage fired', event?.nativeEvent?.data);
       await handleWebViewMessage(event, {
         onGoBack: () => router.back(),
         onNavigate: (route) => router.push(route as any),

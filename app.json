@@ -13,10 +13,10 @@
       "bundleIdentifier": "it.nanuktechnology.archiviosereno",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "Archivio Sereno ha bisogno di accedere alla fotocamera per permetterti di scattare e caricare la tua foto profilo personale, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
-        "NSPhotoLibraryUsageDescription": "Archivio Sereno ha bisogno di accedere alla galleria per permetterti di selezionare una foto profilo personale esistente dal tuo dispositivo, che verrà utilizzata nella pianificazione funebre e condivisa con l'onoranza funebre selezionata per rispettare le tue volontà.",
-        "NSMicrophoneUsageDescription": "Archivio Sereno ha bisogno di accedere al microfono per permetterti di registrare messaggi audio o video personali che verranno inclusi nella tua pianificazione funebre e condivisi con l'onoranza funebre selezionata per rispettare le tue volontà.",
-        "NSLocationWhenInUseUsageDescription": "Archivio Sereno ha bisogno di accedere alla tua posizione per trovare i servizi più vicini a te."
+        "NSCameraUsageDescription": "Archivio Sereno ha bisogno di accedere alla fotocamera per permetterti di scattare la foto di un documento da caricare nel tuo archivio cifrato.",
+        "NSPhotoLibraryUsageDescription": "Archivio Sereno ha bisogno di accedere alla galleria per permetterti di selezionare un documento o una foto esistente dal tuo dispositivo da caricare nel tuo archivio cifrato.",
+        "NSMicrophoneUsageDescription": "Archivio Sereno ha bisogno di accedere al microfono per permetterti di registrare una nota vocale da allegare ai tuoi documenti.",
+        "NSLocationWhenInUseUsageDescription": "Archivio Sereno ha bisogno di accedere alla tua posizione per associare un luogo ai tuoi documenti o contatti di emergenza."
       },
       "appleTeamId": "7R2W78KT94"
     },
@@ -45,7 +45,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Archivio Sereno ha bisogno di accedere alla tua posizione per trovare le onoranze funebri più vicine a te."
+          "locationWhenInUsePermission": "Archivio Sereno ha bisogno di accedere alla tua posizione per associare un luogo ai tuoi documenti o contatti di emergenza."
         }
       ],
       [
