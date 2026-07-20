@@ -34,7 +34,9 @@ export default function WebViewScreen() {
           onLoadEnd={() => markWebviewLoaded(rawUrl)}
           onRefreshUser={async () => {
             await reloadProfile();
-            router.push(ACTIVE_THEME === 'archivio-sereno' ? '/(tabs)/services' : '/(tabs)/my-plans');
+            const target = ACTIVE_THEME === 'archivio-sereno' ? '/(tabs)/services' : '/(tabs)/my-plans';
+            console.log('🏠 onRefreshUser push', { ACTIVE_THEME, target });
+            router.push(target);
           }}
           onData={(data) => console.log('Dati ricevuti:', data)}
         />

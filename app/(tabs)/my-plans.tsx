@@ -16,7 +16,7 @@ import { ThemedText } from '@/components/themed-text';
 import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from '@/utils/api';
-import { switchPlan, formatPlanType, formatDate, getStatusColor } from '@/utils/plans';
+import { switchPlan, formatPlanType, formatDate, getStatusColor, resolvePlanDetailRoute } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
 const USER_STATUS_FORCE_PSW_CHANGE = 350;
@@ -59,10 +59,7 @@ export default function MyPlansScreen() {
 
   const handlePlanPress = async (plan: Plan) => {
     if (plan.id === currentPlanId) {
-      router.push({
-        pathname: '/(tabs)/my-plan',
-        params: { type: plan.type, planId: plan.id.toString() }
-      });
+      router.push(resolvePlanDetailRoute(plan));
       return;
     }
 
@@ -87,10 +84,7 @@ export default function MyPlansScreen() {
       await switchPlan(plan.id);
       await reloadProfile();
 
-      router.push({
-        pathname: '/(tabs)/my-plan',
-        params: { type: plan.type, planId: plan.id.toString(), forceReload: Date.now().toString() }
-      });
+      router.push(resolvePlanDetailRoute(plan, { forceReload: true }));
     } catch (error: any) {
       Alert.alert(
         'Errore',
