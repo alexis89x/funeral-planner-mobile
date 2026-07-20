@@ -9,7 +9,7 @@ Una volta configurati i fingerprint SHA-1 su Google Cloud Console, **non devi ri
 **Devi riconfigurare SOLO se:**
 - Crei una nuova app/progetto da zero
 - Resetti le credentials EAS (molto raro)
-- Cambi l'App Signing su Play Store (praticamente mai)
+- Cambi l'ANo okpp Signing su Play Store (praticamente mai)
 
 **In pratica:** Configurazione iniziale → Funziona per sempre ✅
 

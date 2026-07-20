@@ -157,7 +157,7 @@ export interface ThemeConfig {
    * solo tramite package name + SHA-1 registrati su Google Cloud), ma va comunque creato in console e
    * tracciato qui per riferimento. Vuoto se googleLoginEnabled è false.
    */
-  googleAndroidClientId: string;
+  // googleAndroidClientId: string;
 }
 
 // ─── Definizione temi ─────────────────────────────────────────────────────────
@@ -184,7 +184,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     googleLoginEnabled: true,
     googleWebClientId: process.env.EXPO_PUBLIC_WEB_ID ?? '',
     googleIosClientId: process.env.EXPO_PUBLIC_IOS_ID ?? '',
-    googleAndroidClientId: process.env.EXPO_PUBLIC_ANDROID_ID ?? '',
   },
 
   /**
@@ -208,7 +207,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     googleLoginEnabled: false,
     googleWebClientId: '',
     googleIosClientId: '',
-    googleAndroidClientId: '',
   },
 
   /**
@@ -233,7 +231,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     googleLoginEnabled: false,
     googleWebClientId: '',
     googleIosClientId: '',
-    googleAndroidClientId: '',
   },
 
   /**
@@ -257,7 +254,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     googleLoginEnabled: false,
     googleWebClientId: '',
     googleIosClientId: '',
-    googleAndroidClientId: '',
   },
 
   /**
@@ -283,7 +279,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     googleLoginEnabled: false,
     googleWebClientId: '',
     googleIosClientId: '',
-    googleAndroidClientId: '',
   },
 
   /**
@@ -313,7 +308,6 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
     googleLoginEnabled: true,
     googleWebClientId: process.env.EXPO_PUBLIC_WEB_ID_ARCHIVIO_SERENO ?? '',
     googleIosClientId: process.env.EXPO_PUBLIC_IOS_ID_ARCHIVIO_SERENO ?? '',
-    googleAndroidClientId: process.env.EXPO_PUBLIC_ANDROID_ID_ARCHIVIO_SERENO ?? '',
   },
 };
 
