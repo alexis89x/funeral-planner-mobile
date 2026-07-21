@@ -58,8 +58,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Archivio Sereno ha bisogno di accedere alla galleria per selezionare foto profilo da utilizzare nella pianificazione funebre.",
-          "cameraPermission": "Archivio Sereno ha bisogno di accedere alla fotocamera per scattare foto profilo da utilizzare nella pianificazione funebre."
+          "photosPermission": "Archivio Sereno ha bisogno di accedere alla galleria per selezionare un documento o una foto esistente dal tuo dispositivo da caricare nel tuo archivio cifrato.",
+          "cameraPermission": "Archivio Sereno ha bisogno di accedere alla fotocamera per scattare la foto di un documento da caricare nel tuo archivio cifrato."
         }
       ],
       [
