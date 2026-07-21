@@ -10,6 +10,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, BaseColors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleLoginEnabled, AppGoogleWebClientId, AppGoogleIosClientId } from '@/constants/theme';
@@ -53,12 +54,14 @@ const PROFILE_STORAGE_KEY = '@tramonto_sereno_last_profile';
 export default function WelcomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { getLastSavedProfile, getLastPartnerName, validateToken, googleLogin } = useAuth();
+  const { getLastSavedProfile, getLastPartnerName, validateToken, googleLogin, appleLogin } = useAuth();
   const [lastProfile, setLastProfile] = useState<UserProfile | null>(null);
   const [lastPartnerName, setLastPartnerName] = useState<string | null>(null);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
+  const [isAppleSignInAvailable, setIsAppleSignInAvailable] = useState(false);
   const insets = useSafeAreaInsets();
   console.log("SHOWING WELCOME SCREEN");
 
@@ -66,7 +69,19 @@ export default function WelcomeScreen() {
     loadLastProfile();
     loadLastPartner();
     checkPlayServices();
+    checkAppleSignInAvailability();
   }, []);
+
+  const checkAppleSignInAvailability = async () => {
+    if (Platform.OS !== 'ios' || isExpoGo) return;
+
+    try {
+      const isAvailable = await AppleAuthentication.isAvailableAsync();
+      setIsAppleSignInAvailable(isAvailable);
+    } catch (error) {
+      console.error('❌ Error checking Apple Sign-In availability:', error);
+    }
+  };
 
   const checkPlayServices = async () => {
     if (!GoogleSignin) return;
@@ -239,6 +254,89 @@ export default function WelcomeScreen() {
     }
   };
 
+  const handleAppleSignIn = async () => {
+    // In Expo Go, show development message instead
+    if (isExpoGo) {
+      Alert.alert(
+        'Development Mode',
+        'Sign in with Apple non è disponibile in Expo Go. Questa funzionalità funzionerà nel build di produzione.'
+      );
+      return;
+    }
+
+    try {
+      setIsAppleLoading(true);
+      console.log('🚀 Starting Apple Sign-In...');
+
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      console.log('✅ Apple Sign-In successful:', credential);
+
+      const { identityToken, user, email, fullName } = credential;
+
+      if (identityToken) {
+        console.log('🔐 Identity Token received:', identityToken.substring(0, 20) + '...');
+
+        // Authenticate with backend using AuthContext
+        await appleLogin(
+          identityToken,
+          user,
+          email,
+          fullName?.givenName ?? null,
+          fullName?.familyName ?? null,
+          (email: string, profile) => {
+            router.replace(resolvePostLoginRoute(profile));
+          },
+          (registrationUrl: string) => {
+            // Registration required callback
+            Alert.alert(
+              'Registrazione richiesta',
+              'Account non trovato. Vuoi registrarti con questo account Apple?',
+              [
+                { text: 'Annulla', style: 'cancel' },
+                {
+                  text: 'Registrati',
+                  onPress: () => {
+                    // Navigate to webview registration
+                    router.push({
+                      pathname: '/webview',
+                      params: {
+                        url: registrationUrl,
+                        title: 'Registrazione',
+                      },
+                    });
+                  }
+                }
+              ]
+            );
+          }
+        );
+      } else {
+        throw new Error('Nessun identity token ricevuto da Apple');
+      }
+    } catch (error: any) {
+      if (error.code === 'ERR_REQUEST_CANCELED') {
+        console.log('User cancelled the Apple Sign-In flow');
+      } else {
+        console.error('❌ Apple Sign-In error:', error);
+
+        let errorMessage = 'Accesso con Apple fallito. Riprova.';
+        if (error.message) {
+          errorMessage = error.message;
+        }
+
+        Alert.alert('Errore', errorMessage);
+      }
+    } finally {
+      setIsAppleLoading(false);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.content}>
@@ -299,6 +397,18 @@ export default function WelcomeScreen() {
                     <AntDesign name="google" size={16} color="#fff" style={styles.buttonIcon} />
                     <ThemedText style={styles.loginButtonText}>
                       {isGoogleLoading ? '...' : 'Google'}
+                    </ThemedText>
+                  </TouchableOpacity>
+                )}
+
+                {isAppleSignInAvailable && (
+                  <TouchableOpacity
+                    style={[styles.loginButton, { backgroundColor: isAppleLoading ? '#00000080' : '#000000' }]}
+                    onPress={handleAppleSignIn}
+                    disabled={isAppleLoading}>
+                    <AntDesign name="apple" size={16} color="#fff" style={styles.buttonIcon} />
+                    <ThemedText style={styles.loginButtonText}>
+                      {isAppleLoading ? '...' : 'Apple'}
                     </ThemedText>
                   </TouchableOpacity>
                 )}

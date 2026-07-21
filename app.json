@@ -54,6 +54,7 @@
           "iosUrlScheme": "com.googleusercontent.apps.933975100826-jhr6igtmd4b0vh1pl4a8q3ksvdl19gbc"
         }
       ],
+      "expo-apple-authentication",
       [
         "expo-image-picker",
         {
