@@ -279,6 +279,10 @@ export default function WelcomeScreen() {
 
       const { identityToken, user, email, fullName } = credential;
 
+      console.log('🍎 Apple user (sub):', user);
+      console.log('🍎 Email from native credential:', email ?? '(null — not first authorization)');
+      console.log('🍎 Full name from native credential:', fullName ?? '(null — not first authorization)');
+
       if (identityToken) {
         console.log('🔐 Identity Token received:', identityToken.substring(0, 20) + '...');
 
