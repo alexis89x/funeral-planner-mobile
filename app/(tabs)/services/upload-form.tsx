@@ -3,7 +3,7 @@ import {
   StyleSheet, TouchableOpacity, View, TextInput, Alert,
   ScrollView, ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,11 +12,13 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan, EmergencyContact } from '@/contexts/AuthContext';
-import { API_BASE_URL } from '@/utils/api';
+import { ApiService, API_BASE_URL } from '@/utils/api';
 import { getSecurityHeaders } from '@/utils/security';
-import { extractApiErrorMessage } from '@/utils/api-error';
+import { extractApiErrorMessage, getApiErrorType } from '@/utils/api-error';
 import { DocumentTypes, DocumentType } from '@/constants/document-types';
 import { DocumentTypePicker, ContactsPicker } from '@/components/document-pickers';
+import { goToPlanUpgrade } from '@/utils/plans';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 
@@ -40,8 +42,53 @@ const formatSize = (bytes?: number): string => {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 };
 
+/**
+ * Verifica lato client se il file caricato supererebbe lo spazio residuo del piano.
+ * Se uso/limite sono già noti (passati dalla schermata elenco documenti), li riusa
+ * invece di richiamare upload-list.
+ */
+const wouldExceedStorage = async (
+  planId: number,
+  fileSize: number,
+  known?: { usageBytes: number; limit: number }
+): Promise<boolean> => {
+  let usageBytes = known?.usageBytes;
+  let limit = known?.limit;
+
+  if (usageBytes === undefined || limit === undefined || limit <= 0) {
+    try {
+      const response = await ApiService.get('upload-list', { id_plan: planId });
+      const responseData = response.data as unknown as { uploads: { size: number }[]; limit: number };
+      limit = responseData?.limit || 0;
+      usageBytes = (responseData?.uploads || []).reduce((sum, a) => sum + (a.size || 0), 0);
+    } catch {
+      return false;
+    }
+  }
+
+  if (!limit || limit <= 0) return false;
+  return usageBytes + fileSize > limit;
+};
+
+const showStorageUpgradeAlert = (planId: number) => {
+  Alert.alert(
+    'Spazio esaurito',
+    'Questo file supera lo spazio disponibile per il tuo piano. Passa a un piano superiore per continuare ad archiviare documenti.',
+    [
+      { text: 'Annulla', style: 'cancel' },
+      { text: 'Passa a un piano superiore', onPress: () => goToPlanUpgrade(planId) },
+    ]
+  );
+};
+
+
 export default function UploadFormScreen() {
   const { userProfile } = useAuth();
+  const { usageBytes, limit } = useLocalSearchParams<{ usageBytes?: string; limit?: string }>();
+  const knownUsage =
+    usageBytes !== undefined && limit !== undefined
+      ? { usageBytes: Number(usageBytes), limit: Number(limit) }
+      : undefined;
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
   const [documentType, setDocumentType] = useState<DocumentType>(
     DocumentTypes.find(d => d.id === 'generic')!
@@ -85,8 +132,15 @@ export default function UploadFormScreen() {
   const handleUpload = async () => {
     if (!selectedFile || !currentPlan) return;
 
+    const canUpgrade = currentPlan.type !== 'advanced';
+
     setUploading(true);
     try {
+      if (canUpgrade && selectedFile.size && (await wouldExceedStorage(currentPlan.id, selectedFile.size, knownUsage))) {
+        showStorageUpgradeAlert(currentPlan.id);
+        return;
+      }
+
       const storedAuth = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
       const token = storedAuth ? JSON.parse(storedAuth).token : null;
 
@@ -115,7 +169,13 @@ export default function UploadFormScreen() {
           { text: 'OK', onPress: () => router.back() },
         ]);
       } else {
-        throw new Error(extractApiErrorMessage(data));
+        const errorType = getApiErrorType(data);
+
+        if (errorType === 'UPLOAD-EXCEEDS-LIMITS' && canUpgrade) {
+          showStorageUpgradeAlert(currentPlan.id);
+        } else {
+          throw new Error(extractApiErrorMessage(data));
+        }
       }
     } catch (err: any) {
       Alert.alert('Errore', err.message || 'Impossibile caricare il documento. Riprova.');
