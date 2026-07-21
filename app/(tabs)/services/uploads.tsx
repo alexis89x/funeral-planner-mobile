@@ -170,7 +170,7 @@ export default function UploadsScreen() {
   ) ?? userProfile?.owned_plans?.[0] ?? null;
 
   const showSwitcher = hasMultiplePlans(userProfile);
-  const showUpgradeBanner = ACTIVE_THEME === 'archivio-sereno' && !!currentPlan && currentPlan.type !== 'advanced';
+  const showUpgradeBanner = !!currentPlan && currentPlan.type !== 'advanced';
 
   const totalBytes = uploads.reduce((sum, a) => sum + (a.size || 0), 0);
   const usagePercent = uploadLimit > 0 ? Math.min((totalBytes / uploadLimit) * 100, 100) : 0;
@@ -274,9 +274,15 @@ export default function UploadsScreen() {
     );
   };
 
+  const goToUploadForm = () => {
+    router.push({
+      pathname: '/(tabs)/services/upload-form',
+      params: { usageBytes: String(totalBytes), limit: String(uploadLimit) },
+    });
+  };
+
   const AddButton = () => (
-    <TouchableOpacity
-      onPress={() => router.push('/(tabs)/services/upload-form')}>
+    <TouchableOpacity onPress={goToUploadForm}>
       <Ionicons name="add-circle-outline" size={28} color={BaseColors.main} />
     </TouchableOpacity>
   );
@@ -337,7 +343,7 @@ export default function UploadsScreen() {
               <ThemedText style={styles.emptyText}>Nessun documento caricato</ThemedText>
               <TouchableOpacity
                 style={styles.emptyButton}
-                onPress={() => router.push('/(tabs)/services/upload-form')}>
+                onPress={goToUploadForm}>
                 <ThemedText style={styles.emptyButtonText}>Carica documento</ThemedText>
               </TouchableOpacity>
             </View>
@@ -351,7 +357,7 @@ export default function UploadsScreen() {
               ))}
               <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => router.push('/(tabs)/services/upload-form')}>
+                onPress={goToUploadForm}>
                 <Ionicons name="add-circle-outline" size={20} color="#fff" />
                 <ThemedText style={styles.addButtonText}>Aggiungi documento</ThemedText>
               </TouchableOpacity>

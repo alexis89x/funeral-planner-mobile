@@ -2,7 +2,8 @@
  * Plan Service - Handles plan switching and related operations
  */
 
-import { api } from './api';
+import { router } from 'expo-router';
+import { api, APP_BASE_URL } from './api';
 import { Plan, UserProfile } from '@/contexts/AuthContext';
 import { PLAN_STATUS } from '@/models/data.models';
 import { THEMES, ACTIVE_THEME } from '@/constants/theme';
@@ -61,6 +62,16 @@ export const resolvePlanDetailRoute = (plan: Plan, opts?: { forceReload?: boolea
       ...(opts?.forceReload && { forceReload: Date.now().toString() }),
     },
   };
+};
+
+/**
+ * Apre la pagina di upgrade del piano (più spazio di archiviazione) in webview.
+ */
+export const goToPlanUpgrade = (planId: number | string) => {
+  router.push({
+    pathname: '/(tabs)/services/webview',
+    params: { url: `${APP_BASE_URL}/plan/upgrade/${planId}?forceMode=mobile`, title: 'Più spazio' },
+  });
 };
 
 export const switchPlan = async (planId: number | string): Promise<Plan> => {

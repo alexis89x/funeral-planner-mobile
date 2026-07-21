@@ -51,9 +51,31 @@ const ERROR_TRANSLATIONS: Record<string, string> = {
   UPLOAD_WRONG_TYPE: 'Tipo di file non supportato.',
   UPLOAD_TOO_LARGE: 'Il file supera la dimensione massima consentita.',
   UPLOAD_FAILED: 'Caricamento fallito. Riprova.',
+  'UPLOAD-EXCEEDS-LIMITS': 'Lo spazio disponibile per il tuo piano non è sufficiente per caricare questo file.',
   NOT_FOUND: 'Risorsa non trovata.',
   SERVER_ERROR: 'Errore del server. Riprova più tardi.',
 };
+
+/**
+ * Estrae il "type" di un errore gateway, anche quando arriva solo dentro
+ * message come chiave grezza in stile ERROR_API.<TYPE>.
+ */
+export function getApiErrorType(responseData: GatewayResponse | any): string | null {
+  const error = responseData?.error;
+
+  if (error && typeof error === 'object' && !Array.isArray(error)) {
+    const typed = error as GatewayError;
+    if (typed.type) return typed.type;
+    if (typeof typed.message === 'string') {
+      const match = typed.message.match(/^ERROR_API\.(.+)$/);
+      if (match) return match[1];
+    }
+    return null;
+  }
+
+  if (typeof error === 'string') return error;
+  return null;
+}
 
 export function extractApiErrorMessage(
   responseData: GatewayResponse | any,
