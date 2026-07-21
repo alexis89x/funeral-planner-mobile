@@ -605,6 +605,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const data = await response.json();
 
+      console.log('📡 Apple backend response status:', response.status);
+      console.log('📄 Apple backend response body:', JSON.stringify(data, null, 2));
+
       if (response.ok && data.success) {
         // Successful login
         console.log('✅ Backend authentication successful:', data);
