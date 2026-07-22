@@ -18,7 +18,7 @@ import { extractApiErrorMessage, getApiErrorType } from '@/utils/api-error';
 import { DocumentTypes, DocumentType } from '@/constants/document-types';
 import { DocumentTypePicker, ContactsPicker } from '@/components/document-pickers';
 import { goToPlanUpgrade } from '@/utils/plans';
-import { ACTIVE_THEME } from '@/constants/theme';
+import { EmergencyContactsWarning } from '@/components/EmergencyContactsWarning';
 
 const AUTH_STORAGE_KEY = '@tramonto_sereno_auth';
 
@@ -246,7 +246,7 @@ export default function UploadFormScreen() {
         </View>
 
         {/* Visibility */}
-        {emergencyContacts.length > 0 && (
+        {emergencyContacts.length > 0 ? (
           <View style={styles.fieldGroup}>
             <ThemedText style={styles.label}>Visibile a</ThemedText>
             <TouchableOpacity
@@ -264,6 +264,8 @@ export default function UploadFormScreen() {
               <Ionicons name="chevron-down" size={18} color={BaseColors.grey} />
             </TouchableOpacity>
           </View>
+        ) : (
+          <EmergencyContactsWarning />
         )}
 
         <TouchableOpacity

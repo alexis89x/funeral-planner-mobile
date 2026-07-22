@@ -12,6 +12,7 @@ import { useAuth, Plan, EmergencyContact } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
 import { DocumentTypes, DocumentType } from '@/constants/document-types';
 import { DocumentTypePicker, ContactsPicker } from '@/components/document-pickers';
+import { EmergencyContactsWarning } from '@/components/EmergencyContactsWarning';
 
 export default function UploadItemEditScreen() {
   const params = useLocalSearchParams<{
@@ -137,7 +138,7 @@ export default function UploadItemEditScreen() {
             />
           </View>
 
-          {emergencyContacts.length > 0 && (
+          {emergencyContacts.length > 0 ? (
             <View style={styles.fieldGroup}>
               <ThemedText style={styles.label}>Visibile a</ThemedText>
               <TouchableOpacity
@@ -155,6 +156,8 @@ export default function UploadItemEditScreen() {
                 <Ionicons name="chevron-down" size={18} color={BaseColors.grey} />
               </TouchableOpacity>
             </View>
+          ) : (
+            <EmergencyContactsWarning />
           )}
 
           <TouchableOpacity
