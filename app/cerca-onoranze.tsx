@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import { ThemedView } from '@/components/themed-view';
-import { APP_BASE_URL } from '@/utils/api';
+import { api, APP_BASE_URL } from '@/utils/api';
 import { isWebviewCacheStale, markWebviewLoaded } from '@/utils/webview.utils';
 import AppWebView from '@/components/AppWebView';
 
@@ -19,7 +19,12 @@ export default function CercaOnoranzeScreen() {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') return;
         const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-        setCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setCoords({ lat, lng });
+        // Best-effort analytics save; failures are non-blocking and only logged
+        api.post('user-save-location', { lat, lng, type: 'search-of' }, { manualErrorManagement: true })
+          .catch(err => console.log('[CercaOnoranze] user-save-location failed:', err));
       } catch (e) {
         console.warn('[CercaOnoranze] location unavailable:', e);
       }

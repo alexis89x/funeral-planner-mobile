@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
-import { APP_BASE_URL } from "@/utils/api";
+import { api, APP_BASE_URL } from "@/utils/api";
 import { PartnerDetail } from '@/components/PartnerDetail';
 import { isWebviewCacheStale, markWebviewLoaded } from "@/utils/webview.utils";
 import AppWebView from '@/components/AppWebView';
@@ -28,6 +28,9 @@ export default function FuneralHomeScreen() {
         const lng = position.coords.longitude;
         console.log('[FuneralHome] coords:', { lat, lng });
         setCoords({ lat, lng });
+        // Best-effort analytics save; failures are non-blocking and only logged
+        api.post('user-save-location', { lat, lng, type: 'search-of' }, { manualErrorManagement: true })
+          .catch(err => console.log('[FuneralHome] user-save-location failed:', err));
       } catch (e) {
         console.warn('[FuneralHome] location unavailable:', e);
       }

@@ -9,10 +9,11 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "ios-device": "expo run:ios --device \"iPhone di Alessandro\"",
+    "test-device-pt1": "npx expo prebuild --clean",
+    "test-device-pt2": "npx expo run:android",
+    "test-device-ios": "npx expo run:ios",
     "doctor": "npx expo-doctor",
     "typecheck": "tsc --noEmit",
-    "android-old": "expo start --android",
-    "ios-old": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "draft": "npx eas-cli@latest workflow:run create-draft.yml",
@@ -22,10 +23,7 @@
     "build-android-prod": "eas build --platform android --profile production",
     "build-ios-preview": "eas build --platform ios --profile preview",
     "build-ios-prod": "eas build --platform ios --profile production",
-    "submit-ios-prod": "eas submit --platform ios --profile production",
-    "test-device-pt1": "npx expo prebuild --clean",
-    "test-device-pt2": "npx expo run:android",
-    "test-device-ios": "npx expo run:ios"
+    "submit-ios-prod": "eas submit --platform ios --profile production"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
