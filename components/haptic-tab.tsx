@@ -6,6 +6,8 @@ export function HapticTab(props: BottomTabBarButtonProps) {
   return (
     <PlatformPressable
       {...props}
+      // Suppress PlatformPressable's default Android ripple (rgba(0,0,0,.32)) on the tabs.
+      android_ripple={{ color: 'transparent' }}
       onPressIn={(ev) => {
         if (process.env.EXPO_OS === 'ios') {
           // Add a soft haptic feedback when pressing down on the tabs.

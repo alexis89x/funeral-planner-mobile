@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { BaseColors } from '@/constants/theme';
+import { ACTIVE_THEME, BaseColors } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
@@ -48,7 +48,7 @@ export function AreYouAliveModal() {
             <IconSymbol name="exclamationmark.shield.fill" size={32} color={BaseColors.danger} />
           </View>
           <ThemedText type="defaultSemiBold" style={styles.title}>
-            Sei ancora vivo?
+            {ACTIVE_THEME === 'archivio-sereno' ? 'Stai bene?' : 'Sei ancora vivo?'}
           </ThemedText>
           <ThemedText style={styles.body}>
             Un tuo contatto di emergenza ha segnalato la tua assenza e ha attivato l&apos;accesso di emergenza al tuo piano. Se si tratta di un errore, blocca subito l&apos;accesso: verrà annullato immediatamente, anche se è attivo uno sblocco temporaneo dei documenti.
@@ -64,7 +64,11 @@ export function AreYouAliveModal() {
             disabled={blocking}
             activeOpacity={0.8}>
             <ThemedText style={styles.blockButtonText}>
-              {blocking ? 'Blocco in corso...' : "Sono vivo, blocca l'accesso di emergenza"}
+              {blocking
+                ? 'Blocco in corso...'
+                : ACTIVE_THEME === 'archivio-sereno'
+                  ? "Sto bene, blocca l'accesso"
+                  : "Sono vivo, blocca l'accesso di emergenza"}
             </ThemedText>
           </TouchableOpacity>
         </View>
