@@ -30,9 +30,17 @@ export default function MyPlanScreen() {
 
   if (forceReload && forceReload !== prevForceReload) {
     setPrevForceReload(forceReload);
-    loadedPlanIdRef.current = planId;
     setEffectiveUrl(`${rawUrl}&_t=${forceReload}`);
   }
+
+  // Runs before the effect below (same commit, declared first): marks planId as
+  // already loaded so the dedup check doesn't clobber the forced URL above with
+  // an async cache-staleness reload.
+  useEffect(() => {
+    if (forceReload && forceReload === prevForceReload) {
+      loadedPlanIdRef.current = planId;
+    }
+  }, [forceReload, prevForceReload, planId]);
 
   useEffect(() => {
     if (planId && planId === loadedPlanIdRef.current) return;

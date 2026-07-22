@@ -93,7 +93,9 @@ export function PartnerDetail({ partnerId, showBackButton = true, showPurchaseBu
   }, [partnerId, token]);
 
   useEffect(() => {
-    fetchPartnerDetails();
+    (async () => {
+      await fetchPartnerDetails();
+    })();
   }, [fetchPartnerDetails]);
 
   const handleCall = () => {

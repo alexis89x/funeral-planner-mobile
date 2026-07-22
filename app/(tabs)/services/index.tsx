@@ -100,7 +100,11 @@ export default function ServicesScreen() {
   useEffect(() => {
     // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati,
     // niente da caricare/mostrare qui.
-    if (!isArchivioSereno) loadServices();
+    if (!isArchivioSereno) {
+      (async () => {
+        await loadServices();
+      })();
+    }
   }, []);
 
   // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati.

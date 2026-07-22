@@ -58,7 +58,9 @@ export default function ProductsScreen() {
   };
 
   useEffect(() => {
-    loadProducts();
+    (async () => {
+      await loadProducts();
+    })();
   }, []);
 
   const formatPrice = (cents: number) => {

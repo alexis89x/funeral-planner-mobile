@@ -109,11 +109,11 @@ export default function ContattiEmergenzaScreen() {
   const { userProfile, reloadProfile } = useAuth();
 
   useEffect(() => {
+    reloadProfile();
     // reloadProfile is recreated on every AuthProvider render and itself triggers
     // AuthProvider state updates, so depending on it here would cause a reload loop.
     // Intentionally mount-only.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    reloadProfile();
   }, []);
 
   const currentPlan = (userProfile?.owned_plans ?? []).find(

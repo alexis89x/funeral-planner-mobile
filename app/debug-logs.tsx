@@ -20,7 +20,9 @@ export default function DebugLogsScreen() {
   };
 
   useEffect(() => {
-    loadLogs();
+    (async () => {
+      await loadLogs();
+    })();
   }, []);
 
   const handleClearLogs = async () => {

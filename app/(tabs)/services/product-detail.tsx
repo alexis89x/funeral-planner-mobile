@@ -43,7 +43,11 @@ export default function ProductDetailScreen() {
   }, [id]);
 
   useEffect(() => {
-    if (id) loadProduct();
+    if (id) {
+      (async () => {
+        await loadProduct();
+      })();
+    }
   }, [id, loadProduct]);
 
   // Update title when product is loaded

@@ -29,6 +29,9 @@ let statusCodes: any = null;
 
 if (!isExpoGo) {
   try {
+    // Must stay a runtime require: a static import would be hoisted and evaluated
+    // unconditionally, crashing Expo Go where this native module isn't present.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const GoogleSigninModule = require('@react-native-google-signin/google-signin');
     GoogleSignin = GoogleSigninModule.GoogleSignin;
     isErrorWithCode = GoogleSigninModule.isErrorWithCode;
@@ -108,10 +111,12 @@ export default function WelcomeScreen() {
   }, [getLastPartnerName]);
 
   useEffect(() => {
-    loadLastProfile();
-    loadLastPartner();
-    checkPlayServices();
-    checkAppleSignInAvailability();
+    (async () => {
+      loadLastProfile();
+      loadLastPartner();
+      checkPlayServices();
+      checkAppleSignInAvailability();
+    })();
   }, [loadLastProfile, loadLastPartner]);
 
   const handleAccediPress = async () => {
