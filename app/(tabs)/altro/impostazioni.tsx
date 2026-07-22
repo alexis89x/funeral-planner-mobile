@@ -60,7 +60,7 @@ export default function ImpostazioniScreen() {
           <View style={[styles.infoCard, { backgroundColor: colors.cardBackground }]}>
             <ThemedText style={styles.label}>Tempo di attesa emergenza</ThemedText>
             <ThemedText style={styles.hint}>
-              Numero di ore di inattività prima che l'accesso di emergenza venga attivato per i tuoi contatti.
+              Numero di ore di inattività prima che l&apos;accesso di emergenza venga attivato per i tuoi contatti.
             </ThemedText>
             <View style={styles.fieldRow}>
               <TextInput

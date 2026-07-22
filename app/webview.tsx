@@ -6,7 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
 import { isWebviewCacheStale, markWebviewLoaded } from '@/utils/webview.utils';
 import AppWebView from '@/components/AppWebView';
-import { THEMES, ACTIVE_THEME } from '@/constants/theme';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 export default function WebViewScreen() {
   const params = useLocalSearchParams<{ url: string; title?: string; injectToken?: string }>();

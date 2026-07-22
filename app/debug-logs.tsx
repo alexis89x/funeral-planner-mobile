@@ -13,15 +13,15 @@ export default function DebugLogsScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
-  useEffect(() => {
-    loadLogs();
-  }, []);
-
   const loadLogs = async () => {
     const content = await readLogsFromFile();
     setLogs(content);
     setLastRefresh(new Date());
   };
+
+  useEffect(() => {
+    loadLogs();
+  }, []);
 
   const handleClearLogs = async () => {
     await clearLogFile();

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -53,11 +53,7 @@ export function PartnerDetail({ partnerId, showBackButton = true, showPurchaseBu
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchPartnerDetails();
-  }, [partnerId]);
-
-  const fetchPartnerDetails = async () => {
+  const fetchPartnerDetails = useCallback(async () => {
     if (!partnerId) return;
 
     setLoading(true);
@@ -94,7 +90,11 @@ export function PartnerDetail({ partnerId, showBackButton = true, showPurchaseBu
     } finally {
       setLoading(false);
     }
-  };
+  }, [partnerId, token]);
+
+  useEffect(() => {
+    fetchPartnerDetails();
+  }, [fetchPartnerDetails]);
 
   const handleCall = () => {
     if (partner?.phone) {

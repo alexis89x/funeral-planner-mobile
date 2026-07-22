@@ -7,8 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BaseColors } from '@/constants/theme';
-import { useAuth } from '@/contexts/AuthContext';
-import { EmergencyContact, Plan } from '@/contexts/AuthContext';
+import { useAuth, EmergencyContact, Plan } from '@/contexts/AuthContext';
 import { ApiService } from '@/utils/api';
 import { PlanSwitcher } from '@/components/PlanSwitcher';
 import { hasMultiplePlans } from '@/utils/plans';
@@ -110,6 +109,10 @@ export default function ContattiEmergenzaScreen() {
   const { userProfile, reloadProfile } = useAuth();
 
   useEffect(() => {
+    // reloadProfile is recreated on every AuthProvider render and itself triggers
+    // AuthProvider state updates, so depending on it here would cause a reload loop.
+    // Intentionally mount-only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     reloadProfile();
   }, []);
 

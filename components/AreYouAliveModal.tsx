@@ -51,7 +51,7 @@ export function AreYouAliveModal() {
             Sei ancora vivo?
           </ThemedText>
           <ThemedText style={styles.body}>
-            Un tuo contatto di emergenza ha segnalato la tua assenza e ha attivato l'accesso di emergenza al tuo piano. Se si tratta di un errore, blocca subito l'accesso: verrà annullato immediatamente, anche se è attivo uno sblocco temporaneo dei documenti.
+            Un tuo contatto di emergenza ha segnalato la tua assenza e ha attivato l&apos;accesso di emergenza al tuo piano. Se si tratta di un errore, blocca subito l&apos;accesso: verrà annullato immediatamente, anche se è attivo uno sblocco temporaneo dei documenti.
           </ThemedText>
           {error && (
             <ThemedText style={styles.errorText}>

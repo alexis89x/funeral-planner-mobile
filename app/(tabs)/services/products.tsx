@@ -26,10 +26,6 @@ export default function ProductsScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
   const loadProducts = async () => {
     try {
       setLoading(true);
@@ -60,6 +56,10 @@ export default function ProductsScreen() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
 
   const formatPrice = (cents: number) => {
     return `€${(cents / 100).toFixed(2)}`;

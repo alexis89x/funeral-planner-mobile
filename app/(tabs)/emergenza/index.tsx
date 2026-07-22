@@ -55,6 +55,7 @@ export default function EmergenzaScreen() {
   const { userProfile, reloadProfile } = useAuth();
   const [pickerVisible, setPickerVisible] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const [now] = useState(() => Date.now());
 
   const hasPartner = !!userProfile?.user?.id_partner_referral;
   const showCercaOnoranze = THEMES[ACTIVE_THEME].funeralHomeTab === 'hide-without-partner' && !hasPartner;
@@ -66,7 +67,7 @@ export default function EmergenzaScreen() {
   ) ?? userProfile?.owned_plans?.[0] ?? null;
 
   const contacts = currentPlan?.emergencyContacts ?? [];
-  const isUnlocked = !!currentPlan?.allow_access_until && currentPlan.allow_access_until > Date.now();
+  const isUnlocked = !!currentPlan?.allow_access_until && currentPlan.allow_access_until > now;
 
   const items: EmergenzaItem[] = [
     CONTATTO_EMERGENZA_ITEM,

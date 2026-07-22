@@ -16,7 +16,7 @@ import { ThemedText } from '@/components/themed-text';
 import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { APP_BASE_URL } from '@/utils/api';
-import { switchPlan, formatPlanType, formatDate, getStatusColor, resolvePlanDetailRoute } from '@/utils/plans';
+import { switchPlan, formatPlanType, formatDate, resolvePlanDetailRoute } from '@/utils/plans';
 import { useNewPlanHandler } from '@/hooks/use-new-plan-handler';
 
 const USER_STATUS_FORCE_PSW_CHANGE = 350;
@@ -40,7 +40,7 @@ export default function MyPlansScreen() {
           },
         });
       }
-    }, [userProfile])
+    }, [userProfile, router])
   );
 
   const plans = userProfile?.owned_plans || [];
@@ -97,9 +97,6 @@ export default function MyPlansScreen() {
   };
 
   const renderPlanCard = (plan: Plan) => {
-    const isCurrentPlan = plan.id === currentPlanId;
-    const statusColor = getStatusColor(plan.payment_status, plan.status);
-
     return (
       <TouchableOpacity
         key={plan.id}

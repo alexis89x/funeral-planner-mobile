@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, ScrollView, ActivityIndicator, Image, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
@@ -24,21 +24,7 @@ export default function ProductDetailScreen() {
   const [buying, setBuying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (id) loadProduct();
-  }, [id]);
-
-  // Update title when product is loaded
-  /*useEffect(() => {
-    if (product) {
-      navigation.setOptions({
-        title: product.product_name,
-        headerBackTitle: 'Indietro',
-      });
-    }
-  }, [product, navigation]);*/
-
-  const loadProduct = async () => {
+  const loadProduct = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -54,7 +40,21 @@ export default function ProductDetailScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) loadProduct();
+  }, [id, loadProduct]);
+
+  // Update title when product is loaded
+  /*useEffect(() => {
+    if (product) {
+      navigation.setOptions({
+        title: product.product_name,
+        headerBackTitle: 'Indietro',
+      });
+    }
+  }, [product, navigation]);*/
 
   const formatPrice = (cents: number) => {
     return `€${(cents / 100).toFixed(2)}`;

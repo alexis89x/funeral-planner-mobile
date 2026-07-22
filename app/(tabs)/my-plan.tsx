@@ -13,6 +13,7 @@ export default function MyPlanScreen() {
   const [effectiveUrl, setEffectiveUrl] = useState<string | null>(null);
   const loadedPlanIdRef = useRef<string | undefined>(undefined);
   const [prevPlanId, setPrevPlanId] = useState<string | undefined>(planId);
+  const [prevForceReload, setPrevForceReload] = useState<string | undefined>(undefined);
 
   if (planId !== prevPlanId) {
     setPrevPlanId(planId);
@@ -27,13 +28,13 @@ export default function MyPlanScreen() {
   const actionParam = action ? `&action=${action}` : '';
   const rawUrl = `${APP_BASE_URL}${getHomepagePath()}?standalone=true&forceMode=mobile${actionParam}`;
 
-  useEffect(() => {
-    if (forceReload) {
-      loadedPlanIdRef.current = planId;
-      setEffectiveUrl(`${rawUrl}&_t=${forceReload}`);
-      return;
-    }
+  if (forceReload && forceReload !== prevForceReload) {
+    setPrevForceReload(forceReload);
+    loadedPlanIdRef.current = planId;
+    setEffectiveUrl(`${rawUrl}&_t=${forceReload}`);
+  }
 
+  useEffect(() => {
     if (planId && planId === loadedPlanIdRef.current) return;
     loadedPlanIdRef.current = planId;
 
@@ -41,7 +42,7 @@ export default function MyPlanScreen() {
     isWebviewCacheStale(rawUrl).then(stale => {
       setEffectiveUrl(stale ? `${rawUrl}&_t=${Date.now()}` : rawUrl);
     });
-  }, [rawUrl, forceReload, planId]);
+  }, [rawUrl, planId]);
 
   return (
     <ThemedView style={styles.container}>

@@ -10,8 +10,7 @@ import {
 import { router, Stack } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleWebClientId, AppGoogleIosClientId } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AppLogoHorizontal, AppLogoHorizontalWidth, AppLogoHorizontalHeight, AppGoogleWebClientId, AppGoogleIosClientId } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { isExpoGo } from "@/utils/utils";
 import { resolvePostLoginRoute } from '@/utils/plans';
@@ -45,8 +44,6 @@ if (!isExpoGo) {
 
 export default function LoginGoogleScreen() {
   const [isLoading, setIsLoading] = useState(false);
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
   const { googleLogin } = useAuth();
 
   useEffect(() => {

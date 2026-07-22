@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet, TouchableOpacity, ScrollView, View, Alert,
-  ActivityIndicator, Animated, RefreshControl,
+  ActivityIndicator, Animated, RefreshControl, Linking,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Stack, router, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BaseColors, ACTIVE_THEME } from '@/constants/theme';
+import { BaseColors } from '@/constants/theme';
 import { useAuth, Plan } from '@/contexts/AuthContext';
 import { ApiService, API_BASE_URL, APP_BASE_URL } from '@/utils/api';
 import { PlanSwitcher } from '@/components/PlanSwitcher';
@@ -190,6 +189,9 @@ export default function UploadsScreen() {
     } catch {
       setError('Impossibile caricare i documenti');
     }
+    // currentPlan is a fresh object every render; narrowing to its id keeps this
+    // callback (and the effects below that depend on it) stable across renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlan?.id]);
 
   useEffect(() => {

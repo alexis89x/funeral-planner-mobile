@@ -100,7 +100,7 @@ function RootLayoutNav() {
         console.log('✅ No redirect needed');
       }
     }
-  }, [currentUser, userProfile, isLoading, segments]);
+  }, [currentUser, userProfile, isLoading, segments, router]);
 
   // Show custom loading screen while loading
   if (isLoading && loadingState !== 'completed') {

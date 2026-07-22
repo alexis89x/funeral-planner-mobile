@@ -62,7 +62,7 @@ export function UpdateBanner() {
     <View style={[styles.banner, { paddingBottom: 20 + insets.bottom }]}>
       <ThemedText style={styles.title}>Aggiornamento disponibile</ThemedText>
       <ThemedText style={styles.text}>
-        È disponibile la versione {remoteVersion} dell'app. Aggiorna per ricevere le ultime novità.
+        È disponibile la versione {remoteVersion} dell&apos;app. Aggiorna per ricevere le ultime novità.
       </ThemedText>
       <TouchableOpacity onPress={handleUpdate} style={styles.updateButton}>
         <ThemedText style={styles.updateText}>Aggiorna ora</ThemedText>

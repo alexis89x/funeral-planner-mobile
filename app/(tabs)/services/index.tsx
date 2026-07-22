@@ -5,8 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { BaseColors, THEMES, ACTIVE_THEME } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { api, APP_BASE_URL } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
@@ -54,7 +53,6 @@ const iconMap: Record<string, string> = {
 const isArchivioSereno = ACTIVE_THEME === 'archivio-sereno';
 
 export default function ServicesScreen() {
-  const colorScheme = useColorScheme();
   const { userProfile } = useAuth();
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,17 +61,6 @@ export default function ServicesScreen() {
   // Get app version
   const appVersion = Constants.expoConfig?.version || '1.0.0';
   const appMajorVersion = parseInt(appVersion.split('.')[0], 10);
-
-  useEffect(() => {
-    // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati,
-    // niente da caricare/mostrare qui.
-    if (!isArchivioSereno) loadServices();
-  }, []);
-
-  // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati.
-  if (isArchivioSereno) {
-    return <Redirect href="/(tabs)/services/uploads" />;
-  }
 
   const loadServices = async () => {
     try {
@@ -109,6 +96,17 @@ export default function ServicesScreen() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati,
+    // niente da caricare/mostrare qui.
+    if (!isArchivioSereno) loadServices();
+  }, []);
+
+  // Archivio Sereno: la tab "Servizi" apre direttamente i documenti caricati.
+  if (isArchivioSereno) {
+    return <Redirect href="/(tabs)/services/uploads" />;
+  }
 
   const handleServicePress = (service: ServiceItem) => {
     // Se l'URL inizia con /, naviga su webview con set-token
@@ -207,7 +205,7 @@ export default function ServicesScreen() {
                     Cerca onoranze funebri
                   </ThemedText>
                   <ThemedText style={styles.serviceDescription}>
-                    Trova un'onoranza funebre vicino a te
+                    Trova un&apos;onoranza funebre vicino a te
                   </ThemedText>
                 </ThemedView>
                 <IconSymbol name="chevron.right" size={20} color={BaseColors.greyMedium} />

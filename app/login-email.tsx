@@ -79,7 +79,7 @@ export default function LoginEmailScreen() {
 
     loadLastEmail();
     loadLastPartner();
-  }, []);
+  }, [getLastPartnerName]);
 
   const handleLogin = async () => {
     console.log("HANDLING LOGIN");

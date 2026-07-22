@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -24,7 +24,6 @@ import { isExpoGo } from "@/utils/utils";
 
 // Conditional import for Google Sign-In (only for device builds)
 let GoogleSignin: any = null;
-let GoogleSigninButton: any = null;
 let isErrorWithCode: any = null;
 let statusCodes: any = null;
 
@@ -32,7 +31,6 @@ if (!isExpoGo) {
   try {
     const GoogleSigninModule = require('@react-native-google-signin/google-signin');
     GoogleSignin = GoogleSigninModule.GoogleSignin;
-    GoogleSigninButton = GoogleSigninModule.GoogleSigninButton;
     isErrorWithCode = GoogleSigninModule.isErrorWithCode;
     statusCodes = GoogleSigninModule.statusCodes;
 
@@ -65,13 +63,6 @@ export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
   console.log("SHOWING WELCOME SCREEN");
 
-  useEffect(() => {
-    loadLastProfile();
-    loadLastPartner();
-    checkPlayServices();
-    checkAppleSignInAvailability();
-  }, []);
-
   const checkAppleSignInAvailability = async () => {
     if (Platform.OS !== 'ios' || isExpoGo) return;
 
@@ -85,7 +76,7 @@ export default function WelcomeScreen() {
 
   const checkPlayServices = async () => {
     if (!GoogleSignin) return;
-    
+
     try {
       if (Platform.OS === 'android') {
         await GoogleSignin.hasPlayServices();
@@ -96,7 +87,7 @@ export default function WelcomeScreen() {
     }
   };
 
-  const loadLastProfile = async () => {
+  const loadLastProfile = useCallback(async () => {
     setIsValidating(true);
     const profile = await getLastSavedProfile();
     setLastProfile(profile);
@@ -109,12 +100,19 @@ export default function WelcomeScreen() {
       console.log('✅ Token valid:', isValid);
     }
     setIsValidating(false);
-  };
+  }, [getLastSavedProfile, validateToken]);
 
-  const loadLastPartner = async () => {
+  const loadLastPartner = useCallback(async () => {
     const partnerName = await getLastPartnerName();
     setLastPartnerName(partnerName);
-  };
+  }, [getLastPartnerName]);
+
+  useEffect(() => {
+    loadLastProfile();
+    loadLastPartner();
+    checkPlayServices();
+    checkAppleSignInAvailability();
+  }, [loadLastProfile, loadLastPartner]);
 
   const handleAccediPress = async () => {
     if (isTokenValid) {
