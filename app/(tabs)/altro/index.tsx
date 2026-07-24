@@ -16,6 +16,7 @@ const ALL_MENU_ITEMS = [
   { label: 'I miei piani', icon: 'list.bullet' as const, route: '/(tabs)/my-plans' },
   { label: 'FAQ', icon: 'questionmark.circle.fill' as const, route: '/altro/faq-categories' },
   { label: 'Guide video', icon: 'play.circle.fill' as const, route: '/altro/tutorials' },
+  { label: 'Cronologia accesso ai documenti', icon: 'clock.arrow.circlepath' as const, route: '/altro/access-log' },
   { label: 'Impostazioni', icon: 'gearshape.fill' as const, route: '/altro/impostazioni' },
 ];
 

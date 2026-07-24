@@ -83,6 +83,9 @@ const MAPPING = {
   'arrow.triangle.2.circlepath': 'swap-horiz',
   'exclamationmark.triangle.fill': 'warning',
   'square.and.arrow.up': 'share',
+
+  // Access log
+  'clock.arrow.circlepath': 'history',
 } as unknown as IconMapping;
 
 /**

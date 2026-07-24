@@ -32,6 +32,10 @@ export default function AltroLayout() {
         name="faq-questions"
         options={{ title: 'Domande frequenti' }}
       />
+      <Stack.Screen
+        name="access-log"
+        options={{ title: 'Cronologia accesso ai documenti' }}
+      />
     </Stack>
   );
 }
